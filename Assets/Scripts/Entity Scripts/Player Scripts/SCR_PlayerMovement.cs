@@ -53,6 +53,7 @@ namespace Entities.Player
         {
             PlayerMovementUpdate();
             PlayerMeleeUpdate();
+            PlayerInteractionUpdate();
         }
 
         #region Player Attacking
@@ -79,6 +80,33 @@ namespace Entities.Player
         }
 
         #endregion
+
+        #region Player Interaction
+
+        /// <summary>
+        /// Update method used to trigger player interaction
+        /// </summary>
+        private void PlayerInteractionUpdate()
+        {
+            //Do not trigger if player is already attacking
+            if (_playerAttacking) { return; }
+
+            if (_inputManager.Vertical.PressedThisFrame() && _inputManager.Vertical.AxisValue > 0){
+                StartCoroutine(InteractionColliderCoroutine());
+            }
+
+            IEnumerator InteractionColliderCoroutine()
+            {
+                _playerInteraction.gameObject.SetActive(true);
+                yield return new WaitForSeconds(_colliderEnabledTime);
+                _playerInteraction.gameObject.SetActive(false);
+                yield return new WaitForSeconds(_colliderCooldownTime);
+
+            }
+        }
+        #endregion
+
+
 
         #region Player Movement
         /// <summary>

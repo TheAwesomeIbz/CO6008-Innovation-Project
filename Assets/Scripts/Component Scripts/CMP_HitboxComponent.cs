@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Entities
 {
+    [RequireComponent(typeof(BoxCollider2D))]
     public class CMP_HitboxComponent : MonoBehaviour
     {
         public event System.Action OnDamageEvent;
@@ -29,10 +30,10 @@ namespace Entities
 
         public void DealDamage(int damage)
         {
-            _HP = _HP - damage > 0 ?
-                 _HP - damage : 0 ;
+            _HP -= damage;
 
-            if (_HP == 0) {
+            if (_HP <= 0) {
+                _HP = 0;
                 OnZeroHPEvent?.Invoke();
             }
             else{
@@ -41,7 +42,7 @@ namespace Entities
         }
     }
 
-    public enum DamageColliderVariant
+    public enum HitboxColliderVariant
     {
         DAMAGEABLE_BY_PLAYER,
         DAMAGEABLE_BY_ENEMEIES,
