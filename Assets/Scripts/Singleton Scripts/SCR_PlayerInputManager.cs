@@ -8,6 +8,7 @@ public class SCR_PlayerInputManager : MonoBehaviour
     public static bool PlayerControlsEnabled;
 
     public ButtonProperty Jump { get; private set; }
+    public ButtonProperty Attack { get; private set; }
     public AxisProperty Horizontal { get; private set; }
     public AxisProperty Vertical { get; private set; }
 
@@ -18,6 +19,7 @@ public class SCR_PlayerInputManager : MonoBehaviour
         Jump = new ButtonProperty("Jump");
         Horizontal = new AxisProperty("Horizontal");
         Vertical = new AxisProperty("Vertical");
+        Attack = new ButtonProperty("Submit");
     }
 
     public class AxisProperty : ButtonProperty
