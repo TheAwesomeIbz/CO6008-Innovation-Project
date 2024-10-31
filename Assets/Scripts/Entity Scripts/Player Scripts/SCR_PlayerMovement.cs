@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Entities.Player
 {
-    public class SCR_PlayerMovement : MonoBehaviour
+    public class SCR_PlayerMovement : MonoBehaviour, iDamagableStatistic
     {
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
@@ -14,6 +14,8 @@ namespace Entities.Player
         /// Get the Current Player level
         /// </summary>
         public PlayerLevel PlayerLevel => _playerLevel;
+
+        
 
         SCR_PlayerInputManager _inputManager;
         Rigidbody2D _rigidbody2D;
@@ -37,6 +39,10 @@ namespace Entities.Player
         SCR_DamageCollider _damageCollider;
         SCR_PlayerInteraction _playerInteraction;
 
+        [Header("PLAYER STATISTICS")]
+        [SerializeField] int _HP;
+        [SerializeField] int _maxHP;
+        public int HP { get => _HP; set => _HP = value; }
         void Start()
         {
             _inputManager = SCR_GeneralManager.PlayerInputManager;
@@ -46,6 +52,9 @@ namespace Entities.Player
             _damageCollider = GetComponentInChildren<SCR_DamageCollider>();
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
             _damageCollider.gameObject.SetActive(false);
+            _playerInteraction.gameObject.SetActive(false);
+
+            _maxHP = _HP;
         }
 
         // Update is called once per frame

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Entities
@@ -11,29 +12,25 @@ namespace Entities
         public event System.Action OnZeroHPEvent;
 
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
-        [SerializeField] DamageColliderVariant _damageColliderVariant;
-        [SerializeField] int _HP;
-        [SerializeField] int _maxHP;
-        [SerializeField] int _defence;
-        public int HP => _HP;
-        public int MaxHP => _maxHP;
-        public int Defence => _defence;
-        public DamageColliderVariant DamageColliderVariant => _damageColliderVariant;
+        [SerializeField] HitboxColliderVariant _colliderVariant;
+        [SerializeField] CMP_HealthComponent _healthComponent;
+
+        public HitboxColliderVariant ColliderVariant => _colliderVariant;
 
         void Start()
         {
-            if (_HP <= 0) { _HP = 20; }
-            if (Defence <= 0) { _defence = 1; }
-
-            _maxHP = _HP;
+            _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
         }
 
         public void DealDamage(int damage)
         {
-            _HP -= damage;
+            if (_healthComponent == null) {
+                Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform.name.ToUpper()} or {transform.parent.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
+                return; 
+            }
 
-            if (_HP <= 0) {
-                _HP = 0;
+            _healthComponent.LoseHP(damage);
+            if (_healthComponent.HP == 0) {
                 OnZeroHPEvent?.Invoke();
             }
             else{
