@@ -6,16 +6,20 @@ namespace Entities.Player
 {
     public class SCR_PlayerInteraction : MonoBehaviour
     {
-        //TODO : call the interact interface on the first object in contact with the collider
-        void Start()
-        {
 
+        /// <summary>
+        /// Trigger Interaction used to determine whether the player has interacted with an interactable object
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.GetType(out iInteractable interactable) == null) { return; }
+
+            if (interactable.Interactable){
+                interactable.Interact(GetComponent<SCR_PlayerMovement>());
+            }
+            
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 }

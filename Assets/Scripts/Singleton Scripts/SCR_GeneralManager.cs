@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
     private static SCR_GeneralManager _instance;
 
     public static SCR_PlayerInputManager PlayerInputManager => _instance.GetComponent<SCR_PlayerInputManager>();
+    public static SCR_UIManager UIManager => _instance.GetComponentInChildren<SCR_UIManager>();
+
     private void Awake()
     {
         if (_instance == null)

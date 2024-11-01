@@ -25,10 +25,11 @@ namespace Entities
         public void DealDamage(int damage)
         {
             if (_healthComponent == null) {
-                Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform.name.ToUpper()} or {transform.parent.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
+                Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform?.name.ToUpper()} or {transform.parent?.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
                 return; 
             }
-
+            if (_healthComponent.HP <= 0) { return; }
+            
             _healthComponent.LoseHP(damage);
             if (_healthComponent.HP == 0) {
                 OnZeroHPEvent?.Invoke();
@@ -36,6 +37,7 @@ namespace Entities
             else{
                 OnDamageEvent?.Invoke();
             }
+            Debug.Log($"{transform.name.ToUpper()} TOOK {damage} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
         }
     }
 
