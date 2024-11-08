@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Dialogue;
+using System;
 
 namespace Entities
 {
     public class SCR_DialogueNPC : MonoBehaviour, iInteractable
     {
+        public static event Action<SCR_DialogueNPC> OnDialogueStart;
         [SerializeField] DialogueObject[] dialogueObjects;
         public DialogueObject[] DialogueObjects => dialogueObjects;
 
@@ -20,6 +22,7 @@ namespace Entities
                 return;
             }
             SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects);
+            OnDialogueStart?.Invoke(this);
         }
 
 

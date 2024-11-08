@@ -9,6 +9,9 @@ namespace Dialogue
 {
     public class SCR_DialogueManager : MonoBehaviour
     {
+        public static event Action<DialogueObject[]> OnDialogueStart;
+        public static event Action OnDialogueEnd;
+
         [Header("DIALOGUE MANAGER PROPERTIES")]
         [SerializeField] GameObject _dialogueBox;
         [SerializeField] GameObject _nameBox, _continueIcon;
@@ -37,6 +40,7 @@ namespace Dialogue
             dialogueObjectIndex = 0;
             SetDialogueActivity(true, dialogueObjects[0]);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
+            OnDialogueStart?.Invoke(dialogueObjects);
 
             DisplayNextDialogue(dialogueObjects);
 
@@ -90,6 +94,7 @@ namespace Dialogue
         private void EndDialogueSequence()
         {
             SetDialogueActivity(false, null);
+            OnDialogueEnd?.Invoke();
             SCR_PlayerInputManager.PlayerControlsEnabled = true;
         }
 

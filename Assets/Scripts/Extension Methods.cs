@@ -5,13 +5,13 @@ using UnityEngine;
 public static class ExtensionMethods
 {
 
-    public static T GetType<T>(this Behaviour behaviour, out T type)
+    public static T GetType<T>(this Component behaviour, out T type)
     {
         type = behaviour.GetComponent<T>();
         return type;
     }
 
-    public static bool IsOfType<T>(this Behaviour behaviour)
+    public static bool IsOfType<T>(this Component behaviour)
     {
         return behaviour.GetComponent<T>() != null;
     }

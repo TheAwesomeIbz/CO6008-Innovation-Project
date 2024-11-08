@@ -6,8 +6,9 @@ using UnityEngine;
 
 namespace Entities.Player
 {
-    public class SCR_PlayerMovement : MonoBehaviour, iDamagableStatistic
+    public class SCR_PlayerMovement : MonoBehaviour
     {
+        public const int MaximumPlayerSpeed = 50;
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
         /// <summary>
@@ -39,10 +40,10 @@ namespace Entities.Player
         SCR_DamageCollider _damageCollider;
         SCR_PlayerInteraction _playerInteraction;
 
-        [Header("PLAYER STATISTICS")]
-        [SerializeField] int _HP;
-        [SerializeField] int _maxHP;
-        public int HP { get => _HP; set => _HP = value; }
+        [SerializeField] private Vector3 _mousePosition;
+        [SerializeField] GameObject mouseGO;
+        [SerializeField] GameObject projectile;
+
         void Start()
         {
             _inputManager = SCR_GeneralManager.PlayerInputManager;
@@ -53,8 +54,6 @@ namespace Entities.Player
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
             _damageCollider.gameObject.SetActive(false);
             _playerInteraction.gameObject.SetActive(false);
-
-            _maxHP = _HP;
         }
 
         // Update is called once per frame
