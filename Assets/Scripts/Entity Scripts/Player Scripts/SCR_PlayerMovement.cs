@@ -32,12 +32,6 @@ namespace Entities.Player
 
         [Header("PLAYER JUMP PROPERTIES")]
         [SerializeField] PlayerJumpProperties _playerJumpProperties;
-
-        [Header("PLAYER ATTACK PROPERTIES")]
-        [SerializeField] private bool _playerAttacking;
-        [SerializeField] private float _colliderEnabledTime = 0.25f;
-        [SerializeField] private float _colliderCooldownTime = 0.25f;
-        SCR_DamageCollider _damageCollider;
         SCR_PlayerInteraction _playerInteraction;
 
         [SerializeField] private Vector3 _mousePosition;
@@ -50,9 +44,7 @@ namespace Entities.Player
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _boxCollider2D = GetComponent<BoxCollider2D>();
 
-            _damageCollider = GetComponentInChildren<SCR_DamageCollider>();
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
-            _damageCollider.gameObject.SetActive(false);
             _playerInteraction.gameObject.SetActive(false);
         }
 
@@ -60,34 +52,9 @@ namespace Entities.Player
         void Update()
         {
             PlayerMovementUpdate();
-            PlayerMeleeUpdate();
             PlayerInteractionUpdate();
         }
 
-        #region Player Attacking
-
-        private void PlayerMeleeUpdate()
-        {
-            //Do not attack if player is already attacking
-            if (_playerAttacking) { return; }
-            if (_inputManager.Attack.PressedThisFrame())
-            {
-                StartCoroutine(DamageColliderCoroutine());
-            }
-
-            IEnumerator DamageColliderCoroutine()
-            {
-                _playerAttacking = true;
-                _damageCollider.gameObject.SetActive(true);
-                yield return new WaitForSeconds(_colliderEnabledTime);
-                _damageCollider.gameObject.SetActive(false);
-                yield return new WaitForSeconds(_colliderCooldownTime);
-
-                _playerAttacking = false;
-            }
-        }
-
-        #endregion
 
         #region Player Interaction
 
@@ -96,8 +63,6 @@ namespace Entities.Player
         /// </summary>
         private void PlayerInteractionUpdate()
         {
-            //Do not trigger if player is already attacking
-            if (_playerAttacking) { return; }
 
             if (_inputManager.Vertical.PressedThisFrame() && _inputManager.Vertical.AxisValue > 0){
                 StartCoroutine(InteractionColliderCoroutine());
@@ -106,9 +71,9 @@ namespace Entities.Player
             IEnumerator InteractionColliderCoroutine()
             {
                 _playerInteraction.gameObject.SetActive(true);
-                yield return new WaitForSeconds(_colliderEnabledTime);
+                yield return new WaitForSeconds(0.1f);
                 _playerInteraction.gameObject.SetActive(false);
-                yield return new WaitForSeconds(_colliderCooldownTime);
+                yield return new WaitForSeconds(0.1f);
 
             }
         }

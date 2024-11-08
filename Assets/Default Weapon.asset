@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Default Weapon
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 1696818346636504626, guid: edd24f6cbac273b4d8023bdba6624a61, type: 3}
-  _bulletMagnitude: 19
+  _bulletMagnitude: 24
   _weaponCooldown: 0.07
   _bulletAmount: 11
   _bulletSpreadRange: 0.33

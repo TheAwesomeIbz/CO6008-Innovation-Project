@@ -7,7 +7,7 @@ public class SO_WeaponProperties : ScriptableObject
 {
     [Header("SHOOTING PROPERTIES")]
     [SerializeField] GameObject _bulletPrefab;
-    [SerializeField][Range(5, 30)] int _bulletMagnitude;
+    [SerializeField][Range(5, 50)] int _bulletMagnitude;
     [SerializeField][Range(0f, 3f)] float _weaponCooldown;
     [SerializeField][Range(1, 30)] int _bulletAmount;
 

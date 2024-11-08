@@ -1,3 +1,4 @@
+using Cinemachine;
 using Dialogue;
 using System;
 using System.Collections;
@@ -17,10 +18,17 @@ namespace Entities.Player
 
         bool dialogueEnabled;
 
+        [Header("CAMERA ZOOM PROPERTIES")]
+        [SerializeField] float _lensOrthoSize = 5;
+        [SerializeField] float _cameraZoom;
+        [SerializeField] float _mouseZoomMultiplier = 0.25f;
+        [SerializeField] float _cameraZoomThreshold = 1;
+        CinemachineVirtualCamera virtualCamera;
+
 
         protected override void Start()
         {
-            
+            virtualCamera = Camera.main.VirtualCamera();
             base.Start();
         }
 
@@ -43,7 +51,9 @@ namespace Entities.Player
 
         protected override void ShootingUpdate()
         {
+            CameraZoomUpdate();
             if (dialogueEnabled) { return; }
+            
             Vector3 screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 relativeMousePosition = new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, 0) - transform.position;
 
@@ -67,6 +77,15 @@ namespace Entities.Player
                 _weaponProperties.SpawnBullet(transform, direction);
                 ResetCooldown();
             }
+        }
+
+        private void CameraZoomUpdate()
+        {
+            float mouseScrollDelta = Input.mouseScrollDelta.y;
+            _cameraZoom += mouseScrollDelta * _mouseZoomMultiplier;
+            _cameraZoom = Mathf.Clamp(_cameraZoom, -_cameraZoomThreshold, _cameraZoomThreshold);
+
+        virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
         }
 
         private void OnDisable()
