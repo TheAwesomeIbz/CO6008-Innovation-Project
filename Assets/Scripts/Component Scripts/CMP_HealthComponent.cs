@@ -8,8 +8,8 @@ namespace Entities
     public class CMP_HealthComponent : MonoBehaviour
     {
         [Header("HP PROPERTIES")]
-        [SerializeField] int _HP;
-        [SerializeField] int _maxHP;
+        [SerializeField] int _HP = 100;
+        [SerializeField] int _maxHP = 100;
         public int HP => _HP;
         public int MaxHP => _maxHP;
 

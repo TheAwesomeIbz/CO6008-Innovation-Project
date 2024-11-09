@@ -9,14 +9,22 @@ using UnityEngine;
 
 namespace Entities.Player
 {
-    public class SCR_PlayerShooting : SCR_EntityShooting
+    public class SCR_PlayerShooting : MonoBehaviour, iAttackable
     {
         [Header("PLAYER SHOOTING PROPERTIES")]
+        [SerializeField] SO_WeaponProperties _weaponProperties;
+        [SerializeField] Attackable _damageableTo;
         [SerializeField] GameObject _mouseCursor;
         [SerializeField] GameObject _halfwayObject;
         [SerializeField] [Range(1, 4)] float _midpointThreshold = 1;
 
-        bool dialogueEnabled;
+        [Header("COOLDOWN PROPERTIES")]
+        [SerializeField] float cooldown;
+        [SerializeField] bool CanShoot => cooldown <= 0;
+
+        
+
+        [SerializeField] bool dialogueEnabled;
 
         [Header("CAMERA ZOOM PROPERTIES")]
         [SerializeField] float _lensOrthoSize = 5;
@@ -25,11 +33,11 @@ namespace Entities.Player
         [SerializeField] float _cameraZoomThreshold = 1;
         CinemachineVirtualCamera virtualCamera;
 
+        public Attackable DamageableTo => _damageableTo;
 
-        protected override void Start()
+        protected void Start()
         {
             virtualCamera = Camera.main.VirtualCamera();
-            base.Start();
         }
 
         private void OnEnable()
@@ -49,7 +57,7 @@ namespace Entities.Player
             dialogueEnabled = false;
         }
 
-        protected override void ShootingUpdate()
+        protected void ShootingUpdate()
         {
             CameraZoomUpdate();
             if (dialogueEnabled) { return; }
@@ -74,7 +82,7 @@ namespace Entities.Player
             if (Input.GetMouseButton(0) && CanShoot)
             {
                 float direction = Mathf.Atan2(relativeMousePosition.y, relativeMousePosition.x);
-                _weaponProperties.SpawnBullet(transform, direction);
+                _weaponProperties.SpawnBullet(transform, this, direction);
                 ResetCooldown();
             }
         }
@@ -88,50 +96,21 @@ namespace Entities.Player
         virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
         }
 
-        private void OnDisable()
-        {
-            SCR_DialogueNPC.OnDialogueStart -= OnDialogueStart;
-            SCR_DialogueManager.OnDialogueEnd -= OnDialogueEnd;
-        }
-    }
-}
-
-
-namespace Entities
-{
-    public class SCR_EntityShooting : MonoBehaviour
-    {
-        [Header("GENERAL SHOOTING PROPERTIES")]
-        [SerializeField] protected SO_WeaponProperties _weaponProperties;
-
-        protected float cooldown;
-        protected bool CanShoot => cooldown <= 0;
-
-        /// <summary>
-        /// Calculate the angle of a given transform, relative to the current transform
-        /// </summary>
-        /// <param name="transform"></param>
-        /// <returns>The angle the input transform makes to the current object</returns>
-        protected float AngleRelativeTo(Transform transform)
-        {
-            Vector3 relativePosition = this.transform.position - transform.position;
-            return Mathf.Atan2(relativePosition.y, relativePosition.x);
-        }
-        protected virtual void ShootingUpdate() { }
-        protected void ResetCooldown()
-        {
-            cooldown = _weaponProperties.WeaponCooldown;
-        }
-        protected virtual void Start()
-        {
-
-        }
-
         void Update()
         {
             cooldown -= Time.deltaTime;
             cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
             ShootingUpdate();
+        }
+
+        void ResetCooldown()
+        {
+            cooldown = _weaponProperties.WeaponCooldown;
+        }
+        private void OnDisable()
+        {
+            SCR_DialogueNPC.OnDialogueStart -= OnDialogueStart;
+            SCR_DialogueManager.OnDialogueEnd -= OnDialogueEnd;
         }
     }
 }

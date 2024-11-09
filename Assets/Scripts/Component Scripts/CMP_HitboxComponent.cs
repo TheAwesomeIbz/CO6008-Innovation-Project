@@ -12,24 +12,27 @@ namespace Entities
         public event System.Action OnZeroHPEvent;
 
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
-        [SerializeField] HitboxColliderVariant _colliderVariant;
+        [SerializeField] Attackable _damageableBy;
         [SerializeField] CMP_HealthComponent _healthComponent;
+        [SerializeField] GameObject _sourceGameobject;
 
         [Header("KNOCKBACKABLE PROPERTIES")]
         [SerializeField] Rigidbody2D _rigidbody2D;
         [SerializeField] bool _knockbackable;
         
-        public HitboxColliderVariant ColliderVariant => _colliderVariant;
+        public Attackable DamageableBy => _damageableBy;
 
         void Start()
         {
             _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
             _rigidbody2D = GetComponentInParent<Rigidbody2D>() ?? GetComponent<Rigidbody2D>();
+            GetComponent<BoxCollider2D>().isTrigger = true;
         }
 
         public void DealDamage(SCR_DamageCollider damageCollider)
         {
             if (_healthComponent == null) {
+                _healthComponent = transform.root.gameObject.AddComponent<CMP_HealthComponent>();
                 Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform?.name.ToUpper()} or {transform.parent?.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
                 return; 
             }
@@ -43,8 +46,17 @@ namespace Entities
             }
 
             if (_healthComponent.HP <= 0) { return; }
+
+            switch (damageCollider.GetAttackType)
+            {
+                case SCR_DamageCollider.AttackType.CONSTANT:
+                    _healthComponent.LoseHP(damageCollider.Attack);
+                    break;
+                case SCR_DamageCollider.AttackType.PERCENTAGE:
+                    _healthComponent.LoseHP(Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP));
+                    break;
+            }
             
-            _healthComponent.LoseHP(damageCollider.Attack);
             if (_healthComponent.HP == 0) {
                 OnZeroHPEvent?.Invoke();
             }
@@ -54,12 +66,5 @@ namespace Entities
             Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
         }
 
-    }
-
-    public enum HitboxColliderVariant
-    {
-        DAMAGEABLE_BY_PLAYER,
-        DAMAGEABLE_BY_ENEMEIES,
-        DAMAGEABLE_BY_ALL_ENTITIES
     }
 }

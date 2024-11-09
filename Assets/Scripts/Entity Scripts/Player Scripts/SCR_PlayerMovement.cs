@@ -33,6 +33,7 @@ namespace Entities.Player
         [Header("PLAYER JUMP PROPERTIES")]
         [SerializeField] PlayerJumpProperties _playerJumpProperties;
         SCR_PlayerInteraction _playerInteraction;
+        CMP_HitboxComponent _HitboxComponent;
 
         [SerializeField] private Vector3 _mousePosition;
         [SerializeField] GameObject mouseGO;
@@ -45,8 +46,48 @@ namespace Entities.Player
             _boxCollider2D = GetComponent<BoxCollider2D>();
 
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
+            _HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
             _playerInteraction.gameObject.SetActive(false);
+
+            _HitboxComponent.OnDamageEvent += OnDamageEvent;
+            _HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
         }
+
+        private void OnZeroHPEvent()
+        {
+            
+        }
+
+        private void OnDamageEvent()
+        {
+            StopCoroutine(HitboxComponentCoroutine());
+            StopCoroutine(SpriteFlickerCoroutine());
+
+            StartCoroutine(HitboxComponentCoroutine());
+            StartCoroutine(SpriteFlickerCoroutine());
+
+            IEnumerator HitboxComponentCoroutine()
+            {
+                SCR_PlayerInputManager.PlayerControlsEnabled = false;
+                _HitboxComponent.gameObject.SetActive(false);
+                yield return new WaitForSeconds(1);
+                _HitboxComponent.gameObject.SetActive(true);
+                SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            }
+
+            IEnumerator SpriteFlickerCoroutine()
+            {
+                SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+                for (int i = 0; i < 4; i++)
+                {
+                    spriteRenderer.enabled = false;
+                    yield return new WaitForSeconds(0.125f);
+                    spriteRenderer.enabled = true;
+                    yield return new WaitForSeconds(0.125f);
+                }
+            }
+        }
+
 
         // Update is called once per frame
         void Update()
@@ -184,6 +225,11 @@ namespace Entities.Player
 
         #endregion
 
+        private void OnDisable()
+        {
+            _HitboxComponent.OnDamageEvent -= OnDamageEvent;
+            _HitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
+        }
         [Serializable] class PlayerSpeedProperties
         {
             public float Speed;

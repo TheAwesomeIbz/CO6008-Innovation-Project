@@ -18,4 +18,12 @@ public static class ExtensionMethods
     }
 
     public static CinemachineVirtualCamera VirtualCamera(this Camera cam) => cam.GetComponent<CinemachineVirtualCamera>();
+
+
 }
+
+public struct GlobalMasks
+{
+    public static LayerMask GroundLayerMask => LayerMask.GetMask("Ground");
+}
+
