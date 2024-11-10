@@ -25,20 +25,25 @@ namespace Entities
         [SerializeField] float _knockbackDirection;
         [SerializeField] int _knockbackMagnitude;
 
+        /// <summary>
+        /// Knockback dealt to colliding object
+        /// </summary>
         public float KnockbackMagnitude => _knockbackMagnitude;
+
+        /// <summary>
+        /// Direction that the colliding object should be launched towards
+        /// </summary>
         public float KnockbackDirection => _knockbackDirection;
 
-        public GameObject BulletPrefab => _bulletPrefab;
+        /// <summary>
+        /// Amount of time in seconds that the shooting object should take to shoot again
+        /// </summary>
         public float WeaponCooldown => _weaponCooldown;
-        public int BulletAmount => _bulletAmount;
-        public int BulletMagnitude => _bulletMagnitude;
 
         /// <summary>
         /// Dunamically spawns bullet with given direction and collider properties with specified speed
         /// </summary>
-        /// <param name="shootingObject"></param>
-        /// <param name="iAttackable"></param>
-        /// <param name="inputDirection"></param>
+        /// <param name="bulletProperties">Flexible class used to add additonal parameters flexibly</param>
         public void SpawnBullet(BulletProperties bulletProperties)
         {
             if (_bulletAmount == 1)
@@ -51,7 +56,6 @@ namespace Entities
             else
             {
                 float defaultDirectionAngle = bulletProperties.InputDirection;
-                
                 for (int i = 0; i < _bulletAmount; i++)
                 {
                     SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
@@ -61,8 +65,6 @@ namespace Entities
                     bulletProperties.BulletMagnitude = _bulletMagnitudeRange + Random.Range(_bulletMagnitude - _bulletMagnitudeRange, _bulletMagnitude + _bulletMagnitudeRange);
                     obj.InitializeProjectile(this, bulletProperties);
                 }
-
-                
             }
 
             //Find rigidbody of shooting object, and if it exists, add recoil force

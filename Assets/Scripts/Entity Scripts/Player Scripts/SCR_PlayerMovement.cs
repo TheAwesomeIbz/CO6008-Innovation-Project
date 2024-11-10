@@ -11,17 +11,6 @@ namespace Entities.Player
         public const int MaximumPlayerSpeed = 50;
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
-        /// <summary>
-        /// Get the Current Player level
-        /// </summary>
-        public PlayerLevel PlayerLevel => _playerLevel;
-
-        
-
-        SCR_PlayerInputManager _inputManager;
-        Rigidbody2D _rigidbody2D;
-        BoxCollider2D _boxCollider2D;
-        
 
         [Header("PLAYER GRID MOVEMENT PROPERTIES")]
         [SerializeField] private bool _currentlyMoving;
@@ -32,13 +21,16 @@ namespace Entities.Player
 
         [Header("PLAYER JUMP PROPERTIES")]
         [SerializeField] PlayerJumpProperties _playerJumpProperties;
+
         SCR_PlayerInteraction _playerInteraction;
         CMP_HitboxComponent _HitboxComponent;
-
-        [SerializeField] private Vector3 _mousePosition;
-        [SerializeField] GameObject mouseGO;
-        [SerializeField] GameObject projectile;
-
+        SCR_PlayerInputManager _inputManager;
+        Rigidbody2D _rigidbody2D;
+        BoxCollider2D _boxCollider2D;
+        /// <summary>
+        /// Get the Current Player level
+        /// </summary>
+        public PlayerLevel PlayerLevel => _playerLevel;
         void Start()
         {
             _inputManager = SCR_GeneralManager.PlayerInputManager;
@@ -53,11 +45,19 @@ namespace Entities.Player
             _HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
         }
 
+        /// <summary>
+        /// Called when the player's HP reaches zero
+        /// </summary>
+        /// <param name="damageCollider"></param>
         private void OnZeroHPEvent(SCR_DamageCollider damageCollider)
         {
-            
+            //TODO : Disable player collider and display game over screen
         }
 
+        /// <summary>
+        /// Called when the player received damage from any damage collider
+        /// </summary>
+        /// <param name="damageCollider"></param>
         private void OnDamageEvent(SCR_DamageCollider damageCollider)
         {
             StopCoroutine(StunTimerCoroutine());
@@ -90,8 +90,6 @@ namespace Entities.Player
             }
         }
 
-
-        // Update is called once per frame
         void Update()
         {
             PlayerMovementUpdate();
@@ -121,8 +119,6 @@ namespace Entities.Player
             }
         }
         #endregion
-
-
 
         #region Player Movement
         /// <summary>
@@ -232,6 +228,8 @@ namespace Entities.Player
             _HitboxComponent.OnDamageEvent -= OnDamageEvent;
             _HitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
         }
+
+        #region PLAYER MOVEMENT PROPERTY OBJECTS
         [Serializable] class PlayerSpeedProperties
         {
             public float Speed;
@@ -248,6 +246,8 @@ namespace Entities.Player
             public int NormalGravity = 4;
             [Range(0,1)] public float JumpDecay = 0.5f;
         }
+
+        #endregion
 
     }
 

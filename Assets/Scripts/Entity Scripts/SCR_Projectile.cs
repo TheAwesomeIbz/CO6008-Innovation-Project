@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Entities
 {
+
+    /// <summary>
+    /// Projectile class that parses damage information which also inherits from the base damage collider. Only applied to projectile-based objects
+    /// </summary>
     public class SCR_Projectile : SCR_DamageCollider
     {
         protected override IEnumerator Start()

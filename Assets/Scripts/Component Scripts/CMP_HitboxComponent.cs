@@ -8,7 +8,14 @@ namespace Entities
     [RequireComponent(typeof(BoxCollider2D))]
     public class CMP_HitboxComponent : MonoBehaviour
     {
+        /// <summary>
+        /// Event called when the hitbox component is damaged by a valid collider;
+        /// </summary>
         public event System.Action<SCR_DamageCollider> OnDamageEvent;
+
+        /// <summary>
+        /// Event called when the health component's HP reaches 0
+        /// </summary>
         public event System.Action<SCR_DamageCollider> OnZeroHPEvent;
 
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
@@ -29,6 +36,11 @@ namespace Entities
             GetComponent<BoxCollider2D>().isTrigger = true;
         }
 
+        /// <summary>
+        /// Deals damage to health component and broadcasts events on damage
+        /// </summary>
+        /// <remarks>Dynamically creates component if it doesn't exist</remarks>
+        /// <param name="damageCollider"></param>
         public void DealDamage(SCR_DamageCollider damageCollider)
         {
             if (_healthComponent == null) {
@@ -49,16 +61,9 @@ namespace Entities
 
             if (_healthComponent.HP <= 0) { return; }
 
-            switch (damageCollider.GetAttackType)
-            {
-                case SCR_DamageCollider.AttackType.CONSTANT:
-                    _healthComponent.LoseHP(damageCollider.Attack);
-                    break;
-                case SCR_DamageCollider.AttackType.PERCENTAGE:
-                    _healthComponent.LoseHP(Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP));
-                    break;
-            }
-            
+            int damage = damageCollider.AttackCalculatedByPercentage ? Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP) : damageCollider.Attack;
+            _healthComponent.LoseHP(damage);
+
             if (_healthComponent.HP == 0) {
                 OnZeroHPEvent?.Invoke(damageCollider);
             }

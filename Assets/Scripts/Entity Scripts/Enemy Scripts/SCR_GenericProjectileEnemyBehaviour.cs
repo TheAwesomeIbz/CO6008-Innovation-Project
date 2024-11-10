@@ -5,6 +5,10 @@ using UnityEngine;
 
 namespace Entities.Enemies
 {
+    /// <summary>
+    /// Projectile enemy behaviour that generic enemies that shoot projectiles at players would inherit from
+    /// </summary>
+    /// <remarks>(NOT a parent class to custom enemies and/or boss objects)</remarks>
     public class SCR_ProjectileEnemyBehaviour : SCR_EnemyBehaviour
     {
         [Header("PROJECTILE ENEMY PROPERTY")]
@@ -23,6 +27,7 @@ namespace Entities.Enemies
         protected override void PlayerSpottedUpdate()
         {
             if (!_playerMovementReference) { return; }
+            if (weaponProperties == null) { return; }
 
             Vector2 relativePosition =  _playerMovementReference.transform.position - transform.position;
             _outputDirection = Mathf.Atan2(relativePosition.y, relativePosition.x);

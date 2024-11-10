@@ -1,4 +1,4 @@
-using Cinemachine;
+﻿using Cinemachine;
 using Dialogue;
 using System;
 using System.Collections;
@@ -11,6 +11,8 @@ namespace Entities.Player
 {
     public class SCR_PlayerShooting : MonoBehaviour
     {
+        SCR_PlayerInputManager _inputManager;
+
         [Header("PLAYER SHOOTING PROPERTIES")]
         [SerializeField] SO_WeaponProperties _weaponProperties;
         [SerializeField] Attackable _damageableTo;
@@ -24,18 +26,21 @@ namespace Entities.Player
 
         [SerializeField] bool dialogueEnabled;
 
-        [Header("CAMERA ZOOM PROPERTIES")]
+        [Header("CAMERA PROPERTIES")]
+        [SerializeField] Vector3 relativeMousePosition;
         [SerializeField] float _lensOrthoSize = 5;
         [SerializeField] float _cameraZoom;
         [SerializeField] float _mouseZoomMultiplier = 0.25f;
         [SerializeField] float _cameraZoomThreshold = 1;
         CinemachineVirtualCamera virtualCamera;
+        
 
         public Attackable DamageableTo => _damageableTo;
 
         protected void Start()
         {
             virtualCamera = Camera.main.VirtualCamera();
+            _inputManager = SCR_GeneralManager.PlayerInputManager;
         }
 
         private void OnEnable()
@@ -55,29 +60,18 @@ namespace Entities.Player
             dialogueEnabled = false;
         }
 
+        /// <summary>
+        /// Update method called to register the cooldown and shooting functionality
+        /// </summary>
         protected void ShootingUpdate()
         {
-            CameraZoomUpdate();
+            if (_weaponProperties == null) { return; }
             if (dialogueEnabled) { return; }
-            
-            Vector3 screenToWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 relativeMousePosition = new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, 0) - transform.position;
 
-            if (_mouseCursor)
-            {
-                _mouseCursor.transform.position = new Vector3(screenToWorldPoint.x, screenToWorldPoint.y, 0);
-            }
+            cooldown -= Time.deltaTime;
+            cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
 
-            if (_halfwayObject)
-            {
-                Vector3 position = (relativeMousePosition / 2) + transform.position;
-                _halfwayObject.transform.position = new Vector3(
-                    Mathf.Clamp(position.x, transform.position.x - _midpointThreshold, transform.position.x + _midpointThreshold),
-                    Mathf.Clamp(position.y, transform.position.y - _midpointThreshold, transform.position.y + _midpointThreshold));
-            }
-
-
-            if (Input.GetMouseButton(0) && CanShoot)
+            if (_inputManager.LeftClick.PressedThisFrame() && CanShoot)
             {
                 float direction = Mathf.Atan2(relativeMousePosition.y, relativeMousePosition.x);
                 _weaponProperties.SpawnBullet(new SO_WeaponProperties.BulletProperties
@@ -90,22 +84,44 @@ namespace Entities.Player
             }
         }
 
-        private void CameraZoomUpdate()
+        /// <summary>
+        /// Update method called to register mouse movement and input
+        /// </summary>
+        private void MouseCursorUpdate()
         {
+            if (virtualCamera == null) { return; } 
+
             float mouseScrollDelta = Input.mouseScrollDelta.y;
             _cameraZoom += mouseScrollDelta * _mouseZoomMultiplier;
             _cameraZoom = Mathf.Clamp(_cameraZoom, -_cameraZoomThreshold, _cameraZoomThreshold);
 
-        virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
+            relativeMousePosition = _inputManager.CursorWorldPoint - transform.position;
+
+            if (_mouseCursor)
+            {
+                _mouseCursor.transform.position = new Vector3(_inputManager.CursorWorldPoint.x, _inputManager.CursorWorldPoint.y, 0);
+            }
+
+            if (_halfwayObject)
+            {
+                Vector3 position = (relativeMousePosition / 2) + transform.position;
+                _halfwayObject.transform.position = new Vector3(
+                    Mathf.Clamp(position.x, transform.position.x - _midpointThreshold, transform.position.x + _midpointThreshold),
+                    Mathf.Clamp(position.y, transform.position.y - _midpointThreshold, transform.position.y + _midpointThreshold));
+            }
+
+            virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
         }
 
         void Update()
         {
-            cooldown -= Time.deltaTime;
-            cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
+            MouseCursorUpdate();
             ShootingUpdate();
         }
 
+        /// <summary>
+        /// Self explanatory ¯\_(ツ)_/¯
+        /// </summary>
         void ResetCooldown()
         {
             cooldown = _weaponProperties.WeaponCooldown;

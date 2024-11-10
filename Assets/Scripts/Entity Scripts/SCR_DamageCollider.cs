@@ -6,18 +6,24 @@ using UnityEngine.UI;
 
 namespace Entities
 {
+    /// <summary>
+    /// Damage collider object that handles and deals with collision and damage with objects with hitboxes
+    /// </summary>
     [RequireComponent(typeof(Collider2D))]
     public class SCR_DamageCollider : MonoBehaviour
     {
         [Header("ATTACKING PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
-        [SerializeField] protected AttackType _attackType;
         [SerializeField] protected int _attack = 5;
         [SerializeField] [Range(0, 1)] protected float _attackPercentage;
+        [SerializeField] protected bool _attackCalculatedByPercentage;
         [SerializeField] [Range(0, 2)] protected float _stunTimer;
         public float StunTimer => _stunTimer;
 
-        public AttackType GetAttackType => _attackType;
+        /// <summary>
+        /// Returns whether the attack should be calculated by a percentage value or fixed value
+        /// </summary>
+        public bool AttackCalculatedByPercentage => _attackCalculatedByPercentage;
 
         [Header("KNOCKBACK PROPERTIES")]
         [SerializeField] protected float _knockbackDirection;
@@ -58,12 +64,6 @@ namespace Entities
         {
             GetComponent<Collider2D>().isTrigger = true;
             yield return null;
-        }
-
-        public enum AttackType
-        {
-            CONSTANT,
-            PERCENTAGE,
         }
     }
 
