@@ -10,16 +10,18 @@ namespace Entities
     public class SCR_DamageCollider : MonoBehaviour
     {
         [Header("ATTACKING PROPERTIES")]
-        [SerializeField] private Attackable _damageableTo;
-        [SerializeField] private AttackType _attackType;
-        [SerializeField] private int _attack = 5;
-        [SerializeField] [Range(0, 1)] private float _attackPercentage;
+        [SerializeField] protected Attackable _damageableTo;
+        [SerializeField] protected AttackType _attackType;
+        [SerializeField] protected int _attack = 5;
+        [SerializeField] [Range(0, 1)] protected float _attackPercentage;
+        [SerializeField] [Range(0, 2)] protected float _stunTimer;
+        public float StunTimer => _stunTimer;
 
         public AttackType GetAttackType => _attackType;
 
         [Header("KNOCKBACK PROPERTIES")]
-        [SerializeField] private float _knockbackDirection;
-        [SerializeField] private float _knockbackMagnitude;
+        [SerializeField] protected float _knockbackDirection;
+        [SerializeField] protected float _knockbackMagnitude;
 
         /// <summary>
         /// Returns constant attack value
@@ -41,31 +43,21 @@ namespace Entities
         /// </summary>
         public float KnockbackMagnitude => _knockbackMagnitude;
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        protected virtual void OnTriggerEnter2D(Collider2D collision)
         {
             //Only collide with object if it has a hitbox component
             //Apply and add necessary properties on damage collider from hitbox or relevant objects
             if (collision.GetType(out CMP_HitboxComponent hitbox) == null) { return; }
-
-            if (transform.GetType(out SCR_Projectile projectile) != null)
-            {
-                _knockbackDirection = projectile.weaponProperties.KnockbackDirection;
-                _knockbackMagnitude = projectile.weaponProperties.KnockbackMagnitude;
-            }
 
             //Ensure that the damageable object cannot be damaged by its own collider
             if (_damageableTo == hitbox.DamageableBy) { return; }
             hitbox.DealDamage(this);
         }
 
-        public void InitializeCollider(Transform shootingObject, Attackable damageColliderVariant)
-        {
-            _damageableTo = damageColliderVariant;
-        }
-
-        private void Start()
+        protected virtual IEnumerator Start()
         {
             GetComponent<Collider2D>().isTrigger = true;
+            yield return null;
         }
 
         public enum AttackType

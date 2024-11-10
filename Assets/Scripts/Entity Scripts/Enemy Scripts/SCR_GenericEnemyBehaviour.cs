@@ -6,7 +6,7 @@ namespace Entities.Enemies
 {
     [RequireComponent(typeof(Collider2D))]
     [RequireComponent(typeof(Rigidbody2D))]
-    public class SCR_EnemyBehaviour : MonoBehaviour, iAttackable
+    public class SCR_EnemyBehaviour : MonoBehaviour
     {
         protected Rigidbody2D _rigidbody2D;
         protected BoxCollider2D _boxCollider2D;

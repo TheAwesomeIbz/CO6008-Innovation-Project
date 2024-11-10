@@ -4,41 +4,55 @@ using UnityEngine;
 
 namespace Entities
 {
-    public class SCR_Projectile : MonoBehaviour
+    public class SCR_Projectile : SCR_DamageCollider
     {
-        public SO_WeaponProperties weaponProperties { get; private set; }
-        private Transform shootingObject;
-        public Rigidbody2D GetRigidbody2D => GetComponent<Rigidbody2D>();
-
-
-        IEnumerator Start()
+        protected override IEnumerator Start()
         {
             yield return new WaitForSeconds(3);
             Destroy(gameObject);
         }
 
-        public void  InitializeProjectile(SO_WeaponProperties weaponProperties, Transform shootingObject, iAttackable iAttackable)
+        /// <summary>
+        /// Initialize the projectile with weapon properties and bullet properties, to initialize its speed, direction and collider type on instantiation
+        /// </summary>
+        /// <param name="weaponProperties">Information about the weapon</param>
+        /// <param name="bulletProperties">Information about the bullet and projectile(s)</param>
+        public void InitializeProjectile(SO_WeaponProperties weaponProperties, SO_WeaponProperties.BulletProperties bulletProperties)
         {
-            this.weaponProperties = weaponProperties;
-            this.shootingObject = shootingObject;
-            transform.localScale = new Vector3(transform.localScale.x * Mathf.Sign(shootingObject.transform.localScale.x), transform.localScale.y);
-            GetComponent<SCR_DamageCollider>().InitializeCollider(shootingObject, iAttackable.DamageableTo);
+            SetupColliderVariant(bulletProperties.ShootingObject);
+            Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
 
-           
+            _knockbackDirection = weaponProperties.KnockbackDirection;
+            _knockbackMagnitude = weaponProperties.KnockbackMagnitude;
+
+            transform.localScale = new Vector3(transform.localScale.x * Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), transform.localScale.y);
+            rigidbody2D.velocity = new Vector2(Mathf.Cos(bulletProperties.InputDirection), Mathf.Sin(bulletProperties.InputDirection)) * bulletProperties.BulletMagnitude;
         }
-        public void OnCollide()
-        {
-            Destroy(gameObject);
-        }
 
-
-        private void OnTriggerEnter2D(Collider2D collision)
+        /// <summary>
+        /// Initialize the collider variant of the damage collider.
+        /// </summary>
+        /// <remarks>Dependant on the properties of the originObject parameter</remarks>
+        /// <param name="originObject">The object that the projectile is shot from</param>
+        private void SetupColliderVariant(Transform originObject)
         {
-            if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.GroundLayerMask))
+            if (originObject.GetComponent<Player.SCR_PlayerShooting>())
             {
-                
-                Destroy(gameObject);
+                _damageableTo = Attackable.ENEMIES;
+            }
+            else
+            {
+                _damageableTo = Attackable.PLAYER;
             }
         }
+
+        protected override void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.GroundLayerMask)){
+                Destroy(gameObject);
+            }
+            base.OnTriggerEnter2D(collision);
+        }
+
     }
 }

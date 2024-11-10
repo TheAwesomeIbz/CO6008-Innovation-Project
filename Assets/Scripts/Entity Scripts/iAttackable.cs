@@ -4,14 +4,9 @@ using UnityEngine;
 
 namespace Entities
 {
-    public interface iAttackable
-    {
-        public Attackable DamageableTo { get; }
-
-    }
-
     public enum Attackable
     {
+        NONE = 0,
         PLAYER = 1,
         ENEMIES = 2,
         EVERYTHING = 4

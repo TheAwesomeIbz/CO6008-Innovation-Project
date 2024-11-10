@@ -53,28 +53,30 @@ namespace Entities.Player
             _HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
         }
 
-        private void OnZeroHPEvent()
+        private void OnZeroHPEvent(SCR_DamageCollider damageCollider)
         {
             
         }
 
-        private void OnDamageEvent()
+        private void OnDamageEvent(SCR_DamageCollider damageCollider)
         {
-            StopCoroutine(HitboxComponentCoroutine());
+            StopCoroutine(StunTimerCoroutine());
             StopCoroutine(SpriteFlickerCoroutine());
 
-            StartCoroutine(HitboxComponentCoroutine());
+            if (damageCollider.StunTimer > 0)
+            {
+                StartCoroutine(StunTimerCoroutine());
+            }
             StartCoroutine(SpriteFlickerCoroutine());
 
-            IEnumerator HitboxComponentCoroutine()
+            IEnumerator StunTimerCoroutine()
             {
                 SCR_PlayerInputManager.PlayerControlsEnabled = false;
                 _HitboxComponent.gameObject.SetActive(false);
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(damageCollider.StunTimer);
                 _HitboxComponent.gameObject.SetActive(true);
                 SCR_PlayerInputManager.PlayerControlsEnabled = true;
             }
-
             IEnumerator SpriteFlickerCoroutine()
             {
                 SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
@@ -160,7 +162,7 @@ namespace Entities.Player
         /// </summary>
         private void JumpingPhysicsUpdate()
         {
-            Collider2D groundCollider = Physics2D.OverlapPoint(_boxCollider2D.bounds.center - new Vector3(0, _boxCollider2D.bounds.extents.y * 1.25f));
+            Collider2D groundCollider = Physics2D.OverlapPoint(_boxCollider2D.bounds.center - new Vector3(0, _boxCollider2D.bounds.extents.y * 1.1f), GlobalMasks.GroundLayerMask);
             _rigidbody2D.gravityScale = _playerJumpProperties.NormalGravity;
 
             if (groundCollider == null) { return; }

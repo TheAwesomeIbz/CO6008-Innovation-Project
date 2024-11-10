@@ -30,7 +30,11 @@ namespace Entities.Enemies
 
             if (_cooldown < 0)
             {
-                weaponProperties.SpawnBullet(transform, this, _outputDirection);
+                weaponProperties.SpawnBullet(new SO_WeaponProperties.BulletProperties
+                {
+                    ShootingObject = transform,
+                    InputDirection = _outputDirection
+                });
                 _cooldown = weaponProperties.WeaponCooldown + Random.Range(0, _randomCooldownOffset);
             }
             

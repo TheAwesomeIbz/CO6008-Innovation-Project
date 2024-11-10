@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Entities.Player
 {
-    public class SCR_PlayerShooting : MonoBehaviour, iAttackable
+    public class SCR_PlayerShooting : MonoBehaviour
     {
         [Header("PLAYER SHOOTING PROPERTIES")]
         [SerializeField] SO_WeaponProperties _weaponProperties;
@@ -21,8 +21,6 @@ namespace Entities.Player
         [Header("COOLDOWN PROPERTIES")]
         [SerializeField] float cooldown;
         [SerializeField] bool CanShoot => cooldown <= 0;
-
-        
 
         [SerializeField] bool dialogueEnabled;
 
@@ -82,7 +80,12 @@ namespace Entities.Player
             if (Input.GetMouseButton(0) && CanShoot)
             {
                 float direction = Mathf.Atan2(relativeMousePosition.y, relativeMousePosition.x);
-                _weaponProperties.SpawnBullet(transform, this, direction);
+                _weaponProperties.SpawnBullet(new SO_WeaponProperties.BulletProperties
+                {
+                    ShootingObject = transform,
+                    InputDirection = direction,
+
+                });
                 ResetCooldown();
             }
         }

@@ -8,8 +8,8 @@ namespace Entities
     [RequireComponent(typeof(BoxCollider2D))]
     public class CMP_HitboxComponent : MonoBehaviour
     {
-        public event System.Action OnDamageEvent;
-        public event System.Action OnZeroHPEvent;
+        public event System.Action<SCR_DamageCollider> OnDamageEvent;
+        public event System.Action<SCR_DamageCollider> OnZeroHPEvent;
 
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
         [SerializeField] Attackable _damageableBy;
@@ -39,10 +39,12 @@ namespace Entities
 
             if (_knockbackable && _rigidbody2D)
             {
-                int localScale = damageCollider.transform.localScale.x > 0 ? 1 : -1;
-                _rigidbody2D.velocity = new Vector2(localScale * 
-                    Mathf.Cos(damageCollider.KnockbackDirection * Mathf.Deg2Rad), 
-                    Mathf.Sin(damageCollider.KnockbackDirection * Mathf.Deg2Rad)) * Mathf.Abs(damageCollider.KnockbackMagnitude);
+                if (damageCollider.KnockbackMagnitude != 0) {
+                    int localScale = damageCollider.transform.localScale.x > 0 ? 1 : -1;
+                    _rigidbody2D.velocity += new Vector2(localScale *
+                        Mathf.Cos(damageCollider.KnockbackDirection * Mathf.Deg2Rad),
+                        Mathf.Sin(damageCollider.KnockbackDirection * Mathf.Deg2Rad)) * Mathf.Abs(damageCollider.KnockbackMagnitude);
+                }
             }
 
             if (_healthComponent.HP <= 0) { return; }
@@ -58,10 +60,10 @@ namespace Entities
             }
             
             if (_healthComponent.HP == 0) {
-                OnZeroHPEvent?.Invoke();
+                OnZeroHPEvent?.Invoke(damageCollider);
             }
             else{
-                OnDamageEvent?.Invoke();
+                OnDamageEvent?.Invoke(damageCollider);
             }
             Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
         }

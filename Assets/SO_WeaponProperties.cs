@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace Entities
 {
-
+    /// <summary>
+    /// Scriptable object used to store information about projectiles and shoot aformentioned projectile(s) from a given entity with customisable attributes
+    /// </summary>
     [CreateAssetMenu(menuName = "Scriptable Objects/Weapon Property")]
     public class SO_WeaponProperties : ScriptableObject
     {
@@ -31,44 +33,56 @@ namespace Entities
         public int BulletAmount => _bulletAmount;
         public int BulletMagnitude => _bulletMagnitude;
 
-        public void SpawnBullet(Transform shootingObject, iAttackable iAttackable, float inputDirection)
+        /// <summary>
+        /// Dunamically spawns bullet with given direction and collider properties with specified speed
+        /// </summary>
+        /// <param name="shootingObject"></param>
+        /// <param name="iAttackable"></param>
+        /// <param name="inputDirection"></param>
+        public void SpawnBullet(BulletProperties bulletProperties)
         {
-            Rigidbody2D rigidbody2D = shootingObject.GetComponent<Rigidbody2D>();
-
             if (_bulletAmount == 1)
             {
                 SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
-                obj.transform.position = shootingObject.position + new Vector3(1f * Mathf.Sign(shootingObject.transform.localScale.x), 0);
-                obj.GetRigidbody2D.velocity = new Vector2(Mathf.Cos(inputDirection), Mathf.Sin(inputDirection)) * _bulletMagnitude;
-                obj.InitializeProjectile(this, shootingObject, iAttackable);
-
-                if (rigidbody2D)
-                {
-                    rigidbody2D.velocity += new Vector2(-Mathf.Cos(inputDirection), Mathf.Sin(-inputDirection)) * _recoilImpulse;
-                }
+                obj.transform.position = bulletProperties.ShootingObject.position + new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0);
+                bulletProperties.BulletMagnitude = _bulletMagnitude;
+                obj.InitializeProjectile(this, bulletProperties);
             }
             else
             {
+                float defaultDirectionAngle = bulletProperties.InputDirection;
+                
                 for (int i = 0; i < _bulletAmount; i++)
                 {
-                    float bulletMagnitude = _bulletMagnitudeRange + Random.Range(_bulletMagnitude - _bulletMagnitudeRange, _bulletMagnitude + _bulletMagnitudeRange);
-
-
                     SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
-                    obj.transform.position = shootingObject.position + new Vector3(1f * Mathf.Sign(shootingObject.transform.localScale.x), 0);
-                    float direction = Random.Range(inputDirection - _bulletSpreadRange, inputDirection + _bulletSpreadRange);
-                    obj.GetRigidbody2D.velocity = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction)) * bulletMagnitude;
-                    obj.InitializeProjectile(this, shootingObject, iAttackable);
+                    obj.transform.position = bulletProperties.ShootingObject.position + new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0);
+                    float randomDirectionAngle = Random.Range(defaultDirectionAngle - _bulletSpreadRange, defaultDirectionAngle + _bulletSpreadRange);
+                    bulletProperties.InputDirection = randomDirectionAngle;
+                    bulletProperties.BulletMagnitude = _bulletMagnitudeRange + Random.Range(_bulletMagnitude - _bulletMagnitudeRange, _bulletMagnitude + _bulletMagnitudeRange);
+                    obj.InitializeProjectile(this, bulletProperties);
                 }
 
-                if (rigidbody2D)
-                {
-                    rigidbody2D.velocity = new Vector2(-Mathf.Cos(inputDirection), Mathf.Sin(-inputDirection)) * _recoilImpulse;
-                }
+                
             }
 
+            //Find rigidbody of shooting object, and if it exists, add recoil force
+            Rigidbody2D rigidbody2D = bulletProperties.ShootingObject.GetComponent<Rigidbody2D>();
+            if (rigidbody2D)
+            {
+                rigidbody2D.velocity += new Vector2(-Mathf.Cos(bulletProperties.InputDirection), Mathf.Sin(-bulletProperties.InputDirection)) * _recoilImpulse;
+            }
         }
 
+        /// <summary>
+        /// Class parameter used to spawn bullets with 
+        /// </summary>
+        public class BulletProperties
+        {
+            public Transform ShootingObject;
+            public float InputDirection;
+            public float BulletMagnitude;
+
+        }
     }
 
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Entities.Enemies
 {
-    public class SCR_SubtractEnemy : SCR_EnemyBehaviour
+    public class SCR_SubtractEnemy : SCR_ProjectileEnemyBehaviour
     {
 
 
