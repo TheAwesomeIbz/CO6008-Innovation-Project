@@ -8,7 +8,7 @@ namespace Entities.Player
 {
     public class SCR_PlayerMovement : MonoBehaviour
     {
-        public const int MaximumPlayerSpeed = 50;
+        public const int MaximumPlayerSpeed = 15;
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
 
@@ -23,10 +23,10 @@ namespace Entities.Player
         [SerializeField] PlayerJumpProperties _playerJumpProperties;
 
         SCR_PlayerInteraction _playerInteraction;
-        CMP_HitboxComponent _HitboxComponent;
+        public CMP_HitboxComponent HitboxComponent { get; private set; }
         SCR_PlayerInputManager _inputManager;
-        Rigidbody2D _rigidbody2D;
-        BoxCollider2D _boxCollider2D;
+        public Rigidbody2D Rigidbody2D { get; private set; }
+        public BoxCollider2D BoxCollider2D { get; private set; }
         /// <summary>
         /// Get the Current Player level
         /// </summary>
@@ -34,15 +34,15 @@ namespace Entities.Player
         void Start()
         {
             _inputManager = SCR_GeneralManager.PlayerInputManager;
-            _rigidbody2D = GetComponent<Rigidbody2D>();
-            _boxCollider2D = GetComponent<BoxCollider2D>();
+            Rigidbody2D = GetComponent<Rigidbody2D>();
+            BoxCollider2D = GetComponent<BoxCollider2D>();
 
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
-            _HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
+            HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
             _playerInteraction.gameObject.SetActive(false);
 
-            _HitboxComponent.OnDamageEvent += OnDamageEvent;
-            _HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
+            HitboxComponent.OnDamageEvent += OnDamageEvent;
+            HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
         }
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace Entities.Player
             IEnumerator StunTimerCoroutine()
             {
                 SCR_PlayerInputManager.PlayerControlsEnabled = false;
-                _HitboxComponent.gameObject.SetActive(false);
+                HitboxComponent.gameObject.SetActive(false);
                 yield return new WaitForSeconds(damageCollider.StunTimer);
-                _HitboxComponent.gameObject.SetActive(true);
+                HitboxComponent.gameObject.SetActive(true);
                 SCR_PlayerInputManager.PlayerControlsEnabled = true;
             }
             IEnumerator SpriteFlickerCoroutine()
@@ -149,6 +149,9 @@ namespace Entities.Player
                     JumpingPhysicsUpdate();
                     break;
             }
+
+            //LIMIT PLAYER SPEED
+            Rigidbody2D.velocity = new Vector2(Mathf.Clamp(Rigidbody2D.velocity.x, -MaximumPlayerSpeed, MaximumPlayerSpeed), Mathf.Clamp(Rigidbody2D.velocity.y, -_playerJumpProperties.JumpForce, _playerJumpProperties.JumpForce ));
         }
 
 
@@ -158,17 +161,17 @@ namespace Entities.Player
         /// </summary>
         private void JumpingPhysicsUpdate()
         {
-            Collider2D groundCollider = Physics2D.OverlapPoint(_boxCollider2D.bounds.center - new Vector3(0, _boxCollider2D.bounds.extents.y * 1.1f), GlobalMasks.GroundLayerMask);
-            _rigidbody2D.gravityScale = _playerJumpProperties.NormalGravity;
+            Collider2D groundCollider = Physics2D.OverlapPoint(BoxCollider2D.bounds.center - new Vector3(0, BoxCollider2D.bounds.extents.y * 1.1f), GlobalMasks.GroundLayerMask);
+            Rigidbody2D.gravityScale = _playerJumpProperties.NormalGravity;
 
             if (groundCollider == null) { return; }
 
             if (_inputManager.Jump.PressedThisFrame()){
-                _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _playerJumpProperties.JumpForce);
+                Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, _playerJumpProperties.JumpForce);
             }
 
             if (_inputManager.Jump.ReleasedThisFrame()){
-                _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x, _playerJumpProperties.JumpDecay * _rigidbody2D.velocity.y);
+                Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, _playerJumpProperties.JumpDecay * Rigidbody2D.velocity.y);
             }
 
             
@@ -210,11 +213,11 @@ namespace Entities.Player
             if (_inputManager.Horizontal.AxisValue != 0)
             {
                 float maxHorizontalSpeed = _inputManager.Horizontal.AxisValue * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
-                _rigidbody2D.velocity = new Vector2(Mathf.Lerp(_rigidbody2D.velocity.x, maxHorizontalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration), _rigidbody2D.velocity.y);
+                Rigidbody2D.velocity = new Vector2(Mathf.Lerp(Rigidbody2D.velocity.x, maxHorizontalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration), Rigidbody2D.velocity.y);
             }
             else
             {
-                _rigidbody2D.velocity = new Vector2(Mathf.Lerp(_rigidbody2D.velocity.x, 0, Time.deltaTime * _playerSpeedProperties.Deceleration), _rigidbody2D.velocity.y);
+                Rigidbody2D.velocity = new Vector2(Mathf.Lerp(Rigidbody2D.velocity.x, 0, Time.deltaTime * _playerSpeedProperties.Deceleration), Rigidbody2D.velocity.y);
             }
 
             if (_inputManager.Horizontal.AxisValue > 0) { transform.localScale = Vector3.one; }
@@ -225,8 +228,8 @@ namespace Entities.Player
 
         private void OnDisable()
         {
-            _HitboxComponent.OnDamageEvent -= OnDamageEvent;
-            _HitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
+            HitboxComponent.OnDamageEvent -= OnDamageEvent;
+            HitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
         }
 
         #region PLAYER MOVEMENT PROPERTY OBJECTS

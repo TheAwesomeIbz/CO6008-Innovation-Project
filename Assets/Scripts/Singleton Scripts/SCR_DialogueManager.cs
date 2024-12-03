@@ -51,11 +51,6 @@ namespace Dialogue
             OnDialogueStart?.Invoke(dialogueObjects);
 
             DisplayNextDialogue(dialogueObjects);
-
-            foreach (DialogueObject dialogueObject in dialogueObjects)
-            {
-                print(dialogueObject.DialogueText + "\n");
-            }
         }
 
 

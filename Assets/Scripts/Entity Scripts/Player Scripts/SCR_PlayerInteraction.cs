@@ -16,7 +16,7 @@ namespace Entities.Player
             if (collision.GetType(out iInteractable interactable) == null) { return; }
 
             if (interactable.Interactable){
-                interactable.Interact(GetComponent<SCR_PlayerMovement>());
+                interactable.Interact(GetComponentInParent<SCR_PlayerMovement>());
             }
             
         }

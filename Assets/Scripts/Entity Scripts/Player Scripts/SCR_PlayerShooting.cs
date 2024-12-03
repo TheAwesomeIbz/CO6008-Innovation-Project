@@ -27,20 +27,22 @@ namespace Entities.Player
         [SerializeField] bool dialogueEnabled;
 
         [Header("CAMERA PROPERTIES")]
+        [SerializeField] bool _trackPlayerCursor;
         [SerializeField] Vector3 relativeMousePosition;
         [SerializeField] float _lensOrthoSize = 5;
         [SerializeField] float _cameraZoom;
         [SerializeField] float _mouseZoomMultiplier = 0.25f;
         [SerializeField] float _cameraZoomThreshold = 1;
-        CinemachineVirtualCamera virtualCamera;
+        CinemachineVirtualCamera _virtualCamera;
         
 
         public Attackable DamageableTo => _damageableTo;
 
         protected void Start()
         {
-            virtualCamera = Camera.main.VirtualCamera();
+            _virtualCamera = Camera.main.VirtualCamera();
             _inputManager = SCR_GeneralManager.PlayerInputManager;
+            _trackPlayerCursor = true;
         }
 
         private void OnEnable()
@@ -71,7 +73,7 @@ namespace Entities.Player
             cooldown -= Time.deltaTime;
             cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
 
-            if (_inputManager.LeftClick.PressedThisFrame() && CanShoot)
+            if (_inputManager.LeftClick.IsPressed() && CanShoot)
             {
                 float direction = Mathf.Atan2(relativeMousePosition.y, relativeMousePosition.x);
                 _weaponProperties.SpawnBullet(new SO_WeaponProperties.BulletProperties
@@ -89,7 +91,8 @@ namespace Entities.Player
         /// </summary>
         private void MouseCursorUpdate()
         {
-            if (virtualCamera == null) { return; } 
+            if (_virtualCamera == null) { return; } 
+            if (!_trackPlayerCursor) { return; }
 
             float mouseScrollDelta = Input.mouseScrollDelta.y;
             _cameraZoom += mouseScrollDelta * _mouseZoomMultiplier;
@@ -110,7 +113,7 @@ namespace Entities.Player
                     Mathf.Clamp(position.y, transform.position.y - _midpointThreshold, transform.position.y + _midpointThreshold));
             }
 
-            virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
+            _virtualCamera.m_Lens.OrthographicSize = _lensOrthoSize + _cameraZoom;
         }
 
         void Update()

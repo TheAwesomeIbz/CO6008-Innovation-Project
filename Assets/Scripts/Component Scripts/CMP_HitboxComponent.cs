@@ -36,6 +36,15 @@ namespace Entities
             GetComponent<BoxCollider2D>().isTrigger = true;
         }
 
+        private void ValidateHealthComponent()
+        {
+            if (_healthComponent == null)
+            {
+                _healthComponent = transform.root.gameObject.AddComponent<CMP_HealthComponent>();
+                Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform?.name.ToUpper()} or {transform.parent?.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
+            }
+        }
+
         /// <summary>
         /// Deals damage to health component and broadcasts events on damage
         /// </summary>
@@ -43,11 +52,7 @@ namespace Entities
         /// <param name="damageCollider"></param>
         public void DealDamage(SCR_DamageCollider damageCollider)
         {
-            if (_healthComponent == null) {
-                _healthComponent = transform.root.gameObject.AddComponent<CMP_HealthComponent>();
-                Debug.LogWarning($"<color=yellow>THERE IS NO HEALTH COMPONENT ATTACHED TO {transform?.name.ToUpper()} or {transform.parent?.name.ToUpper()}.\nHEALTH WILL NOT BE INFUENCED AT ALL.</color>");
-                return; 
-            }
+            ValidateHealthComponent();
 
             if (_knockbackable && _rigidbody2D)
             {
@@ -71,6 +76,19 @@ namespace Entities
                 OnDamageEvent?.Invoke(damageCollider);
             }
             Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
+        }
+
+
+        public void RecoverHealth(int fixedAmount)
+        {
+            ValidateHealthComponent();
+            _healthComponent.GainHP(fixedAmount);
+        }
+
+        public void RecoverHealth(float percentage)
+        {
+            ValidateHealthComponent();
+            _healthComponent.GainHP(Mathf.RoundToInt(_healthComponent.MaxHP * percentage));
         }
 
     }
