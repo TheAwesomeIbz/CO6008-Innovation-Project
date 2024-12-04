@@ -1,3 +1,4 @@
+using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,143 +18,117 @@ namespace Entities.Enemies
 
         [Header("BASE ENEMY PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
-        [SerializeField] protected EnemyBehaviour _enemyBehaviour;
+        [SerializeField] protected CMP_HitboxComponent _hitboxComponent;
+        protected SCR_EntityShooting _entityShooting;
+
+        [Header("ENEMY SPEED PROPERTIES")]
         [SerializeField] [Range(3,10)] protected float _enemySpeed = 5;
-        [SerializeField] protected bool _grounded;
-        [SerializeField] protected bool _touchingLedge;
-        [SerializeField] protected bool _touchingWall;
+        [SerializeField] protected float _acceleration = 1.25f;
+        [SerializeField] protected float _decleration = 0.125f;
+
+        [Header("ENEMY PATROLLING PROPERTIES")]
+        [SerializeField] protected bool _enemyRandomRoaming;
+        [SerializeField] protected bool _enemyChasesPlayer;
+        private Vector3 _defaultPosition;
+        private Vector3 _randomPosition;
+        private float _enemyRandomMovementTimer;
+        bool _randomMovementFlag;
 
         [Header("PLAYER DETECTION PROPERTIES")]
         [SerializeField] protected bool _canDetectPlayer;
-        [SerializeField] protected bool _playerSpotted;
-        [SerializeField] [Range(4, 20)] protected int _playerDetectionRange;
+        [SerializeField] protected SCR_PlayerMovement _playerMovementReference;
        
         
-        private CircleCollider2D _circleCollider2D;
         private SCR_PlayerDetectionTrigger playerDetectionTrigger;
 
         void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _boxCollider2D = GetComponent<BoxCollider2D>();
-            _circleCollider2D = GetComponentInChildren<CircleCollider2D>();
+            _entityShooting = GetComponent<SCR_EntityShooting>();
+            _defaultPosition = transform.position;
+            _randomPosition = _defaultPosition + new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+
+            _hitboxComponent = GetComponentInChildren<CMP_HitboxComponent>() ?? GetComponent<CMP_HitboxComponent>();
+            if (_hitboxComponent) { _hitboxComponent.OnZeroHPEvent += OnZeroHP; }
+                
         }
-
-        /// <summary>
-        /// Method called in update to update the colliders of the object to detect ground, walls etc.
-        /// </summary>
-        private void ColliderUpdate()
-        {
-            RaycastHit2D groundRaycast = Physics2D.Raycast(_boxCollider2D.bounds.center, Vector2.down, _boxCollider2D.bounds.extents.y * 1.25f, GlobalMasks.GroundLayerMask);
-            _grounded = groundRaycast.collider != null;
-
-            Vector2 ledgeCenter = _boxCollider2D.bounds.center + new Vector3(_boxCollider2D.bounds.extents.x * 1.25f * Mathf.Sign(transform.localScale.x), -_boxCollider2D.bounds.extents.y * 1.25f);
-            Collider2D ledgeRaycast = Physics2D.OverlapPoint(ledgeCenter, GlobalMasks.GroundLayerMask);
-            _touchingLedge = ledgeRaycast == null && _grounded;
-
-            RaycastHit2D wallRaycast = Physics2D.Raycast(_boxCollider2D.bounds.center, new Vector2(Mathf.Sign(transform.localScale.x), 0), _boxCollider2D.bounds.extents.x * 1.25f, GlobalMasks.GroundLayerMask);
-            _touchingWall = wallRaycast.collider != null;
-        }
-
-        /// <summary>
-        /// Linearly patrolling enemy behaviour that only detects walls and ledges
-        /// </summary>
-        private void LinearPatrolUpdate()
-        {
-            _rigidbody2D.velocity = new Vector2(Mathf.Lerp(_rigidbody2D.velocity.x, _enemySpeed * Mathf.Sign(transform.localScale.x), Time.deltaTime * 5), _rigidbody2D.velocity.y);
-            if (_touchingLedge || _touchingWall)
-            {
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y);
-            }
-        }
-
-        /// <summary>
-        /// Random patrolling enemy behaviour that walks and turns at random, taking into account walls and ledges
-        /// </summary>
-        private void RandomPatrolUpdate()
-        {
-            
-        }
-
-        
-        /// <summary>
-        /// Method called in update to detect and scan for the player
-        /// </summary>
-        /// <remarks>Dynamically creates player detection zone and functionality and gameobjects if it doesn't exist already</remarks>
-        private void PlayerDetectionUpdate()
-        {
-            if (!_canDetectPlayer) { return; }
-
-            if (_circleCollider2D == null)
-            {
-                GameObject obj = new GameObject("playerDetectionZone");
-                playerDetectionTrigger = obj.AddComponent<SCR_PlayerDetectionTrigger>();
-                playerDetectionTrigger.InitializeCollider(_playerDetectionRange);
-                obj.transform.parent = transform;
-                _circleCollider2D = playerDetectionTrigger.GetComponent<CircleCollider2D>();
-                obj.transform.localPosition = Vector3.zero;
-                playerDetectionTrigger.OnPlayerDetected += OnPlayerDetected;
-            }
-        }
-
-        
-
         protected virtual void Update()
         {
-            
-            ColliderUpdate();
-            if (_playerSpotted)
+            if (_playerMovementReference)
             {
                 PlayerSpottedUpdate();
-                return;
             }
             else
             {
-                PlayerDetectionUpdate();
+                DefaultBehaviourUpdate();
             }
+        }
 
-            switch (_enemyBehaviour)
+        /// <summary>
+        /// Virtual function called in update that executes whenever the player hasn't been spotted and performs default behaviour.
+        /// </summary>
+        /// <remarks>Functionality can overriden in inherited classes</remarks>
+        protected virtual void DefaultBehaviourUpdate()
+        {
+
+            if (_enemyRandomRoaming)
             {
-                case EnemyBehaviour.ENEMY_STATIC:
-                    StaticBehaviourUpdate();
-                    break;
-                case EnemyBehaviour.ENEMY_PATROL_LINEAR:
-                    LinearPatrolUpdate();
-                    break;
-                case EnemyBehaviour.ENEMY_PATROL_RANDOM:
-                    RandomPatrolUpdate();
-                    break;
+                if ((transform.position - _randomPosition).sqrMagnitude > 2)
+                {
+                    Vector2 maximumSpeed = (_randomPosition - transform.position).normalized * _enemySpeed / 2;
+                    _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, maximumSpeed, Time.deltaTime * _acceleration / 2);
+                }
+                else
+                {
+                    if ((transform.position - _defaultPosition).sqrMagnitude < 25)
+                    {
+                        _randomPosition = _defaultPosition + new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+                    }
+                }
             }
-            
+            else
+            {
+                _rigidbody2D.velocity = Vector2.Lerp(_rigidbody2D.velocity, Vector2.zero, Time.deltaTime * _decleration);
+            }
         }
 
         /// <summary>
         /// Virtual function called in update that executes whenever the player has been spotted.
         /// </summary>
-        /// <remarks>Functionality can be implemented in inherited classes as it defaults to static behaviour</remarks>
+        /// <remarks>Functionality can overriden in inherited classes</remarks>
         protected virtual void PlayerSpottedUpdate()
         {
+            _entityShooting?.EntityShootingUpdate(_playerMovementReference.transform);
 
-        }
-
-        /// <summary>
-        /// Virtual function called in update that executes when enemy behaviour is static.
-        /// </summary>
-        /// <remarks>Functionality can be implemented in inherited classes as it defaults to no functionality</remarks>
-        protected virtual void StaticBehaviourUpdate()
-        {
-
+            if (!_enemyChasesPlayer) { return; }
+            _enemyRandomMovementTimer -= Time.deltaTime;
+            if (_enemyRandomMovementTimer < 0)
+            {
+                _enemyRandomMovementTimer = _enemyRandomMovementTimer = Random.Range(0.1f, 1.5f);
+                _randomMovementFlag = !_randomMovementFlag;
+            }
+            Vector2 maximumVelocity = (_playerMovementReference.transform.position - transform.position).normalized * _enemySpeed;
+            if (_randomMovementFlag)
+            {
+                _rigidbody2D.velocity = Vector3.Lerp(_rigidbody2D.velocity, -maximumVelocity / 2, Time.deltaTime * _acceleration);
+            }
+            else
+            {
+                _rigidbody2D.velocity = Vector3.Slerp(_rigidbody2D.velocity, maximumVelocity, Time.deltaTime * _acceleration);
+            }
         }
 
         /// <summary>
         /// Virtual function called when the player has been detected.
         /// </summary>
         /// <param name="playerMovement">The input player object detected</param>
-        protected virtual void OnPlayerDetected(Player.SCR_PlayerMovement playerMovement)
+        protected virtual void OnPlayerDetected(SCR_PlayerMovement playerMovement, bool playerDetected)
         {
             if (!_canDetectPlayer) { return; }
 
-            _playerSpotted = true;
+            
+            _playerMovementReference = playerDetected ? playerMovement : null;
             _rigidbody2D.velocity = Vector2.zero;
             Debug.Log($"{playerMovement.name} WAS SPOTTED BY {name}");
         }
@@ -166,21 +141,23 @@ namespace Entities.Enemies
         }
 
 
+        /// <summary>
+        /// Virtual function that is called when the enemy reaches 0 HP
+        /// </summary>
+        /// <param name="obj"></param>
+        protected virtual void OnZeroHP(SCR_DamageCollider obj)
+        {
+            gameObject.SetActive(false);
+        }
 
         private void OnDisable()
         {
+            if (_hitboxComponent)
+            {
+                _hitboxComponent.OnZeroHPEvent -= OnZeroHP;
+            }
             if (playerDetectionTrigger == null) { return; }
             playerDetectionTrigger.OnPlayerDetected -= OnPlayerDetected;
-        }
-
-        /// <summary>
-        /// Values for the enemy behaviour
-        /// </summary>
-        protected enum EnemyBehaviour
-        {
-            ENEMY_STATIC,
-            ENEMY_PATROL_LINEAR,
-            ENEMY_PATROL_RANDOM
         }
     }
 }

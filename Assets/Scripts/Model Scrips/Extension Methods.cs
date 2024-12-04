@@ -19,7 +19,11 @@ public static class ExtensionMethods
 
     public static CinemachineVirtualCamera VirtualCamera(this Camera cam) => cam.GetComponent<CinemachineVirtualCamera>();
 
-
+    public static float RelativeDirectionTo(this Transform transform, Transform target)
+    {
+        Vector2 relativePosition = transform.position - target.position;
+        return Mathf.Atan2(relativePosition.y, relativePosition.x);
+    }
 }
 
 public struct GlobalMasks

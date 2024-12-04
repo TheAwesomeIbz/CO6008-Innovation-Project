@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Entities.Player
 {
-    public class SCR_PlayerMovement : MonoBehaviour
+    public class SCR_PlayerMovement : MonoBehaviour, iDodgeable
     {
         public const int MaximumPlayerSpeed = 15;
         [Header("PLAYER MOVEMENT PROPERTIES")]
@@ -19,14 +19,15 @@ namespace Entities.Player
         [Header("PLAYER SPEED PROPERTIES")]
         [SerializeField] PlayerSpeedProperties _playerSpeedProperties;
 
-        [Header("PLAYER JUMP PROPERTIES")]
-        [SerializeField] PlayerJumpProperties _playerJumpProperties;
+        [Header("PLAYER DODGE PROPERTIES")]
+        [SerializeField] PlayerDodgeProperties _playerDodgeProperties;
 
         SCR_PlayerInteraction _playerInteraction;
         public CMP_HitboxComponent HitboxComponent { get; private set; }
         SCR_PlayerInputManager _inputManager;
         public Rigidbody2D Rigidbody2D { get; private set; }
         public BoxCollider2D BoxCollider2D { get; private set; }
+        public bool IsDodging => _playerDodgeProperties.IsDodging;
         /// <summary>
         /// Get the Current Player level
         /// </summary>
@@ -39,7 +40,7 @@ namespace Entities.Player
 
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
             HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
-            _playerInteraction.gameObject.SetActive(false);
+            //_playerInteraction.gameObject.SetActive(false);
 
             HitboxComponent.OnDamageEvent += OnDamageEvent;
             HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
@@ -93,7 +94,7 @@ namespace Entities.Player
         void Update()
         {
             PlayerMovementUpdate();
-            PlayerInteractionUpdate();
+            //PlayerInteractionUpdate();
         }
 
 
@@ -102,22 +103,23 @@ namespace Entities.Player
         /// <summary>
         /// Update method used to trigger player interaction
         /// </summary>
-        private void PlayerInteractionUpdate()
-        {
+        //private void PlayerInteractionUpdate()
+        //{
 
-            if (_inputManager.Vertical.PressedThisFrame() && _inputManager.Vertical.AxisValue > 0){
-                StartCoroutine(InteractionColliderCoroutine());
-            }
+        //    if (_inputManager.Submit.PressedThisFrame())
+        //    {
+        //        StartCoroutine(InteractionColliderCoroutine());
+        //    }
 
-            IEnumerator InteractionColliderCoroutine()
-            {
-                _playerInteraction.gameObject.SetActive(true);
-                yield return new WaitForSeconds(0.1f);
-                _playerInteraction.gameObject.SetActive(false);
-                yield return new WaitForSeconds(0.1f);
+        //    IEnumerator InteractionColliderCoroutine()
+        //    {
+        //        _playerInteraction.gameObject.SetActive(true);
+        //        yield return new WaitForSeconds(0.1f);
+        //        _playerInteraction.gameObject.SetActive(false);
+        //        yield return new WaitForSeconds(0.1f);
 
-            }
-        }
+        //    }
+        //}
         #endregion
 
         #region Player Movement
@@ -129,15 +131,16 @@ namespace Entities.Player
         /// </remarks>
         private void PlayerMovementUpdate()
         {
+            Vector2 directionVector = _inputManager.Axis2D.AxisValue;
             switch (_playerLevel)
             {
                 case PlayerLevel.WHOLE_LEVEL:
-                    if (_inputManager.Horizontal.AxisValue < 0) { return; }
+                    if (directionVector.x < 0) { return; }
                     IntegerMovement(1);
                     break;
 
                 case PlayerLevel.INTEGER_LEVEL:
-                    IntegerMovement((int)_inputManager.Horizontal.AxisValue);
+                    IntegerMovement((int)directionVector.x);
                     break;
 
                 case PlayerLevel.RATIONAL_LEVEL:
@@ -146,35 +149,9 @@ namespace Entities.Player
 
                 case PlayerLevel.REAL_LEVEL:
                     RationalMovement();
-                    JumpingPhysicsUpdate();
+                    DodgingPhysics();
                     break;
             }
-
-            //LIMIT PLAYER SPEED
-            Rigidbody2D.velocity = new Vector2(Mathf.Clamp(Rigidbody2D.velocity.x, -MaximumPlayerSpeed, MaximumPlayerSpeed), Mathf.Clamp(Rigidbody2D.velocity.y, -_playerJumpProperties.JumpForce, _playerJumpProperties.JumpForce ));
-        }
-
-
-        
-        /// <summary>
-        /// Method called every frame regarding jumping physics for the player character
-        /// </summary>
-        private void JumpingPhysicsUpdate()
-        {
-            Collider2D groundCollider = Physics2D.OverlapPoint(BoxCollider2D.bounds.center - new Vector3(0, BoxCollider2D.bounds.extents.y * 1.1f), GlobalMasks.GroundLayerMask);
-            Rigidbody2D.gravityScale = _playerJumpProperties.NormalGravity;
-
-            if (groundCollider == null) { return; }
-
-            if (_inputManager.Jump.PressedThisFrame()){
-                Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, _playerJumpProperties.JumpForce);
-            }
-
-            if (_inputManager.Jump.ReleasedThisFrame()){
-                Rigidbody2D.velocity = new Vector2(Rigidbody2D.velocity.x, _playerJumpProperties.JumpDecay * Rigidbody2D.velocity.y);
-            }
-
-            
         }
 
         /// <summary>
@@ -185,7 +162,7 @@ namespace Entities.Player
         {
 
             if (_currentlyMoving) { return; }
-            if (_inputManager.Horizontal.IsPressed()){
+            if (_inputManager.Axis2D.IsPressed()){
                 StartCoroutine(GridMovement(direction));
             }
 
@@ -210,18 +187,56 @@ namespace Entities.Player
         /// </summary>
         private void RationalMovement()
         {
-            if (_inputManager.Horizontal.AxisValue != 0)
+            Vector2 directionVector = _inputManager.Axis2D.AxisValue;
+            if (_playerDodgeProperties.IsDodging) { return; }
+            if (_inputManager.Axis2D.IsPressed())
             {
-                float maxHorizontalSpeed = _inputManager.Horizontal.AxisValue * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
-                Rigidbody2D.velocity = new Vector2(Mathf.Lerp(Rigidbody2D.velocity.x, maxHorizontalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration), Rigidbody2D.velocity.y);
+                float maxHorizontalSpeed = directionVector.x * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
+                float maxVerticalSpeed = directionVector.y * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
+                Rigidbody2D.velocity = new Vector2(
+                    Mathf.Lerp(Rigidbody2D.velocity.x, maxHorizontalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration),
+                    Mathf.Lerp(Rigidbody2D.velocity.y, maxVerticalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration));
             }
             else
             {
-                Rigidbody2D.velocity = new Vector2(Mathf.Lerp(Rigidbody2D.velocity.x, 0, Time.deltaTime * _playerSpeedProperties.Deceleration), Rigidbody2D.velocity.y);
+                Rigidbody2D.velocity = new Vector2(
+                    Mathf.Lerp(Rigidbody2D.velocity.x, 0, Time.deltaTime * _playerSpeedProperties.Deceleration),
+                    Mathf.Lerp(Rigidbody2D.velocity.y, 0, Time.deltaTime * _playerSpeedProperties.Deceleration));
             }
 
-            if (_inputManager.Horizontal.AxisValue > 0) { transform.localScale = Vector3.one; }
-            else if (_inputManager.Horizontal.AxisValue < 0) { transform.localScale = new Vector3(-1, 1);}
+            if (directionVector.x > 0) { transform.localScale = Vector3.one; }
+            else if (directionVector.x < 0) { transform.localScale = new Vector3(-1, 1);}
+        }
+
+        /// <summary>
+        /// Player dodges in direction that is pressed with a given impulse and delay
+        /// </summary>
+        private void DodgingPhysics()
+        {
+            Vector2 directionVector = _inputManager.Axis2D.AxisValue;
+            if (_inputManager.Dodge.PressedThisFrame() && directionVector.magnitude != 0 && !_playerDodgeProperties.IsDodging)
+            {
+                StartCoroutine(DodgeCoroutine());
+            }
+
+
+            IEnumerator DodgeCoroutine()
+            {
+                _playerDodgeProperties.IsDodging = true;
+
+                float timer = 0;
+                while (timer < _playerDodgeProperties.DodgeDelay)
+                {
+                    Rigidbody2D.velocity = directionVector * _playerDodgeProperties.DodgeImpulse;
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+                Rigidbody2D.velocity = directionVector * _playerSpeedProperties.Speed;
+
+                yield return new WaitForSeconds(0.25f);
+                _playerDodgeProperties.IsDodging = false;
+                
+            }
         }
 
         #endregion
@@ -242,12 +257,11 @@ namespace Entities.Player
             [Range(0, 1)] public float Deceleration = 0.75f;
         }
 
-        [Serializable] class PlayerJumpProperties
+        [Serializable] class PlayerDodgeProperties
         {
-            public int JumpForce = 10;
-
-            public int NormalGravity = 4;
-            [Range(0,1)] public float JumpDecay = 0.5f;
+            [Range(5, 20)] public int DodgeImpulse = 10;
+            public bool IsDodging;
+            [Range(0.25f, 2)] public float DodgeDelay = 0.5f;
         }
 
         #endregion

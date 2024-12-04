@@ -23,10 +23,10 @@ namespace Entities
         /// <param name="bulletProperties">Information about the bullet and projectile(s)</param>
         public void InitializeProjectile(SO_WeaponProperties weaponProperties, SO_WeaponProperties.BulletProperties bulletProperties)
         {
+            DodgeableCollider = weaponProperties.DodgeableBullet;
             SetupColliderVariant(bulletProperties.ShootingObject);
             Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
 
-            _knockbackDirection = weaponProperties.KnockbackDirection;
             _knockbackMagnitude = weaponProperties.KnockbackMagnitude;
 
             transform.localScale = new Vector3(transform.localScale.x * Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), transform.localScale.y);

@@ -11,4 +11,9 @@ namespace Entities
         ENEMIES = 2,
         EVERYTHING = 4
     }
+
+    public interface iDodgeable
+    {
+        public bool IsDodging { get; }
+    }
 }

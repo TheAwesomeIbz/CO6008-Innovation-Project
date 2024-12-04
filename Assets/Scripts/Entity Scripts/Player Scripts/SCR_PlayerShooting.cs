@@ -29,12 +29,11 @@ namespace Entities.Player
         [Header("CAMERA PROPERTIES")]
         [SerializeField] bool _trackPlayerCursor;
         [SerializeField] Vector3 relativeMousePosition;
-        [SerializeField] float _lensOrthoSize = 5;
         [SerializeField] float _cameraZoom;
         [SerializeField] float _mouseZoomMultiplier = 0.25f;
         [SerializeField] float _cameraZoomThreshold = 1;
         CinemachineVirtualCamera _virtualCamera;
-        
+        float _lensOrthoSize;
 
         public Attackable DamageableTo => _damageableTo;
 
@@ -43,6 +42,7 @@ namespace Entities.Player
             _virtualCamera = Camera.main.VirtualCamera();
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             _trackPlayerCursor = true;
+            _lensOrthoSize = _virtualCamera.m_Lens.OrthographicSize;
         }
 
         private void OnEnable()

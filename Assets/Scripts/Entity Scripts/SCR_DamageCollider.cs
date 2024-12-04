@@ -18,6 +18,11 @@ namespace Entities
         [SerializeField] [Range(0, 1)] protected float _attackPercentage;
         [SerializeField] protected bool _attackCalculatedByPercentage;
         [SerializeField] [Range(0, 2)] protected float _stunTimer;
+        [field: SerializeField] public bool DodgeableCollider { get; protected set; }
+
+        /// <summary>
+        /// Amount of time an entity should be stunned for once hit with this collider
+        /// </summary>
         public float StunTimer => _stunTimer;
 
         /// <summary>

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a76f5710bc8baa0428a92515a3c28d92, type: 3}
-  m_Name: Default Weapon
+  m_Name: Default Weapon 1
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 1696818346636504626, guid: edd24f6cbac273b4d8023bdba6624a61, type: 3}
-  _bulletMagnitude: 18
-  _weaponCooldown: 0
-  _bulletAmount: 2
+  _bulletMagnitude: 10
+  _weaponCooldown: 0.33
+  _bulletAmount: 1
   _bulletSpreadRange: 0.045
   _bulletMagnitudeRange: 7
   _recoilImpulse: 0
   _knockbackDirection: 0
-  _knockbackMagnitude: 5
+  _knockbackMagnitude: 0

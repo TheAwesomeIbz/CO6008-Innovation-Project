@@ -23,10 +23,6 @@ namespace Entities
             {
                 SCR_PlayerMovement playerMovement = playerObject as SCR_PlayerMovement;
                 playerMovement.Rigidbody2D.velocity = Vector3.zero;
-                Vector3 talkingPosition = playerMovement.transform.position.x < transform.position.x ?
-                    new Vector3(transform.position.x - C_OffsetPosition, playerMovement.transform.position.y) :
-                    new Vector3(transform.position.x + C_OffsetPosition, playerMovement.transform.position.y);
-                playerMovement.transform.position = talkingPosition;
             }
 
             if (dialogueObjects == null) {

@@ -18,11 +18,19 @@ namespace Entities
             _maxHP = _HP;
         }
 
+        /// <summary>
+        /// Recover amount of HP
+        /// </summary>
+        /// <param name="hpGain">Amount gained</param>
         public void GainHP(int hpGain)
         {
             _HP = Mathf.Clamp(_HP + Mathf.Abs(hpGain), 0, _maxHP);
         }
 
+        /// <summary>
+        /// Lose amount of HP
+        /// </summary>
+        /// <param name="hpGain">Amount lost</param>
         public void LoseHP(int hpGain)
         {
             _HP = Mathf.Clamp(_HP - Mathf.Abs(hpGain), 0, _maxHP);

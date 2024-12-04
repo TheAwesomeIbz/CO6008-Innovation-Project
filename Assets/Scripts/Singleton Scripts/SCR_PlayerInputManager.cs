@@ -12,38 +12,33 @@ public class SCR_PlayerInputManager : MonoBehaviour
     public MouseProperty LeftClick { get; private set; }
     public MouseProperty RightClick { get; private set; }
     public Vector3 CursorWorldPoint => new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
-    public ButtonProperty Jump { get; private set; }
-    public ButtonProperty Attack { get; private set; }
-    public AxisProperty Horizontal { get; private set; }
-    public AxisProperty Vertical { get; private set; }
+    public ButtonProperty Dodge { get; private set; }
+    public ButtonProperty Submit { get; private set; }
+    public AxisProperty Axis2D { get; private set; }
 
     void Start()
     {
         PlayerControlsEnabled = true;
 
-        Jump = new ButtonProperty("Jump");
-        Horizontal = new AxisProperty("Horizontal");
-        Vertical = new AxisProperty("Vertical");
-        Attack = new ButtonProperty("Submit");
+        Dodge = new ButtonProperty("Dodge");
+        Submit = new ButtonProperty("Submit");
 
+        Axis2D = new AxisProperty();
         LeftClick = new MouseProperty(0);
         RightClick = new MouseProperty(1);
 
     }
 
-    public class AxisProperty : ButtonProperty
+    public class AxisProperty
     {
-        const float DeadZone = 0.5f;
-        public float AxisValue => PlayerControlsEnabled ? Input.GetAxisRaw(_buttonName) : 0;
-        public override bool PressedThisFrame() => Input.GetButtonDown(_buttonName) && PlayerControlsEnabled && AxisValue != 0;
-        public override bool ReleasedThisFrame() => Input.GetButtonUp(_buttonName) && PlayerControlsEnabled && AxisValue != 0;
-        public override bool IsPressed() => Input.GetButton(_buttonName);
-
-        public bool PositiveAxisPressed() => Input.GetButton(_buttonName) && PlayerControlsEnabled && AxisValue > DeadZone;
-        public bool NegativeAxisPressed() => Input.GetButton(_buttonName) && PlayerControlsEnabled && AxisValue < -DeadZone;
-        
-        public AxisProperty(string buttonName) : base(buttonName) { 
-        }
+        const string Horizontal = "Horizontal";
+        const string Vertical = "Vertical";
+        const float DeadZone = 0.25f;
+        public Vector2 AxisValue => PlayerControlsEnabled ?
+            new Vector2(Input.GetAxisRaw(Horizontal), Input.GetAxisRaw(Vertical)).normalized : Vector2.zero;
+        public bool PressedThisFrame() => (Input.GetButtonDown(Horizontal) || Input.GetButtonDown(Vertical)) && PlayerControlsEnabled && AxisValue.magnitude > DeadZone && PlayerControlsEnabled;
+        public bool ReleasedThisFrame() => (Input.GetButtonUp(Horizontal) || Input.GetButtonUp(Vertical)) && PlayerControlsEnabled && AxisValue.magnitude > DeadZone && PlayerControlsEnabled;
+        public bool IsPressed() => (Input.GetButton("Horizontal") || Input.GetButton("Vertical")) && PlayerControlsEnabled;
     }
 
     public class MouseProperty

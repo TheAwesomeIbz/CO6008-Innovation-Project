@@ -15,6 +15,7 @@ namespace Entities
         [SerializeField] [Range(5, 50)] int _bulletMagnitude;
         [SerializeField] [Range(0f, 3f)] float _weaponCooldown;
         [SerializeField] [Range(1, 30)] int _bulletAmount;
+        [SerializeField] bool _dodgeableBullet;
 
         [Header("RANDOM PROPERTIES")]
         [SerializeField] [Range(0f, 1)] float _bulletSpreadRange;
@@ -25,20 +26,19 @@ namespace Entities
         [SerializeField] float _knockbackDirection;
         [SerializeField] int _knockbackMagnitude;
 
+
+
         /// <summary>
         /// Knockback dealt to colliding object
         /// </summary>
         public float KnockbackMagnitude => _knockbackMagnitude;
 
         /// <summary>
-        /// Direction that the colliding object should be launched towards
-        /// </summary>
-        public float KnockbackDirection => _knockbackDirection;
-
-        /// <summary>
         /// Amount of time in seconds that the shooting object should take to shoot again
         /// </summary>
         public float WeaponCooldown => _weaponCooldown;
+
+        public bool DodgeableBullet => _dodgeableBullet;
 
         /// <summary>
         /// Dunamically spawns bullet with given direction and collider properties with specified speed

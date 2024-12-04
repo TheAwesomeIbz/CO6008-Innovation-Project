@@ -21,21 +21,28 @@ namespace Entities
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
         [SerializeField] Attackable _damageableBy;
         [SerializeField] CMP_HealthComponent _healthComponent;
-        [SerializeField] GameObject _sourceGameobject;
+        iDodgeable _dodgeableInterface;
 
         [Header("KNOCKBACKABLE PROPERTIES")]
         [SerializeField] Rigidbody2D _rigidbody2D;
         [SerializeField] bool _knockbackable;
-        
+
+        /// <summary>
+        /// Returns the attackable enum that the hitbox componenet is damageable by
+        /// </summary>
         public Attackable DamageableBy => _damageableBy;
 
         void Start()
         {
             _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
             _rigidbody2D = GetComponentInParent<Rigidbody2D>() ?? GetComponent<Rigidbody2D>();
+            _dodgeableInterface = GetComponentInParent<iDodgeable>();
             GetComponent<BoxCollider2D>().isTrigger = true;
         }
 
+        /// <summary>
+        /// Validate the health component on the current hitbox and instantiates a new component if it doesnt exist.
+        /// </summary>
         private void ValidateHealthComponent()
         {
             if (_healthComponent == null)
@@ -53,15 +60,17 @@ namespace Entities
         public void DealDamage(SCR_DamageCollider damageCollider)
         {
             ValidateHealthComponent();
+            if (EntityDodgedSuccessfully(damageCollider)) { return; }
 
+            //Apply standard knockback to object
             if (_knockbackable && _rigidbody2D)
             {
-                if (damageCollider.KnockbackMagnitude != 0) {
-                    int localScale = damageCollider.transform.localScale.x > 0 ? 1 : -1;
-                    _rigidbody2D.velocity += new Vector2(localScale *
-                        Mathf.Cos(damageCollider.KnockbackDirection * Mathf.Deg2Rad),
-                        Mathf.Sin(damageCollider.KnockbackDirection * Mathf.Deg2Rad)) * Mathf.Abs(damageCollider.KnockbackMagnitude);
+                Rigidbody2D damageColliderRigidbody = damageCollider.GetComponent<Rigidbody2D>();
+                if (damageColliderRigidbody && damageCollider.KnockbackMagnitude != 0)
+                {
+                    _rigidbody2D.velocity = -damageColliderRigidbody.velocity.normalized * Mathf.Abs(damageCollider.KnockbackMagnitude);
                 }
+                
             }
 
             if (_healthComponent.HP <= 0) { return; }
@@ -74,17 +83,36 @@ namespace Entities
             }
             else{
                 OnDamageEvent?.Invoke(damageCollider);
+                Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
             }
-            Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
+            
         }
 
 
+        /// <summary>
+        /// Determines whether an entity dodged from the current damage collider
+        /// </summary>
+        /// <param name="damageCollider"></param>
+        /// <returns>Whether the entity successfully dodged</returns>
+        private bool EntityDodgedSuccessfully(SCR_DamageCollider damageCollider)
+        {
+            return _dodgeableInterface != null && _dodgeableInterface.IsDodging && damageCollider.DodgeableCollider;
+        }
+
+        /// <summary>
+        /// Recover a fixed amount of Health for the entity
+        /// </summary>
+        /// <param name="fixedAmount">Any integer amount</param>
         public void RecoverHealth(int fixedAmount)
         {
             ValidateHealthComponent();
             _healthComponent.GainHP(fixedAmount);
         }
 
+        /// <summary>
+        /// Recover a percentage amount of the Maximum Health for the entity
+        /// </summary>
+        /// <param name="percentage">Percentage from 0 to 1</param>
         public void RecoverHealth(float percentage)
         {
             ValidateHealthComponent();
