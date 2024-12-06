@@ -17,7 +17,7 @@ namespace Entities.Player
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             _playerMovement = GetComponentInParent<SCR_PlayerMovement>();
             _circleCollider = GetComponent<CircleCollider2D>();
-            SCR_DialogueManager.OnDialogueEnd += SCR_DialogueManager_OnDialogueEnd;
+            SCR_DialogueManager.OnDialogueEndEvent += SCR_DialogueManager_OnDialogueEnd;
         }
 
         private void SCR_DialogueManager_OnDialogueEnd()
@@ -66,7 +66,7 @@ namespace Entities.Player
 
         private void OnDisable()
         {
-            SCR_DialogueManager.OnDialogueEnd -= SCR_DialogueManager_OnDialogueEnd;
+            SCR_DialogueManager.OnDialogueEndEvent -= SCR_DialogueManager_OnDialogueEnd;
         }
 
     }

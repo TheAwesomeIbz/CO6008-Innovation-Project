@@ -28,7 +28,7 @@ public static class ExtensionMethods
 
 public struct GlobalMasks
 {
-    public static LayerMask GroundLayerMask => LayerMask.GetMask("Ground");
+    public static LayerMask BoundaryLayerMask => LayerMask.GetMask("Boundary");
     public static LayerMask EntityLayerMask => LayerMask.GetMask("Level Entities");
 }
 

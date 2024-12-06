@@ -10,7 +10,6 @@ namespace Entities
 {
     public class SCR_DialogueNPC : MonoBehaviour, iInteractable
     {
-        public const int C_OffsetPosition = 2;
         public static event Action<SCR_DialogueNPC> OnDialogueStart;
         [SerializeField] DialogueObject[] dialogueObjects;
         public DialogueObject[] DialogueObjects => dialogueObjects;

@@ -20,6 +20,8 @@ namespace Entities.Player
         [SerializeField] GameObject _halfwayObject;
         [SerializeField] [Range(1, 4)] float _midpointThreshold = 1;
 
+        public SO_WeaponProperties WeaponProperties => _weaponProperties;
+
         [Header("COOLDOWN PROPERTIES")]
         [SerializeField] float cooldown;
         [SerializeField] bool CanShoot => cooldown <= 0;
@@ -43,12 +45,14 @@ namespace Entities.Player
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             _trackPlayerCursor = true;
             _lensOrthoSize = _virtualCamera.m_Lens.OrthographicSize;
+
+            _halfwayObject.transform.parent = null;
         }
 
         private void OnEnable()
         {
             SCR_DialogueNPC.OnDialogueStart += OnDialogueStart;
-            SCR_DialogueManager.OnDialogueEnd += OnDialogueEnd;
+            SCR_DialogueManager.OnDialogueEndEvent += OnDialogueEnd;
         }
 
         private void OnDialogueStart(SCR_DialogueNPC obj)
@@ -132,7 +136,7 @@ namespace Entities.Player
         private void OnDisable()
         {
             SCR_DialogueNPC.OnDialogueStart -= OnDialogueStart;
-            SCR_DialogueManager.OnDialogueEnd -= OnDialogueEnd;
+            SCR_DialogueManager.OnDialogueEndEvent -= OnDialogueEnd;
         }
     }
 }

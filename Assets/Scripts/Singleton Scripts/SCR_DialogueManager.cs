@@ -15,12 +15,13 @@ namespace Dialogue
         /// <summary>
         /// Event called when the dialogue manager begins an interaction
         /// </summary>
-        public static event Action<DialogueObject[]> OnDialogueStart;
+        public static event Action<DialogueObject[]> OnDialogueStartEvent;
 
         /// <summary>
         /// Event called when the dialogue manager finishes an interaction
         /// </summary>
-        public static event Action OnDialogueEnd;
+        public static event Action OnDialogueEndEvent;
+        private Action OnDialogueEnd;
 
         [Header("DIALOGUE MANAGER PROPERTIES")]
         [SerializeField] GameObject _dialogueBox;
@@ -43,12 +44,19 @@ namespace Dialogue
         /// DIsplays the dialogue objects within the dialogue manager UI
         /// </summary>
         /// <param name="dialogueObjects"></param>
-        public void DisplayDialogue(DialogueObject[] dialogueObjects)
+        public void DisplayDialogue(DialogueObject[] dialogueObjects, Action OnDialogueEnd = null)
         {
+            
             dialogueObjectIndex = 0;
+            this.OnDialogueEnd = OnDialogueEnd;
+            if (dialogueObjects.Length == 0) { 
+                EndDialogueSequence();
+                return;
+            }
+
             SetDialogueActivity(true, dialogueObjects[0]);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
-            OnDialogueStart?.Invoke(dialogueObjects);
+            OnDialogueStartEvent?.Invoke(dialogueObjects);
 
             DisplayNextDialogue(dialogueObjects);
         }
@@ -107,7 +115,9 @@ namespace Dialogue
         private void EndDialogueSequence()
         {
             SetDialogueActivity(false, null);
+            OnDialogueEndEvent?.Invoke();
             OnDialogueEnd?.Invoke();
+            OnDialogueEnd = null;
             SCR_PlayerInputManager.PlayerControlsEnabled = true;
         }
 

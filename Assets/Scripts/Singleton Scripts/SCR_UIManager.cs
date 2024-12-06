@@ -20,7 +20,7 @@ namespace UnityEngine.UI
 
         void Start()
         {
-
+            GetComponent<Canvas>().worldCamera = Camera.main;
         }
 
         // Update is called once per frame

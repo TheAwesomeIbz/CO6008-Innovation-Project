@@ -11,10 +11,12 @@ namespace Entities.Player
         public const int MaximumPlayerSpeed = 15;
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
+        [SerializeField] bool _moveIn2DSpace;
 
         [Header("PLAYER GRID MOVEMENT PROPERTIES")]
         [SerializeField] private bool _currentlyMoving;
         [SerializeField] private float _gridSpeed;
+        [SerializeField] [Range(1,5)] private int _gridDisplacement = 1;
 
         [Header("PLAYER SPEED PROPERTIES")]
         [SerializeField] PlayerSpeedProperties _playerSpeedProperties;
@@ -22,12 +24,22 @@ namespace Entities.Player
         [Header("PLAYER DODGE PROPERTIES")]
         [SerializeField] PlayerDodgeProperties _playerDodgeProperties;
 
+        [Header("PLAYER POWERUP PROPERTIES")]
+        [SerializeField] PlayerPowerupProperty _damagePowerupProperty;
+        [SerializeField] PlayerPowerupProperty _knockbackPowerupProperty;
+        [SerializeField] PlayerPowerupProperty _agilityPowerupProperty;
+
+        public PlayerPowerupProperty DamagePowerupProperty => _damagePowerupProperty;
+        public PlayerPowerupProperty KnockbackPowerupProperty => _knockbackPowerupProperty;
+        public PlayerPowerupProperty AgilityPowerupProperty => _agilityPowerupProperty;
+
         SCR_PlayerInteraction _playerInteraction;
         public CMP_HitboxComponent HitboxComponent { get; private set; }
         SCR_PlayerInputManager _inputManager;
         public Rigidbody2D Rigidbody2D { get; private set; }
         public BoxCollider2D BoxCollider2D { get; private set; }
         public bool IsDodging => _playerDodgeProperties.IsDodging;
+        public SO_WeaponProperties WeaponProperties { get; private set; }
         /// <summary>
         /// Get the Current Player level
         /// </summary>
@@ -40,6 +52,7 @@ namespace Entities.Player
 
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
             HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
+            WeaponProperties = GetComponent<SCR_PlayerShooting>().WeaponProperties;
             //_playerInteraction.gameObject.SetActive(false);
 
             HitboxComponent.OnDamageEvent += OnDamageEvent;
@@ -64,7 +77,7 @@ namespace Entities.Player
             StopCoroutine(StunTimerCoroutine());
             StopCoroutine(SpriteFlickerCoroutine());
 
-            if (damageCollider.StunTimer > 0)
+            if (damageCollider?.StunTimer > 0)
             {
                 StartCoroutine(StunTimerCoroutine());
             }
@@ -93,6 +106,10 @@ namespace Entities.Player
 
         void Update()
         {
+            DamagePowerupProperty.PowerupUpdate();
+            AgilityPowerupProperty.PowerupUpdate();
+            KnockbackPowerupProperty.PowerupUpdate();
+
             PlayerMovementUpdate();
             //PlayerInteractionUpdate();
         }
@@ -160,22 +177,33 @@ namespace Entities.Player
         /// <param name="direction">Direction that the player is going</param>
         private void IntegerMovement(int direction)
         {
-
+            Rigidbody2D.velocity = Vector2.zero;
             if (_currentlyMoving) { return; }
             if (_inputManager.Axis2D.IsPressed()){
+                StopAllCoroutines();
                 StartCoroutine(GridMovement(direction));
             }
 
             IEnumerator GridMovement(int direction)
             {
                 _currentlyMoving = true;
-                Vector2 targetPosition = transform.position + (Vector3.right * direction);
+                Vector2 currentPosition = transform.position;
+                Vector2 targetPosition = transform.position + (Vector3.right * direction * _gridDisplacement);
                 transform.localScale = direction < 0 ? new Vector3(-1, 1) : Vector3.one;
 
-                while (Mathf.Abs(targetPosition.x - transform.position.x) > 0.01f)
+                RaycastHit2D boundaryRaycast = Physics2D.Raycast(currentPosition, new Vector2(direction, 0), _gridDisplacement + 1, GlobalMasks.BoundaryLayerMask);
+
+                while (Mathf.Abs(targetPosition.x - transform.position.x) > 0.1f && boundaryRaycast.collider == null)
                 {
                     transform.position = Vector3.Lerp(transform.position, new Vector3(targetPosition.x, transform.position.y), _gridSpeed * Time.deltaTime);
+                    boundaryRaycast = Physics2D.Raycast(currentPosition, new Vector2(direction, 0), _gridDisplacement, GlobalMasks.BoundaryLayerMask);
                     yield return new WaitForEndOfFrame();
+                }
+
+                if (boundaryRaycast.collider != null) {
+                    transform.position = new Vector3(Mathf.RoundToInt(transform.position.x), transform.position.y);
+                    _currentlyMoving = false;
+                    yield break; 
                 }
                 transform.position = new Vector3(Mathf.RoundToInt(targetPosition.x), transform.position.y);
                 _currentlyMoving = false;
@@ -188,20 +216,17 @@ namespace Entities.Player
         private void RationalMovement()
         {
             Vector2 directionVector = _inputManager.Axis2D.AxisValue;
+            if (!_moveIn2DSpace) { directionVector.y = 0; }
             if (_playerDodgeProperties.IsDodging) { return; }
             if (_inputManager.Axis2D.IsPressed())
             {
-                float maxHorizontalSpeed = directionVector.x * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
-                float maxVerticalSpeed = directionVector.y * _playerSpeedProperties.Speed * _playerSpeedProperties.SpeedMultiplier;
-                Rigidbody2D.velocity = new Vector2(
-                    Mathf.Lerp(Rigidbody2D.velocity.x, maxHorizontalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration),
-                    Mathf.Lerp(Rigidbody2D.velocity.y, maxVerticalSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration));
+                Vector2 MaxSpeed = directionVector * _playerSpeedProperties.Speed * _agilityPowerupProperty.PowerupMultiplier;
+               
+                Rigidbody2D.velocity = Vector2.Lerp(Rigidbody2D.velocity, MaxSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration);   
             }
             else
             {
-                Rigidbody2D.velocity = new Vector2(
-                    Mathf.Lerp(Rigidbody2D.velocity.x, 0, Time.deltaTime * _playerSpeedProperties.Deceleration),
-                    Mathf.Lerp(Rigidbody2D.velocity.y, 0, Time.deltaTime * _playerSpeedProperties.Deceleration));
+                Rigidbody2D.velocity = Vector2.Lerp(Rigidbody2D.velocity, Vector2.zero, Time.deltaTime * _playerSpeedProperties.Deceleration * _agilityPowerupProperty.PowerupMultiplier);
             }
 
             if (directionVector.x > 0) { transform.localScale = Vector3.one; }
@@ -214,6 +239,7 @@ namespace Entities.Player
         private void DodgingPhysics()
         {
             Vector2 directionVector = _inputManager.Axis2D.AxisValue;
+            if (!_moveIn2DSpace) {  directionVector.y = 0; }
             if (_inputManager.Dodge.PressedThisFrame() && directionVector.magnitude != 0 && !_playerDodgeProperties.IsDodging)
             {
                 StartCoroutine(DodgeCoroutine());
@@ -227,6 +253,7 @@ namespace Entities.Player
                 float timer = 0;
                 while (timer < _playerDodgeProperties.DodgeDelay)
                 {
+
                     Rigidbody2D.velocity = directionVector * _playerDodgeProperties.DodgeImpulse;
                     timer += Time.deltaTime;
                     yield return null;
@@ -250,10 +277,10 @@ namespace Entities.Player
         #region PLAYER MOVEMENT PROPERTY OBJECTS
         [Serializable] class PlayerSpeedProperties
         {
-            public float Speed;
-            public float SpeedMultiplier;
+            public float Speed = 5;
+            public float SpeedMultiplier = 1;
 
-            public float Acceleration;
+            public float Acceleration = 2;
             [Range(0, 1)] public float Deceleration = 0.75f;
         }
 
@@ -263,6 +290,34 @@ namespace Entities.Player
             public bool IsDodging;
             [Range(0.25f, 2)] public float DodgeDelay = 0.5f;
         }
+
+        /// <summary>
+        /// Property class used to store information about an abstract player powerup
+        /// </summary>
+        /// <remarks>Used for damage, agility etc.</remarks>
+        [Serializable] public class PlayerPowerupProperty
+        {
+            const int PowerupDurationConstant = 30;
+            [Range(1,2)] private float _powerupMultiplier = 1;
+            [SerializeField] private float _powerupDuration;
+            public float PowerupDuration => _powerupDuration;
+            public float PowerupMultiplier => _powerupMultiplier;
+            public bool PowerupActive => _powerupDuration > 0;
+
+            /// <summary>
+            /// Sets the multiplier of the powerup
+            /// </summary>
+            /// <param name="multiplier"></param>
+            public void SetPowerupMultiplier(float multiplier) {
+                _powerupMultiplier = multiplier;
+                _powerupDuration = PowerupDurationConstant;
+            }
+            /// <summary>
+            /// Function called in Update() to update the property duration timer every frame
+            /// </summary>
+            public void PowerupUpdate() => _powerupDuration -= _powerupDuration >= 0 ? Time.deltaTime : 0;
+        }
+
 
         #endregion
 

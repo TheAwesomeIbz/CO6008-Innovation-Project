@@ -32,6 +32,8 @@ namespace Entities
         /// </summary>
         public Attackable DamageableBy => _damageableBy;
 
+        public CMP_HealthComponent HealthComponent => _healthComponent;
+
         void Start()
         {
             _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
@@ -52,6 +54,30 @@ namespace Entities
             }
         }
 
+        public void DealDamage(SCR_ConstantDamageCollider constantDamageCollider)
+        {
+            ValidateHealthComponent();
+            if (_knockbackable && _rigidbody2D)
+            {
+                _rigidbody2D.velocity =  new Vector2(
+                    Mathf.Cos(constantDamageCollider.KnockbackDirection * Mathf.Deg2Rad), 
+                    Mathf.Sin(constantDamageCollider.KnockbackDirection * Mathf.Deg2Rad)) * 
+                    Mathf.Abs(constantDamageCollider.KnockbackMagnitude);
+            }
+
+            _healthComponent.LoseHP(1);
+
+            if (_healthComponent.HP == 0)
+            {
+                OnZeroHPEvent?.Invoke(null);
+            }
+            else
+            {
+                OnDamageEvent?.Invoke(null);
+                Debug.Log($"{transform.name.ToUpper()} TOOK {1} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
+            }
+        }
+
         /// <summary>
         /// Deals damage to health component and broadcasts events on damage
         /// </summary>
@@ -68,7 +94,7 @@ namespace Entities
                 Rigidbody2D damageColliderRigidbody = damageCollider.GetComponent<Rigidbody2D>();
                 if (damageColliderRigidbody && damageCollider.KnockbackMagnitude != 0)
                 {
-                    _rigidbody2D.velocity = -damageColliderRigidbody.velocity.normalized * Mathf.Abs(damageCollider.KnockbackMagnitude);
+                    _rigidbody2D.velocity = damageColliderRigidbody.velocity.normalized * Mathf.Abs(damageCollider.KnockbackMagnitude);
                 }
                 
             }

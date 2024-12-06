@@ -7,17 +7,21 @@ public class SCR_GeneralManager : MonoBehaviour
     private static SCR_GeneralManager _instance;
 
     public static SCR_PlayerInputManager PlayerInputManager => _instance.GetComponent<SCR_PlayerInputManager>();
+    
+    public static SCR_InventoryManager InventoryManager => _instance.GetComponent<SCR_InventoryManager>();
+
     public static SCR_UIManager UIManager => _instance.GetComponentInChildren<SCR_UIManager>();
 
     private void Awake()
     {
+        
         if (_instance == null)
         {
             _instance = this;
             DontDestroyOnLoad(_instance);
         }
         else{
-            Destroy(this);
+            Destroy(gameObject);
         }
     }
 

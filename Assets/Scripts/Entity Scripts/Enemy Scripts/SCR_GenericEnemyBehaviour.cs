@@ -19,6 +19,7 @@ namespace Entities.Enemies
         [Header("BASE ENEMY PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
         [SerializeField] protected CMP_HitboxComponent _hitboxComponent;
+        [SerializeField] protected bool _constantlyShooting;
         protected SCR_EntityShooting _entityShooting;
 
         [Header("ENEMY SPEED PROPERTIES")]
@@ -41,7 +42,7 @@ namespace Entities.Enemies
         
         private SCR_PlayerDetectionTrigger playerDetectionTrigger;
 
-        void Start()
+        protected virtual void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _boxCollider2D = GetComponent<BoxCollider2D>();
@@ -55,6 +56,12 @@ namespace Entities.Enemies
         }
         protected virtual void Update()
         {
+            if (_constantlyShooting)
+            {
+                PlayerSpottedUpdate();
+                return;
+            }
+
             if (_playerMovementReference)
             {
                 PlayerSpottedUpdate();
@@ -99,8 +106,9 @@ namespace Entities.Enemies
         /// <remarks>Functionality can overriden in inherited classes</remarks>
         protected virtual void PlayerSpottedUpdate()
         {
-            _entityShooting?.EntityShootingUpdate(_playerMovementReference.transform);
+            _entityShooting?.EntityShootingUpdate(_playerMovementReference?.transform ?? null);
 
+            if (!_playerMovementReference) { return; }
             if (!_enemyChasesPlayer) { return; }
             _enemyRandomMovementTimer -= Time.deltaTime;
             if (_enemyRandomMovementTimer < 0)

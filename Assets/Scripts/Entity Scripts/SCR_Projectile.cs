@@ -10,6 +10,8 @@ namespace Entities
     /// </summary>
     public class SCR_Projectile : SCR_DamageCollider
     {
+        [Header("PROJECTILE PROPERTIES")]
+        [SerializeField] bool _impenetrable;
         protected override IEnumerator Start()
         {
             yield return new WaitForSeconds(3);
@@ -17,7 +19,7 @@ namespace Entities
         }
 
         /// <summary>
-        /// Initialize the projectile with weapon properties and bullet properties, to initialize its speed, direction and collider type on instantiation
+        /// Initialize the projectile with weapon properties and bullet properties, to initialize its _bossSpeed, direction and collider type on instantiation
         /// </summary>
         /// <param name="weaponProperties">Information about the weapon</param>
         /// <param name="bulletProperties">Information about the bullet and projectile(s)</param>
@@ -52,7 +54,8 @@ namespace Entities
 
         protected override void OnTriggerEnter2D(Collider2D collision)
         {
-            if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.GroundLayerMask)){
+            if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.BoundaryLayerMask) && _impenetrable)
+            {
                 Destroy(gameObject);
             }
             base.OnTriggerEnter2D(collision);

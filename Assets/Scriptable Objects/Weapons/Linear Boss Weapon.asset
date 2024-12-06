@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a76f5710bc8baa0428a92515a3c28d92, type: 3}
-  m_Name: Subtract Enemy Weapon
+  m_Name: Linear Boss Weapon
   m_EditorClassIdentifier: 
-  _bulletPrefab: {fileID: 1696818346636504626, guid: 5bed1eb9f381ece4b959ea5ff89a5510, type: 3}
+  _bulletPrefab: {fileID: 1696818346636504626, guid: e7435957e0093e949886486112b3e32e, type: 3}
   _bulletMagnitude: 15
   _weaponCooldown: 0.48
   _bulletAmount: 6

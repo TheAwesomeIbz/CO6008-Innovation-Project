@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Entities.SO_WeaponProperties;
 
 namespace Entities
 {
@@ -41,7 +42,7 @@ namespace Entities
         public bool DodgeableBullet => _dodgeableBullet;
 
         /// <summary>
-        /// Dunamically spawns bullet with given direction and collider properties with specified speed
+        /// Dunamically spawns bullet with given direction and collider properties with specified _bossSpeed
         /// </summary>
         /// <param name="bulletProperties">Flexible class used to add additonal parameters flexibly</param>
         public void SpawnBullet(BulletProperties bulletProperties)
@@ -73,6 +74,14 @@ namespace Entities
             {
                 rigidbody2D.velocity += new Vector2(-Mathf.Cos(bulletProperties.InputDirection), Mathf.Sin(-bulletProperties.InputDirection)) * _recoilImpulse;
             }
+        }
+
+        public void SpawnBulletDefault(BulletProperties bulletProperties)
+        {
+            SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
+            obj.transform.position = bulletProperties.ShootingObject.position /*+ new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0)*/;
+            bulletProperties.BulletMagnitude = _bulletMagnitude;
+            obj.InitializeProjectile(this, bulletProperties);
         }
 
         /// <summary>
