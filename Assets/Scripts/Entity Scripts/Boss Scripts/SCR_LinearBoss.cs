@@ -17,6 +17,7 @@ namespace Entities.Boss
         [SerializeField][Range(1, 3)] int _bossSpeed = 1;
         [SerializeField] float _horizonatalMultipier = 4;
         [SerializeField] float _verticalPeriodMultipler = 2;
+        protected List<Action> _bossPhaseActions = new List<Action>();
         SCR_PlayerMovement _playerMovementReference;
         SCR_EntityShooting _entityShooting;
         CMP_HitboxComponent _hitboxComponent;
@@ -56,7 +57,7 @@ namespace Entities.Boss
         [Header("BOSS DEFEATED PROPERTIES")]
         [SerializeField] DialogueObject[] _defeatDialogue;
         bool _bossDefeated;
-        public override CMP_HealthComponent BossHealthComponent => _hitboxComponent.HealthComponent;
+        public override CMP_HealthComponent BossHealthComponent => _hitboxComponent?.HealthComponent ?? GetComponentInChildren<CMP_HitboxComponent>().HealthComponent;
 
         protected void Start()
         {
@@ -72,6 +73,7 @@ namespace Entities.Boss
             _bossDefeated = false;
             _localPhasePasses = UnityEngine.Random.Range(2, 5);
             _defaultPosition = transform.position;
+            _movementCounter = Mathf.PI / 2;
 
             _colliderZones = new List<ColliderZones>();
             _angleArray = new int[3];
@@ -88,6 +90,12 @@ namespace Entities.Boss
                 _angleArray[i] = Mathf.RoundToInt(-relativeAngle * Mathf.Rad2Deg);
                 
             }
+
+            _firstPhaseParentObject.transform.parent = null;
+            _secondPhaseParentObject.parent = null;
+
+            _bossPhaseActions = new List<Action>() { FirstPhase, SecondPhase, ThirdPhase };
+
         }
 
         protected void Update()
@@ -97,24 +105,25 @@ namespace Entities.Boss
 
             _bossSpeed = _hitboxComponent.HealthComponent.IsHalfHP ? 2 : 1;
 
-            SecondPhaseBossMovement();
+            GeneralBossMovement();
 
 
 
             if (_inAttackPhase) { return; }
 
-            switch (_bossPhase)
-            {
-                case 0:
-                    FirstPhase();
-                    break;
-                case 1:
-                    SecondPhase();
-                    break;
-                case 2:
-                    ThirdPhase();
-                    break;
-            }
+            _bossPhaseActions[_bossPhase]();
+            //switch (_bossPhase)
+            //{
+            //    case 0:
+            //        FirstPhase();
+            //        break;
+            //    case 1:
+            //        SecondPhase();
+            //        break;
+            //    case 2:
+            //        ThirdPhase();
+            //        break;
+            //}
             _localPhasePasses -= 1;
         }
 
@@ -126,8 +135,8 @@ namespace Entities.Boss
         {
             if (_localPhasePasses <= 0)
             {
-                int randomPhase = UnityEngine.Random.Range(0, 3);
-                while (randomPhase == _bossPhase) { randomPhase = UnityEngine.Random.Range(0, 3); }
+                int randomPhase = UnityEngine.Random.Range(0, _bossPhaseActions.Count);
+                while (randomPhase == _bossPhase) { randomPhase = UnityEngine.Random.Range(0, _bossPhaseActions.Count); }
 
                 _bossPhase = randomPhase;
                 _localPhasePasses = _atHalfHP ?
@@ -188,6 +197,7 @@ namespace Entities.Boss
             _inAttackPhase = true;
 
             StopAllCoroutines();
+            _firstPhaseParentObject.SetActive(true);
             _firstPhaseUIObjects.SetQuestionnaireVisibility(true);
             QuestionObject randomQuestion = _questionObjects[UnityEngine.Random.Range(0, QuestionObject.MaximumQuizQuestions)].ShuffleAnswers();
             while (_previousQuestionName == randomQuestion.Question)
@@ -210,11 +220,11 @@ namespace Entities.Boss
             
             _firstPhaseUIObjects.DisableColliders();
 
-            yield return new WaitForSeconds(1 / _bossSpeed);
+            yield return new WaitForSeconds(2f / _bossSpeed);
 
             _firstPhaseUIObjects.EnableIncorrectColliders(randomQuestion);
 
-            yield return new WaitForSeconds(0.5f / _bossSpeed);
+            yield return new WaitForSeconds(1f / _bossSpeed);
 
             _inAttackPhase = false;
             _firstPhaseUIObjects.DisableColliders();
@@ -231,7 +241,7 @@ namespace Entities.Boss
         /// <summary>
         /// Function called in Update() to move the Boss in an infinity symbol movement
         /// </summary>
-        private void SecondPhaseBossMovement()
+        private void GeneralBossMovement()
         {
             if (_bossPhase != 2)
             {
@@ -253,6 +263,7 @@ namespace Entities.Boss
             _inAttackPhase = true;
             int playerLane = Mathf.Clamp(Mathf.RoundToInt((_playerMovementReference.transform.position.x + 5) / 5), 0, 2);
             StopAllCoroutines();
+            _secondPhaseParentObject.gameObject.SetActive(true);
             StartCoroutine(SecondPhaseCoroutine(playerLane));
 
             int index = UnityEngine.Random.Range(0, 3);

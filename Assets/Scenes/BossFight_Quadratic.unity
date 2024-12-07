@@ -343,7 +343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7691211080662678957, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
       propertyPath: _playerLevel
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7691211080662678957, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
       propertyPath: _moveIn2DSpace
@@ -352,6 +352,14 @@ PrefabInstance:
     - target: {fileID: 7691211080662678957, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
       propertyPath: _gridDisplacement
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691211080662678957, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+      propertyPath: _playerSpeedProperties.Speed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691211080662678957, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+      propertyPath: _playerSpeedProperties.Acceleration
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7982513094046795979, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
       propertyPath: m_Name

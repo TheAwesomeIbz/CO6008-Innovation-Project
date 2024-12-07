@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace Dialogue
     public class DialogueObject
     {
         [SerializeField] private string _speakingCharacter;
-        [SerializeField] [TextArea(2, 2)] private string _dialogueText;
+        [SerializeField][TextArea(2, 2)] private string _dialogueText;
         [SerializeField] private AudioClip _speakingSFX;
 
         /// <summary>
@@ -40,6 +40,7 @@ namespace Dialogue
             this._speakingSFX = _speakingSFX;
         }
 
+        public static DialogueObject[] NullDialogueObject { get; } = new DialogueObject[] { new DialogueObject("NullDialogueException") };
     }
 
 }

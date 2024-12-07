@@ -15,6 +15,11 @@ namespace UnityEngine.UI
         [field : Header("LOAD SCENE PROPERTIES")]
         [field : SerializeField] public bool Loading { get; private set; }
         [SerializeField] RawImage _loadingImage;
+
+        private void Start()
+        {
+            _loadingImage.gameObject.SetActive(false);
+        }
         public void LoadScene(TransitionProperties transitionProperties)
         {
             if (Loading) { return; }
@@ -77,13 +82,13 @@ namespace UnityEngine.UI
             }
 
         }
-        // Update is called once per frame
+        
         void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Escape))
-            {
-                StartCoroutine(TransitionCoroutine(new TransitionProperties { SceneName = "BossFight_Linear" }));
-            }
+            //if (Input.GetKeyUp(KeyCode.Escape))
+            //{
+            //    StartCoroutine(TransitionCoroutine(new TransitionProperties { SceneName = "BossFight_Linear" }));
+            //}
         }
 
 

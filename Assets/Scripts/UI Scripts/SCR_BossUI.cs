@@ -25,7 +25,7 @@ namespace UnityEngine.UI
 
         private void UpdateHealthBar()
         {
-            if (_bossHealthBar == null || _bossEntity == null) { 
+            if (_bossHealthBar == null || _bossEntity == null || _bossEntity == null) { 
                 gameObject.SetActive(false);
                 return; 
             }

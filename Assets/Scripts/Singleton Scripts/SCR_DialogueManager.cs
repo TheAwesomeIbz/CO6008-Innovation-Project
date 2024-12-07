@@ -48,17 +48,16 @@ namespace Dialogue
         {
             
             dialogueObjectIndex = 0;
+
+            DialogueObject[] validDialogue = dialogueObjects.Length == 0 ?
+                DialogueObject.NullDialogueObject : dialogueObjects;
             this.OnDialogueEnd = OnDialogueEnd;
-            if (dialogueObjects.Length == 0) { 
-                EndDialogueSequence();
-                return;
-            }
 
-            SetDialogueActivity(true, dialogueObjects[0]);
+            SetDialogueActivity(true, validDialogue[0]);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
-            OnDialogueStartEvent?.Invoke(dialogueObjects);
+            OnDialogueStartEvent?.Invoke(validDialogue);
 
-            DisplayNextDialogue(dialogueObjects);
+            DisplayNextDialogue(validDialogue);
         }
 
 
@@ -90,7 +89,7 @@ namespace Dialogue
         /// <param name="dialogueObject"></param>
         private void SetDialogueActivity(bool dialogueActivity, DialogueObject dialogueObject)
         {
-            _dialogueBox.gameObject.SetActive(dialogueActivity);
+            _dialogueBox.SetActive(dialogueActivity);
             _continueIcon.SetActive(false);
 
             if (dialogueObject == null) {
@@ -128,7 +127,6 @@ namespace Dialogue
         /// <returns></returns>
         private IEnumerator TypeSentence(DialogueObject[] dialogueObjects)
         {
-
             string tempString = "";
             foreach (char character in dialogueObjects[dialogueObjectIndex].DialogueText)
             {
