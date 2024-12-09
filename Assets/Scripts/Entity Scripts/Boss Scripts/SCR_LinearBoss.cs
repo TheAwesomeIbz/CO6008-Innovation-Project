@@ -14,24 +14,25 @@ namespace Entities.Boss
     public class SCR_LinearBoss : SCR_BossEntity
     {
         [Header("LINEAR BOSS PROPERTIES")]
-        [SerializeField][Range(1, 3)] int _bossSpeed = 1;
-        [SerializeField] float _horizonatalMultipier = 4;
-        [SerializeField] float _verticalPeriodMultipler = 2;
+        [SerializeField][Range(1, 3)] protected int _bossSpeed = 1;
         protected List<Action> _bossPhaseActions = new List<Action>();
-        SCR_PlayerMovement _playerMovementReference;
-        SCR_EntityShooting _entityShooting;
-        CMP_HitboxComponent _hitboxComponent;
+        protected SCR_PlayerMovement _playerMovementReference;
+        protected SCR_EntityShooting _entityShooting;
+        protected CMP_HitboxComponent _hitboxComponent;
 
         [Header("PHASE PROPERTIES")]
-        [SerializeField] bool _inAttackPhase;
-        [SerializeField] int _bossPhase;
-        [SerializeField] int _localPhasePasses;
-        const int BossInterpolationSpeed = 5;
+        [SerializeField] protected bool _inAttackPhase;
+        [SerializeField] protected int _bossPhase;
+        [SerializeField] protected int _localPhasePasses;
+
+        protected const int BossInterpolationSpeed = 5;
+        protected const float _horizonatalMultipier = 4;
+        protected const float _verticalPeriodMultipler = 2;
 
 
         [Header("FIRST PHASE PROPERTIES")]
         [SerializeField] GameObject _firstPhaseParentObject;
-        [SerializeField] QuestionObject[] _questionObjects;
+        [SerializeField] protected QuestionObject[] _questionObjects;
         FirstPhaseUIObjects _firstPhaseUIObjects;
         string _previousQuestionName;
         
@@ -40,13 +41,13 @@ namespace Entities.Boss
         [SerializeField] Transform _secondPhaseParentObject;
 
         List<ColliderZones> _colliderZones;
-        Vector3 _defaultPosition;
-        float _movementCounter;
+        protected Vector3 _defaultPosition;
+        protected float _movementCounter;
 
         [Header("THIRD PHASE PROPERTIES")]
         [SerializeField] float _alternatingPeriod = 2;
         int[] _angleArray;
-        float _cooldownPeriod = 0.125f;
+        protected const float _cooldownPeriod = 0.125f;
 
         [Header("CUTSCENE PROPERTIES")]
         [SerializeField] DialogueObject[] _halfHPDialogue;
@@ -59,7 +60,7 @@ namespace Entities.Boss
         bool _bossDefeated;
         public override CMP_HealthComponent BossHealthComponent => _hitboxComponent?.HealthComponent ?? GetComponentInChildren<CMP_HitboxComponent>().HealthComponent;
 
-        protected void Start()
+        protected virtual void Start()
         {
             _playerMovementReference = FindObjectOfType<SCR_PlayerMovement>();
             _entityShooting = GetComponent<SCR_EntityShooting>();
@@ -74,6 +75,14 @@ namespace Entities.Boss
             _localPhasePasses = UnityEngine.Random.Range(2, 5);
             _defaultPosition = transform.position;
             _movementCounter = Mathf.PI / 2;
+
+            if (_questionObjects.Length == 0)
+            {
+                QuestionObject questionObject1 = new QuestionObject("Question 1", new string[] { "A", "B", "CORRECT" }, "CORRECT");
+                QuestionObject questionObject2 = new QuestionObject("Question 2", new string[] { "D", "E", "CORRECT" }, "CORRECT");
+                QuestionObject questionObject3 = new QuestionObject("Question 3", new string[] { "G", "H", "CORRECT" }, "CORRECT");
+                _questionObjects = new QuestionObject[] { questionObject1, questionObject2, questionObject3 };
+            }
 
             _colliderZones = new List<ColliderZones>();
             _angleArray = new int[3];
@@ -105,25 +114,11 @@ namespace Entities.Boss
 
             _bossSpeed = _hitboxComponent.HealthComponent.IsHalfHP ? 2 : 1;
 
-            GeneralBossMovement();
-
 
 
             if (_inAttackPhase) { return; }
 
             _bossPhaseActions[_bossPhase]();
-            //switch (_bossPhase)
-            //{
-            //    case 0:
-            //        FirstPhase();
-            //        break;
-            //    case 1:
-            //        SecondPhase();
-            //        break;
-            //    case 2:
-            //        ThirdPhase();
-            //        break;
-            //}
             _localPhasePasses -= 1;
         }
 
@@ -131,7 +126,7 @@ namespace Entities.Boss
         /// Called at the end of every local boss phase. Will dynamically set the amount of phase passes depending on the state of the boss.
         /// </summary>
         /// <remarks>Generates a random number depending on the state of the boss.</remarks>
-        private void OnLocalPhaseCompleted()
+        protected void OnLocalPhaseCompleted()
         {
             if (_localPhasePasses <= 0)
             {
@@ -208,7 +203,24 @@ namespace Entities.Boss
             _previousQuestionName = randomQuestion.Question;
 
             StartCoroutine(FirstPhaseCoroutine(randomQuestion));
+            StartCoroutine(InfinityMovementCoroutine());
         }
+
+        protected IEnumerator InfinityMovementCoroutine()
+        {
+            while (_inAttackPhase)
+            {
+                _movementCounter += Time.deltaTime * _bossSpeed;
+                if (_movementCounter > Mathf.PI * 2) { _movementCounter = 0; }
+
+                transform.position = new Vector3(Mathf.Cos(_movementCounter) * _horizonatalMultipier,
+                    Mathf.Sin(_movementCounter * _verticalPeriodMultipler)) * _bossSpeed + _defaultPosition;
+                yield return null;
+            }
+            
+        }
+
+
 
         /// <summary>
         /// First boss rush coroutine that adds time based events to the questionnaire
@@ -238,22 +250,6 @@ namespace Entities.Boss
         #endregion
 
         #region SECOND PHASE
-        /// <summary>
-        /// Function called in Update() to move the Boss in an infinity symbol movement
-        /// </summary>
-        private void GeneralBossMovement()
-        {
-            if (_bossPhase != 2)
-            {
-                _movementCounter += Time.deltaTime * _bossSpeed;
-                if (_movementCounter > Mathf.PI * 2) { _movementCounter = 0; }
-
-                transform.position = new Vector3(Mathf.Cos(_movementCounter) * _horizonatalMultipier, 
-                    Mathf.Sin(_movementCounter * _verticalPeriodMultipler)) * _bossSpeed + _defaultPosition;
-            }
-
-            
-        }
 
         /// <summary>
         /// Second phase of the boss rush that gets called within Update() that initializes the values for the second boss rush phase and executes the coroutine associated
@@ -271,6 +267,7 @@ namespace Entities.Boss
                 index = UnityEngine.Random.Range(0, 3);
             }
             StartCoroutine(SecondPhaseCoroutine(index));
+            StartCoroutine(InfinityMovementCoroutine());
         }
 
         /// <summary>
@@ -309,7 +306,7 @@ namespace Entities.Boss
         /// <summary>
         /// Third phase of the boss rush that gets called within Update() that initializes the values for the third boss rush phase and executes the coroutine associated
         /// </summary>
-        private void ThirdPhase()
+        protected virtual void ThirdPhase()
         {
             _inAttackPhase = true;
 
@@ -330,7 +327,7 @@ namespace Entities.Boss
         /// Coroutine within the Third phase that interpolates the boss to the default position, and shoots at the angles in the angle array
         /// </summary>
         /// <returns></returns>
-        IEnumerator ThirdPhaseCoroutine()
+        protected virtual IEnumerator ThirdPhaseCoroutine()
         {
             while ((transform.position - _defaultPosition).magnitude > 0.25f)
             {
@@ -395,7 +392,7 @@ namespace Entities.Boss
 
 
 
-        [Serializable] class QuestionObject
+        [Serializable] protected class QuestionObject
         {
             public const int MaximumQuizQuestions = 3;
             public QuestionObject(string question, string[] answers, string correctAnswer)

@@ -1,3 +1,4 @@
+using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -59,6 +60,8 @@ namespace Entities
             ValidateHealthComponent();
             if (_knockbackable && _rigidbody2D)
             {
+
+
                 _rigidbody2D.velocity =  new Vector2(
                     Mathf.Cos(constantDamageCollider.KnockbackDirection * Mathf.Deg2Rad), 
                     Mathf.Sin(constantDamageCollider.KnockbackDirection * Mathf.Deg2Rad)) * 
@@ -109,7 +112,7 @@ namespace Entities
             }
             else{
                 OnDamageEvent?.Invoke(damageCollider);
-                Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
+                //Debug.Log($"{transform.name.ToUpper()} TOOK {damageCollider.Attack} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
             }
             
         }

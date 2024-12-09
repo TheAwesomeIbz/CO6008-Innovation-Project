@@ -59,6 +59,11 @@ namespace Entities
                 Destroy(gameObject);
             }
             base.OnTriggerEnter2D(collision);
+
+            if (collision.GetType(out CMP_HitboxComponent hitboxComponent) && hitboxComponent.DamageableBy != _damageableTo)
+            {
+                Destroy(gameObject);
+            }
         }
 
     }
