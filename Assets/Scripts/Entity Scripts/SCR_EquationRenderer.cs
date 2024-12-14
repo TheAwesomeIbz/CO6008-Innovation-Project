@@ -204,7 +204,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        print(collision);
+        //print(collision);
     }
 
     private enum GraphType

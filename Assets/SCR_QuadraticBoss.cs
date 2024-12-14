@@ -9,10 +9,11 @@ namespace Entities.Boss
         [Header("OVERRIDEN THIRD PHASE PROPERTIES")]
         [SerializeField] Transform equationParentObject;
         SCR_EquationRenderer _equationRenderer;
-        [SerializeField] float _quadraticSpeed = 7;
+        [SerializeField] float _quadraticSpeed = 12.5f;
 
         [Header("FOURTH PHASE COROUTINE")]
-        [SerializeField] float maximumTimeForWave = 20;
+        [SerializeField] float _bossShootingCooldown = 1.5f;
+        [SerializeField] float maximumTimeForWave = 1f;
 
         protected override void Start()
         {
@@ -27,18 +28,26 @@ namespace Entities.Boss
         {
             _inAttackPhase = true;
             _equationRenderer.SetGlobalPosition(Vector3.zero);
+            StopAllCoroutines();
             StartCoroutine(ThirdPhaseCoroutine());
             StartCoroutine(QuadraticMovement());
         }
 
+        /// <summary>
+        /// Movement coroutine that moves the boss in a quadratic graph fashion and stops when the attacking phase is over.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator QuadraticMovement()
         {
+            yield return MoveToPosition(new Vector3(Mathf.Cos(_movementCounter * _bossSpeed) * _horizonatalMultipier * 2,
+                    -Mathf.Sin(_movementCounter * _bossSpeed) * 3) + _defaultPosition);
+
             bool strictlyIncreasing = true;
             float initialValue = 0;
             _movementCounter = initialValue;
             while (_inAttackPhase)
             {
-
+                //determine the state of strictlyIncreasion as a flag
                 _movementCounter += (strictlyIncreasing ? 1 : -1) * Time.deltaTime * _bossSpeed;
                 if (_movementCounter > Mathf.PI / _bossSpeed)
                 {
@@ -53,7 +62,10 @@ namespace Entities.Boss
 
                 yield return null;
             }
+
+            yield return MoveToPosition(_defaultPosition);
         }
+
         protected override IEnumerator ThirdPhaseCoroutine()
         {
             float initialValue = 0;
@@ -96,22 +108,31 @@ namespace Entities.Boss
             OnLocalPhaseCompleted();
         }
 
+        /// <summary>
+        /// Fourth phase of attacking that shoots out projectiles in a circular fashion
+        /// </summary>
         private void FourthPhase()
         {
+           
             _inAttackPhase = true;
 
             _entityShooting.SetShootingStyle(SCR_EntityShooting.ShootingVariant.CIRCULAR);
-            _entityShooting.SetCooldownPeriod(1 / _bossSpeed);
+            _entityShooting.SetCooldownPeriod(_bossShootingCooldown / _bossSpeed);
 
             StopAllCoroutines();
             StartCoroutine(FourthPhaseCoroutine());
             StartCoroutine(QuadraticMovement());
         }
 
+        /// <summary>
+        /// Coroutine that handles shooting the projectiles from the boss for a fixed period of time, relative to the boss state
+        /// </summary>
+        /// <returns></returns>
         IEnumerator FourthPhaseCoroutine()
         {
+
             float counter = 0;
-            while (counter < maximumTimeForWave)
+            while (counter < maximumTimeForWave / _bossSpeed)
             {
                 counter += Time.deltaTime;
                 _entityShooting.EntityShootingUpdate(_playerMovementReference.transform);

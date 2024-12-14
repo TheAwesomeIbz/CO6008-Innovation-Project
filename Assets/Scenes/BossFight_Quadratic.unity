@@ -3653,7 +3653,8 @@ MonoBehaviour:
   _halfHPDialogue: []
   _defeatDialogue: []
   equationParentObject: {fileID: 1942000130}
-  _quadraticSpeed: 7
+  _quadraticSpeed: 14
+  _bossShootingCooldown: 1.5
   maximumTimeForWave: 20
 --- !u!1 &1175757405
 GameObject:

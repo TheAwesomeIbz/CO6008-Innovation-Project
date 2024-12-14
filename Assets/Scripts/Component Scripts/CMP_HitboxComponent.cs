@@ -77,7 +77,7 @@ namespace Entities
             else
             {
                 OnDamageEvent?.Invoke(null);
-                Debug.Log($"{transform.name.ToUpper()} TOOK {1} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
+                //Debug.Log($"{transform.name.ToUpper()} TOOK {1} DAMAGE!\nHP LEFT : {_healthComponent.HP}");
             }
         }
 

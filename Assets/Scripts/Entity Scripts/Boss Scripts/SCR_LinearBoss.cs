@@ -191,7 +191,7 @@ namespace Entities.Boss
         {
             _inAttackPhase = true;
 
-            StopAllCoroutines();
+            
             _firstPhaseParentObject.SetActive(true);
             _firstPhaseUIObjects.SetQuestionnaireVisibility(true);
             QuestionObject randomQuestion = _questionObjects[UnityEngine.Random.Range(0, QuestionObject.MaximumQuizQuestions)].ShuffleAnswers();
@@ -202,12 +202,14 @@ namespace Entities.Boss
             _firstPhaseUIObjects.DisplayQuestion(randomQuestion);
             _previousQuestionName = randomQuestion.Question;
 
+            StopAllCoroutines();
             StartCoroutine(FirstPhaseCoroutine(randomQuestion));
             StartCoroutine(InfinityMovementCoroutine());
         }
 
         protected IEnumerator InfinityMovementCoroutine()
         {
+
             while (_inAttackPhase)
             {
                 _movementCounter += Time.deltaTime * _bossSpeed;
@@ -238,7 +240,6 @@ namespace Entities.Boss
 
             yield return new WaitForSeconds(1f / _bossSpeed);
 
-            _inAttackPhase = false;
             _firstPhaseUIObjects.DisableColliders();
             if (_localPhasePasses <= 0)
             {
@@ -329,11 +330,8 @@ namespace Entities.Boss
         /// <returns></returns>
         protected virtual IEnumerator ThirdPhaseCoroutine()
         {
-            while ((transform.position - _defaultPosition).magnitude > 0.25f)
-            {
-                transform.position = Vector3.Lerp(transform.position, _defaultPosition, Time.deltaTime * BossInterpolationSpeed * _bossSpeed);
-                yield return null;
-            }
+            yield return MoveToPosition(_defaultPosition);
+           
             _movementCounter = Mathf.PI / 2;
             transform.position = _defaultPosition;
 
@@ -353,6 +351,17 @@ namespace Entities.Boss
         }
 
         #endregion
+
+        protected IEnumerator MoveToPosition(Vector3 position)
+        {
+            _movementCounter = MathF.PI / 2;
+            while ((transform.position - position).magnitude > 0.25f)
+            {
+                transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * BossInterpolationSpeed * _bossSpeed);
+                yield return null;
+            }
+            print("lerped to position");
+        }
 
         #region BOSS DEFEATED
         /// <summary>
