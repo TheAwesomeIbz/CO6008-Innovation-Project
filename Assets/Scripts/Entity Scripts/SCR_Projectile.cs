@@ -14,7 +14,7 @@ namespace Entities
         [SerializeField] bool _impenetrable;
         protected override IEnumerator Start()
         {
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(2);
             Destroy(gameObject);
         }
 

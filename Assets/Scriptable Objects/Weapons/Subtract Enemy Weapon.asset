@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Subtract Enemy Weapon
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 1696818346636504626, guid: 5bed1eb9f381ece4b959ea5ff89a5510, type: 3}
-  _bulletMagnitude: 15
-  _weaponCooldown: 0.48
-  _bulletAmount: 6
+  _bulletMagnitude: 5
+  _weaponCooldown: 0.5
+  _bulletAmount: 1
   _dodgeableBullet: 1
-  _bulletSpreadRange: 0.11
-  _bulletMagnitudeRange: 7
+  _bulletSpreadRange: 0
+  _bulletMagnitudeRange: 0
   _recoilImpulse: 0
   _knockbackDirection: 0
   _knockbackMagnitude: 2

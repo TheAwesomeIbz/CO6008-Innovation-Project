@@ -30,7 +30,7 @@ namespace Entities
 
         
         /// <summary>
-        /// Virtual function called in Update() to handle shooting physics and mechanics whenever the cooldown period has disabled;
+        /// Virtual function called in Update() to handle shooting physics and mechanics whenever the cooldown counter has disabled;
         /// </summary>
         public void EntityShootingUpdate(Transform targetObject)
         {
@@ -69,7 +69,7 @@ namespace Entities
         public void SetShootingStyle(ShootingVariant ShootingType) => this.ShootingType = ShootingType;
 
         /// <summary>
-        /// Set cooldown period for entity
+        /// Set cooldown counter for entity
         /// </summary>
         /// <param name="cooldownPeriod"></param>
         public void SetCooldownPeriod(float cooldownPeriod) => _cooldownPeriod = cooldownPeriod;

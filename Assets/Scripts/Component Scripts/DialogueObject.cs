@@ -7,9 +7,9 @@ namespace Dialogue
     [System.Serializable]
     public class DialogueObject
     {
-        [SerializeField] private string _speakingCharacter;
-        [SerializeField][TextArea(2, 2)] private string _dialogueText;
-        [SerializeField] private AudioClip _speakingSFX;
+        [SerializeField] protected string _speakingCharacter;
+        [SerializeField][TextArea(2, 2)] protected string _dialogueText;
+        [SerializeField] protected AudioClip _speakingSFX;
 
         /// <summary>
         /// The name of the character that is speaking
@@ -43,4 +43,10 @@ namespace Dialogue
         public static DialogueObject[] NullDialogueObject { get; } = new DialogueObject[] { new DialogueObject("NullDialogueException") };
     }
 
+    [Serializable]
+    public class ChoiceOptions
+    {
+        [field: SerializeField] public string ChoiceText { get; private set; }
+        [field: SerializeField] public bool CorrectAnswer { get; private set; }
+    }
 }

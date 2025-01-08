@@ -125,7 +125,7 @@ namespace Entities.Boss
         }
 
         /// <summary>
-        /// Coroutine that handles shooting the projectiles from the boss for a fixed period of time, relative to the boss state
+        /// Coroutine that handles shooting the projectiles from the boss for a fixed counter of time, relative to the boss state
         /// </summary>
         /// <returns></returns>
         IEnumerator FourthPhaseCoroutine()

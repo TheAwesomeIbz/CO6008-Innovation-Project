@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 1696818346636504626, guid: edd24f6cbac273b4d8023bdba6624a61, type: 3}
   _bulletMagnitude: 20
-  _weaponCooldown: 0.125
+  _weaponCooldown: 0.14
   _bulletAmount: 8
   _dodgeableBullet: 0
   _bulletSpreadRange: 0

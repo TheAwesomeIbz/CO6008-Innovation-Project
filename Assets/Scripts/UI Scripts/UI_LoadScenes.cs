@@ -43,7 +43,6 @@ namespace UnityEngine.UI
                 AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(transitionProperties.SceneName);
                 while(!asyncOperation.isDone)
                 {
-                    print(asyncOperation.progress);
                     yield return null;
                 }
                 yield return SceneManager.LoadSceneAsync(transitionProperties.SceneName);
@@ -59,7 +58,7 @@ namespace UnityEngine.UI
         IEnumerator FadeCoroutine(float startValue, float endValue)
         {
             _loadingImage.color = new Color(_loadingImage.color.r, _loadingImage.color.g, _loadingImage.color.b, startValue);
-           
+            _loadingImage.gameObject.SetActive(true);
             float value = startValue;
 
             if (value > endValue)

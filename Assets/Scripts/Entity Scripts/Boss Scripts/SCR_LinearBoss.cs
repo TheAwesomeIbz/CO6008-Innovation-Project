@@ -272,7 +272,7 @@ namespace Entities.Boss
         }
 
         /// <summary>
-        /// Coroutine used for warning the player where the damage colliders will be at, and enabling them for a brief period of tmie
+        /// Coroutine used for warning the player where the damage colliders will be at, and enabling them for a brief counter of tmie
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>

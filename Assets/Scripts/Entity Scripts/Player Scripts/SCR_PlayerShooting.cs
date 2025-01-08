@@ -26,7 +26,7 @@ namespace Entities.Player
         [SerializeField] float cooldown;
         [SerializeField] bool CanShoot => cooldown <= 0;
 
-        [SerializeField] bool dialogueEnabled;
+        bool dialogueEnabled;
 
         [Header("CAMERA PROPERTIES")]
         [SerializeField] bool _trackPlayerCursor;
