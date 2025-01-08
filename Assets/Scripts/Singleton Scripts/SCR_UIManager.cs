@@ -9,7 +9,8 @@ namespace UnityEngine.UI
 {
     public class SCR_UIManager : MonoBehaviour
     {
-        Transform _extensionObject;
+        [SerializeField] List<Transform> extensionObjects;
+
         public T FindUIObject<T>() where T : MonoBehaviour
         {
             for (int i = 0; i < transform.childCount; i++)
@@ -28,18 +29,29 @@ namespace UnityEngine.UI
         }
         private void SceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
-            _extensionObject = GameObject.FindGameObjectWithTag("UI Extension")?.transform ?? null;
-            if ( _extensionObject == null ) { return; }
+            Transform extensionObject = GameObject.FindGameObjectWithTag("UI Extension")?.transform ?? null;
+            if (extensionObject == null ) { return; }
 
-            List<Transform> children = new List<Transform>();
-            for (int i = 0; i < _extensionObject.transform.childCount; i++){
-                children.Add(_extensionObject.transform.GetChild(i));
+            if (extensionObjects.Count > 0)
+            {
+                for (int i = 0; i < extensionObjects.Count; i++)
+                {
+                    Destroy(extensionObjects[i].gameObject);
+                }
             }
-            foreach (Transform child in children){
+            
+
+            extensionObject.GetComponent<Canvas>().worldCamera = Camera.main;
+            extensionObjects = new List<Transform>();
+            for (int i = 0; i < extensionObject.childCount; i++){
+                extensionObjects.Add(extensionObject.GetChild(i));
+            }
+            foreach (Transform child in extensionObjects)
+            {
                 child.SetParent(transform);
             }
            
-            Destroy(_extensionObject.gameObject);
+            Destroy(extensionObject.gameObject);
         }
 
         private void OnDisable()

@@ -12,6 +12,8 @@ public class SCR_GeneralManager : MonoBehaviour
 
     public static SCR_UIManager UIManager => _instance.GetComponentInChildren<SCR_UIManager>();
 
+    public static SCR_LevelManager LevelManager => _instance.GetComponent<SCR_LevelManager>();
+
     private void Awake()
     {
         
