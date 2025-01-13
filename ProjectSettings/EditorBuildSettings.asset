@@ -8,4 +8,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/BossFight_Linear.unity
+    guid: 1aadeb6cf05cd9a4da86d1cdf5c67288
+  - enabled: 1
+    path: Assets/Scenes/BossFight_Quadratic.unity
+    guid: 8f729e8226b181546abcbe4cb4ff1bcf
+  - enabled: 1
+    path: Assets/Scenes/LineRenderer.unity
+    guid: 7106c1d5803177e4b93491b852ddcd0f
+  - enabled: 1
+    path: Assets/Scenes/SampleScene 1.unity
+    guid: c01b59e67f76d0840bb5bfd88de4db6f
+  - enabled: 1
+    path: Assets/Scenes/SampleScene 2.unity
+    guid: 1e45c70ca67b23f44aca895803ffd26a
   m_configObjects: {}

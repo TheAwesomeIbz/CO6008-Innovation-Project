@@ -3630,11 +3630,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987425146}
   m_CullTransparentMesh: 1
---- !u!20 &1003009084 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 3928792843782766341, guid: 14ce3d6d9c22d6f4886d2ff60facd9cc, type: 3}
-  m_PrefabInstance: {fileID: 7217299127943774522}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1005671391
 GameObject:
   m_ObjectHideFlags: 0
@@ -5261,10 +5256,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[ UI MANAGER ] - LEVEL EXTENSION'
       objectReference: {fileID: 0}
-    - target: {fileID: 7639953236830522498, guid: dc4960be1144a964b96a294a2757343a, type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1003009084}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7473,7 +7464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2081e9eeb68b8b74c910769858780678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneName: SampleScene
+  _sceneName: SampleScene 2
 --- !u!61 &1711616344
 BoxCollider2D:
   m_ObjectHideFlags: 0

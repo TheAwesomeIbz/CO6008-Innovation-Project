@@ -33,11 +33,16 @@ namespace UnityEngine.UI
         {
             _item = item;
             _iconTexture.gameObject.SetActive(item != null);
-            _button.interactable = item != null;
-            if (item != null)
+
+            if (_button != null)
             {
-                _iconTexture.texture = item.SpriteIcon;
+                _button.interactable = item != null;
+                if (item != null)
+                {
+                    _iconTexture.texture = item.SpriteIcon;
+                }
             }
+            
         }
     }
 }

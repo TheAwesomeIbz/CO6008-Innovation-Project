@@ -23,6 +23,7 @@ namespace UnityEngine.UI
         public void LoadScene(TransitionProperties transitionProperties)
         {
             if (Loading) { return; }
+            SCR_PlayerInputManager.PlayerControlsEnabled = false;
             StartCoroutine(TransitionCoroutine(transitionProperties));
         }
 

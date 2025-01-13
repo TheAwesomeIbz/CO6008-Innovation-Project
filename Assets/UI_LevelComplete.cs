@@ -27,7 +27,8 @@ public class UI_LevelComplete : MonoBehaviour
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties { 
                 SceneName = _sceneName,
-                OnSceneLoaded = OnSceneLoaded
+                OnSceneLoaded = OnSceneLoaded,
+                OnSceneUnloaded = OnSceneUnloaded
             });
             _sceneName = "";
         }
@@ -36,5 +37,10 @@ public class UI_LevelComplete : MonoBehaviour
     private void OnSceneLoaded()
     {
         _levelCompleteContentObject.SetActive(false);
+    }
+
+    private void OnSceneUnloaded()
+    {
+        SCR_PlayerInputManager.PlayerControlsEnabled = true;
     }
 }

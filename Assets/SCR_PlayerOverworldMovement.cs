@@ -7,16 +7,23 @@ namespace Overworld
     public class SCR_PlayerOverworldMovement : MonoBehaviour
     {
         [Header("PLAYER MOVEMENT PROPERTIES")]
-        [SerializeField] [Range(1, 20)] float _movementSpeed = 2f;
+        [SerializeField] [Range(1, 20)] float _movementSpeed = 10f;
         [SerializeField] bool _currentlyMoving = false;
-        [SerializeField] SCR_GraphNode _graphNode;
-
+        
+        SCR_GraphNode _graphNode;
         SCR_PlayerInputManager _playerInputManager;
         public SCR_GraphNode GraphNode => _graphNode;
         public void SetGraphNode(SCR_GraphNode graphNode) => _graphNode = graphNode;
         void Start()
         {
             _playerInputManager = SCR_GeneralManager.PlayerInputManager;
+            Collider2D[] allColliders = Physics2D.OverlapPointAll(transform.position);
+            foreach (var collider in allColliders)
+            {
+                SCR_GraphNode graphNode = collider.GetComponent<SCR_GraphNode>();
+                if (graphNode != null) { _graphNode = graphNode; break; }
+            }
+
             if (_graphNode == null)
             {
                 _graphNode = FindFirstObjectByType<SCR_GraphNode>();

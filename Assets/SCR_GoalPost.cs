@@ -12,6 +12,5 @@ public class SCR_GoalPost : MonoBehaviour
         if (!collision.GetType(out SCR_PlayerMovement playerMovement)) { return; }
 
         SCR_GeneralManager.UIManager.FindUIObject<UI_LevelComplete>().DisplayUI(_sceneName);
-        print(Time.time);
     }
 }

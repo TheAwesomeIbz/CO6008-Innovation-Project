@@ -2062,9 +2062,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc5e26905f3392428984845e4e2566e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementSpeed: 2
+  _movementSpeed: 10
   _currentlyMoving: 0
-  _graphNode: {fileID: 280825842}
 --- !u!212 &1096193545
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2251,7 +2250,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphNodes:
   - ValidDirection: 3
-    AdjacentNode: {fileID: 1658486162}
+    AdjacentNode: {fileID: 1737945122}
 --- !u!212 &1343707429
 SpriteRenderer:
   m_ObjectHideFlags: 0
