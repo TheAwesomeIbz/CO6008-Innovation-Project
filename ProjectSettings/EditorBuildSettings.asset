@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Level Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/BossFight_Linear.unity
@@ -18,9 +18,18 @@ EditorBuildSettings:
     path: Assets/Scenes/LineRenderer.unity
     guid: 7106c1d5803177e4b93491b852ddcd0f
   - enabled: 1
-    path: Assets/Scenes/SampleScene 1.unity
+    path: Assets/Scenes/Level 1.unity
     guid: c01b59e67f76d0840bb5bfd88de4db6f
   - enabled: 1
-    path: Assets/Scenes/SampleScene 2.unity
+    path: Assets/Scenes/Introductory Scenes/Naming Scene.unity
+    guid: 2784e49849b77cd418f1846be50f00a9
+  - enabled: 1
+    path: Assets/Scenes/Overworld Scene.unity
     guid: 1e45c70ca67b23f44aca895803ffd26a
+  - enabled: 1
+    path: Assets/Scenes/Title Scenes/Splash Scene.unity
+    guid: 75bd3f171637277449abf83486ffab84
+  - enabled: 1
+    path: Assets/Scenes/Title Scenes/Title Scene.unity
+    guid: 0b470ee018e6b8f41932e66eafce86d4
   m_configObjects: {}

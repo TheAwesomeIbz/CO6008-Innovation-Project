@@ -8,6 +8,8 @@ public class SCR_InventoryManager : MonoBehaviour
     [field: Header("INVENTORY MANAGER PROPERTIES")]
     [field: SerializeField] public List<SO_Item> Inventory { get; private set; }
 
+    public void LoadInventoryInformation(List<SO_Item> inventory) => Inventory = inventory;
+
     /// <summary>
     /// Adds an item to the inventory
     /// </summary>

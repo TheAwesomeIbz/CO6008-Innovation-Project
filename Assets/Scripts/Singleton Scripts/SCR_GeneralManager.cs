@@ -4,32 +4,63 @@ using UnityEngine;
 using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
-    private static SCR_GeneralManager _instance;
+    const int C_MaximumPlayTime = 3599940;
+    [field : SerializeField] public PlayerData PlayerData { get; private set; }
 
-    public static SCR_PlayerInputManager PlayerInputManager => _instance.GetComponent<SCR_PlayerInputManager>();
+    public static SCR_GeneralManager Instance;
+
+    public static SCR_PlayerInputManager PlayerInputManager => Instance.GetComponent<SCR_PlayerInputManager>();
     
-    public static SCR_InventoryManager InventoryManager => _instance.GetComponent<SCR_InventoryManager>();
+    public static SCR_InventoryManager InventoryManager => Instance.GetComponent<SCR_InventoryManager>();
 
-    public static SCR_UIManager UIManager => _instance.GetComponentInChildren<SCR_UIManager>();
+    public static SCR_UIManager UIManager => Instance.GetComponentInChildren<SCR_UIManager>();
 
-    public static SCR_LevelManager LevelManager => _instance.GetComponent<SCR_LevelManager>();
+    public static SCR_LevelManager LevelManager => Instance.GetComponent<SCR_LevelManager>();
 
     private void Awake()
     {
         
-        if (_instance == null)
+        if (Instance == null)
         {
-            _instance = this;
-            DontDestroyOnLoad(_instance);
+            Instance = this;
+            DontDestroyOnLoad(Instance);
         }
         else{
             Destroy(gameObject);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void LoadPlayerData(PlayerData playerData)
     {
-        
+        PlayerData = playerData;
+
+
+        if (playerData == null) { return; }
+        if (playerData.RecentPlayerPosition == null) { return; }
+
+        Overworld.SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
+        if (playerOverworldMovement == null) { return; }
+        playerOverworldMovement.transform.position = new Vector3(playerData.RecentPlayerPosition[0], playerData.RecentPlayerPosition[1]);
+        playerOverworldMovement.Start();
     }
+
+    private void Update()
+    {
+        if (PlayerData != null && PlayerData.PlayTime < C_MaximumPlayTime)
+        {
+            PlayerData.PlayTime += Time.deltaTime;
+        }
+        
+        
+
+        if (Input.GetKeyDown(KeyCode.F2)){
+            SavingOperations.SaveInformation();
+            System.Diagnostics.Process.Start(Application.persistentDataPath);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3)){
+            SavingOperations.LoadInformation();
+        }
+    }
+
 }

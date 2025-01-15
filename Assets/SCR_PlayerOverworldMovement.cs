@@ -14,7 +14,7 @@ namespace Overworld
         SCR_PlayerInputManager _playerInputManager;
         public SCR_GraphNode GraphNode => _graphNode;
         public void SetGraphNode(SCR_GraphNode graphNode) => _graphNode = graphNode;
-        void Start()
+        public void Start()
         {
             _playerInputManager = SCR_GeneralManager.PlayerInputManager;
             Collider2D[] allColliders = Physics2D.OverlapPointAll(transform.position);

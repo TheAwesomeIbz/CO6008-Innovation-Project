@@ -33,7 +33,7 @@ namespace UnityEngine.UI
             
             Loading = true;
             yield return FadeCoroutine(0, 1);
-            transitionProperties.OnSceneLoaded?.Invoke();
+            transitionProperties.OnFadeTransition?.Invoke();
 
             if (string.IsNullOrEmpty(transitionProperties.SceneName))
             {
@@ -46,13 +46,14 @@ namespace UnityEngine.UI
                 {
                     yield return null;
                 }
-                yield return SceneManager.LoadSceneAsync(transitionProperties.SceneName);
+                transitionProperties.OnSceneLoaded?.Invoke();
             }
             
-
+            
             yield return FadeCoroutine(1, 0);
+            _loadingImage.gameObject.SetActive(false);
 
-            transitionProperties.OnSceneUnloaded?.Invoke();
+            transitionProperties.OnTransitionFinished?.Invoke();
             Loading = false;
         }
 
@@ -70,6 +71,7 @@ namespace UnityEngine.UI
                     value -= Time.deltaTime;
                     yield return new WaitForEndOfFrame();
                 }
+                
             }
             else
             {
@@ -79,8 +81,9 @@ namespace UnityEngine.UI
                     value += Time.deltaTime;
                     yield return new WaitForEndOfFrame();
                 }
+                
             }
-
+            
         }
         
         void Update()
@@ -95,8 +98,9 @@ namespace UnityEngine.UI
         public class TransitionProperties
         {
             public string SceneName { get; set; }
+            public Action OnFadeTransition { get; set; }
             public Action OnSceneLoaded { get; set; }
-            public Action OnSceneUnloaded { get; set; }
+            public Action OnTransitionFinished { get; set; }
         }
     }
 

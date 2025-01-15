@@ -12,7 +12,7 @@ public class SCR_LevelManager : MonoBehaviour
     [SerializeField] private Vector3 previousPlayerOverworldPosition;
     [SerializeField] private LevelData currentLevelData;
     
-
+    public List<LevelData> GetLevelInformation => levelInformation;
 
     /// <summary>
     /// Populates level data list from disk or any source
@@ -48,7 +48,7 @@ public class SCR_LevelManager : MonoBehaviour
 
     public void OnLevelTransition(LevelData leveldata, SCR_PlayerOverworldMovement playerOverworldMovement)
     {
-        
+        currentLevelData = leveldata;
         previousPlayerOverworldPosition = playerOverworldMovement.transform.position;
     }
 
@@ -61,6 +61,19 @@ public class SCR_LevelManager : MonoBehaviour
         {
             SCR_GraphNode graphNode = collider.GetComponent<SCR_GraphNode>();
             if (graphNode) { playerOverworldMovement.SetGraphNode(graphNode); break; }
+        }
+    }
+
+    public void OnLevelCompleted()
+    {
+        LevelData levelData = FindLevelByID(currentLevelData.LevelID);
+        if (levelData == null)
+        {
+            levelInformation.Add(currentLevelData);
+        }
+        else
+        {
+             
         }
     }
 

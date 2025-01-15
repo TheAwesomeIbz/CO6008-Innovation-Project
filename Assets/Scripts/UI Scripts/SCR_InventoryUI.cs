@@ -120,44 +120,47 @@ namespace UnityEngine.UI
             }
         }
 
+        
+    }
+
+    /// <summary>
+    /// Local model class that dynamically allows for easy modification for the hover UI object
+    /// </summary>
+    [Serializable]
+    public class HoverUIObject
+    {
+        private Transform _parentObject;
+        private TextMeshProUGUI _objectName;
+        private TextMeshProUGUI _objectDescription;
+        private GameObject _objectUsableText;
+
         /// <summary>
-        /// Local model class that dynamically allows for easy modification for the hover UI object
+        /// Sets the Hover UI object text and description. DIsplays graphic whether item is usable or not
         /// </summary>
-        [Serializable] class HoverUIObject
+        /// <param name="itemName"></param>
+        /// <param name="itemDescription"></param>
+        /// <param name="itemUsable"></param>
+        public void SetItemText(string itemName, string itemDescription, bool itemUsable)
         {
-            private Transform _parentObject;
-            private TextMeshProUGUI _itemName;
-            private TextMeshProUGUI _itemDescription;
-            private GameObject _itemUsableText;
+            _objectName.text = itemName;
+            _objectDescription.text = itemDescription;
+            _objectUsableText.SetActive(itemUsable);
+        }
+        public HoverUIObject(Transform parentObject)
+        {
+            _parentObject = parentObject;
+            _objectName = parentObject.GetChild(0).GetComponent<TextMeshProUGUI>();
+            _objectDescription = parentObject.GetChild(1).GetComponent<TextMeshProUGUI>();
+            _objectUsableText = parentObject.GetChild(2).gameObject;
+        }
 
-            /// <summary>
-            /// Sets the Hover UI object text and description. DIsplays graphic whether item is usable or not
-            /// </summary>
-            /// <param name="itemName"></param>
-            /// <param name="itemDescription"></param>
-            /// <param name="itemUsable"></param>
-            public void SetItemText(string itemName, string itemDescription, bool itemUsable)
-            {
-                _itemName.text = itemName;
-                _itemDescription.text = itemDescription;
-                _itemUsableText.SetActive(itemUsable);
-            }
-
-            public HoverUIObject(Transform parentObject)
-            {
-                _parentObject = parentObject;
-                _itemName = parentObject.GetChild(0).GetComponent<TextMeshProUGUI>();
-                _itemDescription = parentObject.GetChild(1).GetComponent<TextMeshProUGUI>();
-                _itemUsableText = parentObject.GetChild(2).gameObject;
-            }
-
-            /// <summary>
-            /// Sets the parent object anchored position to the world cursor point of the mouse
-            /// </summary>
-            public void SetMousePosition()
-            {
-                _parentObject.transform.position = SCR_GeneralManager.PlayerInputManager.CursorWorldPoint;
-            }
+        public bool HasEmptyFields => string.IsNullOrEmpty(_objectName.text) && string.IsNullOrEmpty(_objectDescription.text);
+        /// <summary>
+        /// Sets the parent object anchored position to the world cursor point of the mouse
+        /// </summary>
+        public void SetMousePosition()
+        {
+            _parentObject.transform.position = SCR_GeneralManager.PlayerInputManager.CursorWorldPoint;
         }
     }
 }

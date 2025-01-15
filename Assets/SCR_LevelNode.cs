@@ -34,7 +34,7 @@ namespace Overworld
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
             {
                 SceneName = sceneName,
-                OnSceneUnloaded = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
+                OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
         });
         }
     }

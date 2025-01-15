@@ -261,9 +261,9 @@ MonoBehaviour:
     AdjacentNode: {fileID: 1737945122}
   - ValidDirection: 1
     AdjacentNode: {fileID: 2138169688}
-  sceneName: SampleScene
+  sceneName: Level Scene
   <LevelData>k__BackingField:
-    <LevelID>k__BackingField: 
+    <LevelID>k__BackingField: level1
     <LevelCompletedTime>k__BackingField: -1
     <LevelCollectibles>k__BackingField:
     - CollectibleID: 0

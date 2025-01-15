@@ -9,7 +9,7 @@ namespace UnityEngine.UI
 {
     public class SCR_UIManager : MonoBehaviour
     {
-        [SerializeField] List<Transform> extensionObjects;
+        [SerializeField] List<Transform> _extensionObjects;
 
         public T FindUIObject<T>() where T : MonoBehaviour
         {
@@ -32,23 +32,26 @@ namespace UnityEngine.UI
             Transform extensionObject = GameObject.FindGameObjectWithTag("UI Extension")?.transform ?? null;
             if (extensionObject == null ) { return; }
 
-            if (extensionObjects.Count > 0)
+            if (_extensionObjects.Count > 0)
             {
-                for (int i = 0; i < extensionObjects.Count; i++)
+                for (int i = 0; i < _extensionObjects.Count; i++)
                 {
-                    Destroy(extensionObjects[i].gameObject);
+                    Destroy(_extensionObjects[i].gameObject);
                 }
             }
-            
 
+            SCR_GeneralManager.UIManager.GetComponent<Canvas>().worldCamera = Camera.main;
             extensionObject.GetComponent<Canvas>().worldCamera = Camera.main;
-            extensionObjects = new List<Transform>();
+            _extensionObjects = new List<Transform>();
             for (int i = 0; i < extensionObject.childCount; i++){
-                extensionObjects.Add(extensionObject.GetChild(i));
+                _extensionObjects.Add(extensionObject.GetChild(i));
             }
-            foreach (Transform child in extensionObjects)
+            foreach (Transform child in _extensionObjects)
             {
                 child.SetParent(transform);
+                child.SetSiblingIndex(0);
+                child.transform.localScale = Vector3.one;
+                child.transform.localPosition = Vector3.zero;
             }
            
             Destroy(extensionObject.gameObject);

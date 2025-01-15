@@ -5160,6 +5160,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1870276683280848133, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870276683280848133, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870276683280848133, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870276683280848133, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2017181615235335870, guid: dc4960be1144a964b96a294a2757343a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -5255,6 +5271,42 @@ PrefabInstance:
     - target: {fileID: 5826857083539179999, guid: dc4960be1144a964b96a294a2757343a, type: 3}
       propertyPath: m_Name
       value: '[ UI MANAGER ] - LEVEL EXTENSION'
+      objectReference: {fileID: 0}
+    - target: {fileID: 5882942325576124630, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5882942325576124630, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5882942325576124630, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5882942325576124630, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6034218737797825831, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6034218737797825831, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6034218737797825831, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6034218737797825831, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7639953236830522498, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7464,7 +7516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2081e9eeb68b8b74c910769858780678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneName: SampleScene 2
+  _sceneName: Overworld Scene
 --- !u!61 &1711616344
 BoxCollider2D:
   m_ObjectHideFlags: 0

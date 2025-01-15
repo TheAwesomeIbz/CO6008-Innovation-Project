@@ -27,20 +27,17 @@ public class UI_LevelComplete : MonoBehaviour
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties { 
                 SceneName = _sceneName,
-                OnSceneLoaded = OnSceneLoaded,
-                OnSceneUnloaded = OnSceneUnloaded
+                OnFadeTransition = OnFadeTransition,
+                OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldTransition,
+                OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
             });
             _sceneName = "";
         }
     }
 
-    private void OnSceneLoaded()
+    private void OnFadeTransition()
     {
         _levelCompleteContentObject.SetActive(false);
     }
 
-    private void OnSceneUnloaded()
-    {
-        SCR_PlayerInputManager.PlayerControlsEnabled = true;
-    }
 }

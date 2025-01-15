@@ -1,0 +1,1 @@
+{"_textValues":["Text number 1","text number 2","continue..."]}
