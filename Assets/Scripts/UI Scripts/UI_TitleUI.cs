@@ -8,13 +8,15 @@ using UnityEngine.UIElements.Experimental;
 
 namespace UnityEngine.UI.Title
 {
+    /// <summary>
+    /// UI Class responsible for managing the title screen and other important UI elements 
+    /// </summary>
     public class UI_TitleUI : MonoBehaviour
     {
         [Header("BUTTON PROPERTIES")]
         [SerializeField] private Button _newGameButton;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _deleteGameButton;
-        UI_TitleButtons _continueButtonTitle;
 
         [Header("HOVER PROPERTIES")]
         [SerializeField] private Transform _parentObject;
@@ -25,30 +27,14 @@ namespace UnityEngine.UI.Title
 
         void Start()
         {
-            _continueButtonTitle = _continueButton.GetComponent<UI_TitleButtons>();
-
             UpdateButtonState();
             _hoverUIObject = new HoverUIObject(_parentObject);
             _hoverUIObject.SetItemText("", "", false);
 
             _saveData = SavingOperations.LoadInformation();
-        }
+            UI_TitleButtons _continueButtonTitle = _continueButton.GetComponent<UI_TitleButtons>();
 
-
-        private void UpdateButtonState()
-        {
-            bool fileExists = File.Exists(SavingOperations.SaveDataPath);
-
-            _newGameButton.gameObject.SetActive(!fileExists);
-            _continueButton.gameObject.SetActive(fileExists);
-            _deleteGameButton.gameObject.SetActive(fileExists);
-        }
-        // Update is called once per frame
-        void Update()
-        {
-            _parentObject.gameObject.SetActive(!_hoverUIObject.HasEmptyFields);
-            _hoverUIObject.SetMousePosition();
-
+            //update continue button title if save data exists
             if (_saveData != null)
             {
                 _continueButtonTitle.name = $"Continue ({_saveData.PlayerData.PlayerName})";
@@ -58,11 +44,36 @@ namespace UnityEngine.UI.Title
             }
         }
 
+        void Update()
+        {
+            _parentObject.gameObject.SetActive(!_hoverUIObject.HasEmptyFields);
+            _hoverUIObject.SetMousePosition();
+        }
+
+        /// <summary>
+        /// Updates what buttons should be shown depending on if a save file exists
+        /// </summary>
+        private void UpdateButtonState()
+        {
+            bool fileExists = File.Exists(SavingOperations.SaveDataPath);
+
+            _newGameButton.gameObject.SetActive(!fileExists);
+            _continueButton.gameObject.SetActive(fileExists);
+            _deleteGameButton.gameObject.SetActive(fileExists);
+        }
+
+
+        /// <summary>
+        /// Update the hover objects UI depending on if it touches a button or not
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="description"></param>
         public void UpdateHoverUI(string title, string description)
         {
             _hoverUIObject.SetItemText(title, description, true);
         }
 
+        #region BUTTON METHONDS
         public void OnNewGameSelected()
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
@@ -113,6 +124,8 @@ namespace UnityEngine.UI.Title
         {
             Application.Quit();
         }
+
+        #endregion
     }
 
 }

@@ -6,20 +6,26 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI.Title
 {
+    /// <summary>
+    /// UI Monobehaviour that deals with the name scene, allowing the player to name themselves, and create a save file for them
+    /// </summary>
     public class UI_NamingScene : MonoBehaviour
     {
         [Header("NAME SCENE PROPERETIES")]
         [SerializeField] private string _sceneName = "Overworld Scene";
-
         [SerializeField] TMP_InputField _inputField;
         [SerializeField] TextMeshProUGUI _errorText;
+
         void Start()
         {
             _errorText.text = "";
         }
 
-
-        private void ParseInputText(string text)
+        /// <summary>
+        /// Validates the input entered, to ensure that it is a valid name string
+        /// </summary>
+        /// <param name="text"></param>
+        private void InputValidation(string text)
         {
             bool validInput = true;
             if (string.IsNullOrWhiteSpace(text))
@@ -49,22 +55,30 @@ namespace UnityEngine.UI.Title
             OnValidNameEntered(text);
         }
 
+        /// <summary>
+        /// Called when a valid name is entered. The game will then transition the user to the next scene.
+        /// </summary>
+        /// <param name="text"></param>
         private void OnValidNameEntered(string text)
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
             {
                 SceneName = _sceneName,
-                OnTransitionFinished = OnSceneUnloaded,
+                OnTransitionFinished = OnTransitionFinished,
             });
 
             SCR_GeneralManager.Instance.LoadPlayerData(new PlayerData(text));
             SavingOperations.SaveInformation();
         }
 
-        private void OnSceneUnloaded()
+        private void OnTransitionFinished()
         {
             SCR_PlayerInputManager.PlayerControlsEnabled = true;
         }
+
+        /// <summary>
+        /// Called every time the input field is updated
+        /// </summary>
         public void OnStringChanged()
         {
             if (string.IsNullOrWhiteSpace(_inputField.text))
@@ -80,7 +94,7 @@ namespace UnityEngine.UI.Title
         {
             if (SCR_GeneralManager.PlayerInputManager.Submit.PressedThisFrame())
             {
-                ParseInputText(_inputField.text);
+                InputValidation(_inputField.text);
             }
         }
 

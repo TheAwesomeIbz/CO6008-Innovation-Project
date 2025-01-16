@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
-    const int C_MaximumPlayTime = 3599940;
-    [field : SerializeField] public PlayerData PlayerData { get; private set; }
-
     public static SCR_GeneralManager Instance;
 
     public static SCR_PlayerInputManager PlayerInputManager => Instance.GetComponent<SCR_PlayerInputManager>();
@@ -16,6 +13,16 @@ public class SCR_GeneralManager : MonoBehaviour
     public static SCR_UIManager UIManager => Instance.GetComponentInChildren<SCR_UIManager>();
 
     public static SCR_LevelManager LevelManager => Instance.GetComponent<SCR_LevelManager>();
+
+    /// <summary>
+    /// Maximum play time allowed for the player in any given save.
+    /// </summary>
+    public const int C_MaximumPlayTime = 3599940;
+    [field: Header("PLAYER SAVE PROPERTIES")]
+    [field: SerializeField] public PlayerData PlayerData { get; private set; }
+    [SerializeField] private float _currentSessionTime;
+    public float CurrentSessionTime => _currentSessionTime;
+    UI_LoadScenes _loadScenes;
 
     private void Awake()
     {
@@ -30,28 +37,14 @@ public class SCR_GeneralManager : MonoBehaviour
         }
     }
 
-    public void LoadPlayerData(PlayerData playerData)
+    private void Start()
     {
-        PlayerData = playerData;
-
-
-        if (playerData == null) { return; }
-        if (playerData.RecentPlayerPosition == null) { return; }
-
-        Overworld.SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
-        if (playerOverworldMovement == null) { return; }
-        playerOverworldMovement.transform.position = new Vector3(playerData.RecentPlayerPosition[0], playerData.RecentPlayerPosition[1]);
-        playerOverworldMovement.Start();
+        _loadScenes = UIManager.FindUIObject<UI_LoadScenes>();
     }
 
     private void Update()
     {
-        if (PlayerData != null && PlayerData.PlayTime < C_MaximumPlayTime)
-        {
-            PlayerData.PlayTime += Time.deltaTime;
-        }
-        
-        
+        UpdateCurrentSessionTime();
 
         if (Input.GetKeyDown(KeyCode.F2)){
             SavingOperations.SaveInformation();
@@ -63,4 +56,36 @@ public class SCR_GeneralManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the current session time to 0
+    /// </summary>
+    public void ResetCurrentSessionTime() => _currentSessionTime = 0;
+
+    /// <summary>
+    /// Updates the current session time every frame depending on the current game state
+    /// </summary>
+    private void UpdateCurrentSessionTime()
+    {
+        if (PlayerData == null || PlayerData.PlayTime >= C_MaximumPlayTime) { return; }
+        if (_loadScenes != null && _loadScenes.Loading) { return; }
+
+        _currentSessionTime += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Loads the current player data to the Game Manager
+    /// </summary>
+    /// <param name="playerData"></param>
+    public void LoadPlayerData(PlayerData playerData)
+    {
+        PlayerData = playerData;
+
+        if (playerData == null) { return; }
+        if (playerData.RecentPlayerPosition == null) { return; }
+
+        Overworld.SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
+        if (playerOverworldMovement == null) { return; }
+        playerOverworldMovement.transform.position = new Vector3(playerData.RecentPlayerPosition[0], playerData.RecentPlayerPosition[1]);
+        playerOverworldMovement.Start();
+    }
 }

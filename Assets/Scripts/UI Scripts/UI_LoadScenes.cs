@@ -5,11 +5,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
-using static UnityEngine.UI.UI_LoadScenes;
 
 namespace UnityEngine.UI
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UI_LoadScenes : MonoBehaviour
     {
         [field : Header("LOAD SCENE PROPERTIES")]
@@ -33,7 +34,6 @@ namespace UnityEngine.UI
             
             Loading = true;
             yield return FadeCoroutine(0, 1);
-            transitionProperties.OnFadeTransition?.Invoke();
 
             if (string.IsNullOrEmpty(transitionProperties.SceneName))
             {
@@ -85,21 +85,26 @@ namespace UnityEngine.UI
             }
             
         }
-        
-        void Update()
-        {
-            //if (Input.GetKeyUp(KeyCode.Escape))
-            //{
-            //    StartCoroutine(TransitionCoroutine(new TransitionProperties { SceneName = "BossFight_Linear" }));
-            //}
-        }
 
 
+        /// <summary>
+        /// Model class used to store information about transitioning to another scene
+        /// </summary>
         public class TransitionProperties
         {
+            /// <summary>
+            /// The name of the scene to be transitioned to
+            /// </summary>
             public string SceneName { get; set; }
-            public Action OnFadeTransition { get; set; }
+
+            /// <summary>
+            /// The Action invoked on the first frame the game transitioned to the consecutive scene.
+            /// </summary>
             public Action OnSceneLoaded { get; set; }
+
+            /// <summary>
+            /// The Action invoked when the fade transition completely finished.
+            /// </summary>
             public Action OnTransitionFinished { get; set; }
         }
     }

@@ -8,31 +8,39 @@ using UnityEngine.UI;
 
 namespace UnityEngine.UI.Title
 {
+    /// <summary>
+    /// UI Class to be used in Disclaimer Scene to show all information necessary for the project.
+    /// </summary>
     public class UI_Disclaimer : MonoBehaviour
     {
-        string[] _splashScreenText;
-        int _textIndex;
+        
+        [Header("SPLASH SCREEN PROPERTIES")]
         [SerializeField] TextMeshProUGUI _textObject;
+        [SerializeField] [TextArea(4, 4)] string[] _disclaimer;
+        int _textIndex;
 
-        const string screenTextPath = "Assets/Miscellaneous/Splash Screen Text/SplashScreen.txt";
         void Start()
         {
             _textIndex = 0;
-            _splashScreenText = JsonUtility.FromJson<ScreenText>(File.ReadAllText(screenTextPath))?._textValues ?? null;
             _textObject.color = new Color(_textObject.color.r, _textObject.color.g, _textObject.color.b, 0);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
-
             StartCoroutine(DisplayTextCoroutine());
         }
 
+        /// <summary>
+        /// Coroutine the runs and loops through each text in disclaimer object in a fading fashion.
+        /// </summary>
+        /// <returns></returns>
         IEnumerator DisplayTextCoroutine()
         {
             bool canPressSubmit = false;
             SCR_PlayerInputManager.PlayerControlsEnabled = true;
 
-            while (_textIndex < _splashScreenText.Length)
+            //fades in and out of the nth string in disclaimer object until there aren't any more
+            while (_textIndex < _disclaimer.Length)
             {
-                _textObject.text = _splashScreenText[_textIndex];
+                _textObject.text = _disclaimer[_textIndex];
+                //fade routine with leantween in
                 LeanTween.value(0, 1, 0.5f).setOnUpdate((value) => {
                     _textObject.color = new Color(_textObject.color.r, _textObject.color.g, _textObject.color.b, value);
                 }
@@ -40,10 +48,10 @@ namespace UnityEngine.UI.Title
                 {
                     canPressSubmit = true;
                 });
-
                 
                 yield return new WaitUntil(() => { return canPressSubmit && SCR_GeneralManager.PlayerInputManager.Submit.IsPressed(); });
 
+                //fade routine with leantween out
                 LeanTween.value(1, 0, 0.5f).setOnUpdate((value) =>
                      _textObject.color = new Color(_textObject.color.r, _textObject.color.g, _textObject.color.b, value)
                 ).setOnComplete(() =>
@@ -54,22 +62,11 @@ namespace UnityEngine.UI.Title
                 _textIndex++;
             }
 
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
             {
                 SceneName = "Title Scene"
             });
 
-        }
-
-        [System.Serializable]
-        class ScreenText
-        {
-            public string[] _textValues;
-
-            public ScreenText(string[] textValues)
-            {
-                _textValues = textValues;
-            }
         }
     }
 }

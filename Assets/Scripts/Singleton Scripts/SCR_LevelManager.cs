@@ -3,16 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using Overworld;
 
+/// <summary>
+/// Manager class responsible for handling level data and information
+/// </summary>
 public class SCR_LevelManager : MonoBehaviour
 {
     [field: Header("LEVEL MANAGER PROPERTIES")]
     [SerializeField] private List<LevelData> levelInformation;
 
     [Header("LEVEL TRANSITION PROPERTIES")]
+    [SerializeField] private string previousSceneName;
     [SerializeField] private Vector3 previousPlayerOverworldPosition;
     [SerializeField] private LevelData currentLevelData;
-    
+
+    public string GetPreviousSceneName => previousSceneName;
     public List<LevelData> GetLevelInformation => levelInformation;
+    public LevelData GetCurrentLevelData => currentLevelData;
+
+
+    void Start()
+    {
+
+    }
 
     /// <summary>
     /// Populates level data list from disk or any source
@@ -46,12 +58,22 @@ public class SCR_LevelManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Called on the transition from the overworld into the level scene.
+    /// </summary>
+    /// <param name="leveldata"></param>
+    /// <param name="playerOverworldMovement"></param>
     public void OnLevelTransition(LevelData leveldata, SCR_PlayerOverworldMovement playerOverworldMovement)
     {
         currentLevelData = leveldata;
+        previousSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         previousPlayerOverworldPosition = playerOverworldMovement.transform.position;
     }
 
+    /// <summary>
+    /// Called on the first frame in the overworld scene scene that transitioned from the level scene.
+    /// </summary>
+    /// <remarks>Sets the player's properties</remarks>
     public void OnOverworldTransition()
     {
         SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<SCR_PlayerOverworldMovement>();
@@ -62,29 +84,33 @@ public class SCR_LevelManager : MonoBehaviour
             SCR_GraphNode graphNode = collider.GetComponent<SCR_GraphNode>();
             if (graphNode) { playerOverworldMovement.SetGraphNode(graphNode); break; }
         }
+
+        previousPlayerOverworldPosition = Vector3.zero;
+        previousSceneName = "";
     }
 
+    /// <summary>
+    /// Called on interaction with goal post when level is completed.
+    /// </summary>
     public void OnLevelCompleted()
     {
         LevelData levelData = FindLevelByID(currentLevelData.LevelID);
+
+        //If there is no level data present, that means it doesnt exist in the list, so append to level information
         if (levelData == null)
         {
             levelInformation.Add(currentLevelData);
+            return;
         }
-        else
+
+        //Find instance of level data in list and update it
+        for (int i = 0; i < levelInformation.Count; i++)
         {
-             
+            if (levelInformation[i].LevelID == currentLevelData.LevelID)
+            {
+                levelInformation[i] = currentLevelData;
+            }
         }
     }
 
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

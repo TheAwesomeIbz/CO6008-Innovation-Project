@@ -209,6 +209,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textObject: {fileID: 2057283383}
+  _disclaimer:
+  - TEXT 1
+  - TEXT 2
+  - CONTINUE...
 --- !u!20 &1198233553 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 3928792843782766341, guid: 14ce3d6d9c22d6f4886d2ff60facd9cc, type: 3}
