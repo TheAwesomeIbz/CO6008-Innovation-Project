@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,6 +38,13 @@ namespace UnityEngine.UI.Title
             bool canPressSubmit = false;
             SCR_PlayerInputManager.PlayerControlsEnabled = true;
 
+
+            Func<bool> inputPredicate = () => {
+                return canPressSubmit &&
+                (SCR_GeneralManager.PlayerInputManager.Submit.IsPressed() ||
+                (SCR_PlayerInputManager.PlayerControlsEnabled && Input.GetMouseButton(0))
+                );
+            };
             //fades in and out of the nth string in disclaimer object until there aren't any more
             while (_textIndex < _disclaimer.Length)
             {
@@ -49,7 +58,7 @@ namespace UnityEngine.UI.Title
                     canPressSubmit = true;
                 });
                 
-                yield return new WaitUntil(() => { return canPressSubmit && SCR_GeneralManager.PlayerInputManager.Submit.IsPressed(); });
+                yield return new WaitUntil(inputPredicate);
 
                 //fade routine with leantween out
                 LeanTween.value(1, 0, 0.5f).setOnUpdate((value) =>

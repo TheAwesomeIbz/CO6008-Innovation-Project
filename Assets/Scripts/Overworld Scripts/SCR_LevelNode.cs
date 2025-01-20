@@ -15,6 +15,11 @@ namespace Overworld
 
         public void InitializeLevelNode(LevelData levelData) => LevelData = levelData;
 
+        public override bool ConditionalNode()
+        {
+            return LevelData.LevelCompleted;
+        }
+
         public override void OnPlayerMoved(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
             Debug.Log("HIDE LEVEL DESCRIPTION");
@@ -29,12 +34,11 @@ namespace Overworld
         {
             if (string.IsNullOrEmpty(sceneName)) { return; }
 
-            SCR_PlayerInputManager.PlayerControlsEnabled = false;
             SCR_GeneralManager.LevelManager.OnLevelTransition(LevelData, playerObject as SCR_PlayerOverworldMovement);
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
             {
                 SceneName = sceneName,
-                OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
+                EnablePlayerControls = true,
         });
         }
     }

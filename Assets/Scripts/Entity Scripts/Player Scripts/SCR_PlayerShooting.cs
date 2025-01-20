@@ -97,6 +97,7 @@ namespace Entities.Player
         {
             if (_virtualCamera == null) { return; } 
             if (!_trackPlayerCursor) { return; }
+            if (!SCR_PlayerInputManager.PlayerControlsEnabled) { return; }
 
             float mouseScrollDelta = Input.mouseScrollDelta.y;
             _cameraZoom += mouseScrollDelta * _mouseZoomMultiplier;

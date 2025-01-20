@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
@@ -46,12 +47,14 @@ public class SCR_GeneralManager : MonoBehaviour
     {
         UpdateCurrentSessionTime();
 
-        if (Input.GetKeyDown(KeyCode.F2)){
+        if (Input.GetKeyDown(KeyCode.F2) && FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>())
+        {
             SavingOperations.SaveInformation();
-            System.Diagnostics.Process.Start(Application.persistentDataPath);
+            if (Input.GetKey(KeyCode.LeftShift)) { System.Diagnostics.Process.Start(Application.persistentDataPath); }
         }
 
-        if (Input.GetKeyDown(KeyCode.F3)){
+        if (Input.GetKeyDown(KeyCode.F3) && FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>())
+        {
             SavingOperations.LoadInformation();
         }
     }
@@ -87,5 +90,15 @@ public class SCR_GeneralManager : MonoBehaviour
         if (playerOverworldMovement == null) { return; }
         playerOverworldMovement.transform.position = new Vector3(playerData.RecentPlayerPosition[0], playerData.RecentPlayerPosition[1]);
         playerOverworldMovement.Start();
+
+        if (PlayerData.SavableChoices.Count == 0) { return; }
+        Overworld.SCR_ChoiceDialogueNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_ChoiceDialogueNode>();
+        foreach (Overworld.SCR_ChoiceDialogueNode choiceDialogueNode in choiceDialogueNodes)
+        {
+            Dialogue.SavableChoice savableChoice = PlayerData.SavableChoices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
+            choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect);
+        }
+
+
     }
 }

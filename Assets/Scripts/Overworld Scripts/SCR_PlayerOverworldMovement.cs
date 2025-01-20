@@ -69,16 +69,23 @@ namespace Overworld
         {
             _currentlyMoving = true;
             yield return new WaitForSeconds(0.25f);
-
-            _graphNode.OnPlayerMoved(this);
-            SCR_GraphNode adjacentGraphNode = _graphNode.GetNode(direction).AdjacentNode;
+            
+            SCR_GraphNode.GraphNode graphNode = _graphNode.GetNode(direction);
+            SCR_GraphNode adjacentGraphNode = graphNode.AdjacentNode;
 
             if (adjacentGraphNode == null)
             {
                 Debug.LogWarning("THERE IS NO ADJACENT NODE PRESENT!");
+                _currentlyMoving = false;
                 yield break;
             }
 
+            if (graphNode.ConditionalNode && !_graphNode.ConditionalNode())
+            {
+                _currentlyMoving = false;
+                yield break;
+            }
+            _graphNode.OnPlayerMoved(this);
             _graphNode = adjacentGraphNode;
 
  

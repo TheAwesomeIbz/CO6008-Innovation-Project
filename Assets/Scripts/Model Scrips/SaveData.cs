@@ -59,9 +59,12 @@ public class PlayerData
     /// </summary>
     public float[] RecentPlayerPosition;
 
+    public List<Dialogue.SavableChoice> SavableChoices;
+
     public PlayerData(string PlayerName)
     {
         this.PlayerName = PlayerName;
+        SavableChoices = new List<Dialogue.SavableChoice>();
         DateStarted = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
     }
 
@@ -75,7 +78,7 @@ public class PlayerData
         SCR_GeneralManager.Instance.ResetCurrentSessionTime();
         DateLastSaved = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
         RecentSceneName = SceneManager.GetActiveScene().name;
-
+        SavableChoices = SCR_GeneralManager.Instance.PlayerData.SavableChoices;
         Overworld.SCR_PlayerOverworldMovement overworldMovement = UnityEngine.Object.FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
 
         if (overworldMovement == null) { return this; }

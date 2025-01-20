@@ -66,6 +66,11 @@ public class SCR_LevelManager : MonoBehaviour
     public void OnLevelTransition(LevelData leveldata, SCR_PlayerOverworldMovement playerOverworldMovement)
     {
         currentLevelData = leveldata;
+        CachePlayerProperties(playerOverworldMovement);
+    }
+
+    public void CachePlayerProperties(SCR_PlayerOverworldMovement playerOverworldMovement)
+    {
         previousSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
         previousPlayerOverworldPosition = playerOverworldMovement.transform.position;
     }
@@ -74,7 +79,7 @@ public class SCR_LevelManager : MonoBehaviour
     /// Called on the first frame in the overworld scene scene that transitioned from the level scene.
     /// </summary>
     /// <remarks>Sets the player's properties</remarks>
-    public void OnOverworldTransition()
+    public void SetPlayerProperties()
     {
         SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<SCR_PlayerOverworldMovement>();
         playerOverworldMovement.transform.position = previousPlayerOverworldPosition;

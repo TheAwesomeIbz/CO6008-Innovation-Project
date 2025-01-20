@@ -52,7 +52,7 @@ namespace UnityEngine.UI
             
             yield return FadeCoroutine(1, 0);
             _loadingImage.gameObject.SetActive(false);
-
+            SCR_PlayerInputManager.PlayerControlsEnabled = transitionProperties.EnablePlayerControls;
             transitionProperties.OnTransitionFinished?.Invoke();
             Loading = false;
         }
@@ -106,6 +106,8 @@ namespace UnityEngine.UI
             /// The Action invoked when the fade transition completely finished.
             /// </summary>
             public Action OnTransitionFinished { get; set; }
+
+            public bool EnablePlayerControls { get; set; }
         }
     }
 

@@ -1,15 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Overworld
 {
+    /// <summary>
+    /// Base monobehaviour that all overworld nodes would inherit from, providing functionality for the player to travel from one node to another
+    /// </summary>
     [RequireComponent(typeof(CircleCollider2D))]
     public class SCR_GraphNode : MonoBehaviour
     {
         [Header("GRAPH NODE PROPERTIES")]
-        [SerializeField] private List<GraphNode> graphNodes;
+        [SerializeField] protected List<GraphNode> graphNodes;
 
+        /// <summary>
+        /// Virtual method that allows the player to move to any conditional nodes if this condition is met.
+        /// This can be overriden in inherited classes.
+        /// </summary>
+        /// <returns>Whether thhe player can move to the adjacent node or not</returns>
+        public virtual bool ConditionalNode()
+        {
+            return false;
+        }
+        
         void Start()
         {
             if (graphNodes == null) { graphNodes = new List<GraphNode>(); }
@@ -66,9 +80,17 @@ namespace Overworld
                 EAST,
                 WEST
             }
-
+            /// <summary>
+            /// Direction in which to travel to
+            /// </summary>
             public Direction ValidDirection;
             public SCR_GraphNode AdjacentNode;
+
+            /// <summary>
+            /// Whether travelling to the adjacent node requires a condition to be met or not
+            /// </summary>
+            public bool ConditionalNode;
+
         }
     }
 

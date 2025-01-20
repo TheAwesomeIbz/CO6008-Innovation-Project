@@ -12,6 +12,8 @@ namespace Overworld
 
         public bool Interactable => true;
 
+        public DialogueObject[] DialogueObject => dialogueObjects;
+
         public void Interact(object playerObject)
         {
             SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects);
