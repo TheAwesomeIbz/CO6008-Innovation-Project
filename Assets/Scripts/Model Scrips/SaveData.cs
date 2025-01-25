@@ -95,7 +95,7 @@ public static class SavingOperations
     /// <summary>
     /// The exact directory in which save data is stored.
     /// </summary>
-    public static string SaveDataPath => Application.persistentDataPath + "/SaveData.math";
+    public static string SaveDataPath => Application.persistentDataPath + "/Player.sav";
 
     /// <summary>
     /// Save information to the directory in a JSON format.
