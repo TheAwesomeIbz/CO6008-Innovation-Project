@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Title
     {
         [Header("BUTTON PROPERTIES")]
         [SerializeField] Transform parentButtonObject; 
-        private List<Button> buttons = new List<Button>();
+        [SerializeField] private List<Button> buttons = new List<Button>();
         private Button _newGameButton;
         private Button _continueButton;
         private Button _deleteGameButton;

@@ -54,6 +54,11 @@ namespace UnityEngine.UI.Title
                 return;
             }
 
+            if (SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().Loading)
+            {
+                return;
+            }
+
             OnValidNameEntered(text);
         }
 
