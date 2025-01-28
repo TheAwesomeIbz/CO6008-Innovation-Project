@@ -210,9 +210,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textObject: {fileID: 2057283383}
   _disclaimer:
-  - TEXT 1
-  - TEXT 2
-  - CONTINUE...
+  - This will contain a general disclaimer about the project. Press the <color=yellow>LEFT
+    MOUSE BUTTON</color> or <color=yellow>ENTER</color> to continue.
+  - Additional information about the project development or the CO6008 module can
+    go here too.
 --- !u!20 &1198233553 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 3928792843782766341, guid: 14ce3d6d9c22d6f4886d2ff60facd9cc, type: 3}
@@ -1111,7 +1112,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2445350061856778356, guid: b39aaa04ef8d4b4479c5a909372fb3c4, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b39aaa04ef8d4b4479c5a909372fb3c4, type: 3}
@@ -1150,7 +1152,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 272.45, y: 50}
+  m_SizeDelta: {x: 1426.77, y: 613.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2057283383
 MonoBehaviour:

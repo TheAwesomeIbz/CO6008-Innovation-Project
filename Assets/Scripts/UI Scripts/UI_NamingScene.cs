@@ -1,3 +1,5 @@
+using Dialogue;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -61,14 +63,30 @@ namespace UnityEngine.UI.Title
         /// <param name="text"></param>
         private void OnValidNameEntered(string text)
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
-            {
-                SceneName = _sceneName,
-                OnTransitionFinished = OnTransitionFinished,
-            });
 
-            SCR_GeneralManager.Instance.LoadPlayerData(new PlayerData(text));
-            SavingOperations.SaveInformation();
+            DialogueObject[] dialogue = DialogueObject.CreateDialogue(
+                $"Hello {text}, this is PROJECT POLYNOMIAL Ver. {Application.version} ran on Unity {Application.unityVersion}.",
+                "This build contains the abstract frameworks and game mechanics that will be featured in the final game.",
+                $"{text} will load into the overworld, in which they can interact with objects and levels.",
+                "If you get stuck or confused about anything, always try to hover over objects with your mouse for more information!",
+                $"Good luck {text}, and enjoy this prototype!"
+                );
+
+            Action onDialogueFinished = () =>
+            {
+                SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+                {
+                    SceneName = _sceneName,
+                    OnTransitionFinished = OnTransitionFinished,
+                });
+
+                SCR_GeneralManager.Instance.LoadPlayerData(new PlayerData(text));
+                SavingOperations.SaveInformation();
+            };
+
+            _inputField.interactable = false;
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, onDialogueFinished);
+            
         }
 
         private void OnTransitionFinished()

@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Overworld;
+using Level;
+using System;
+using Unity.VisualScripting;
+using UnityEditor.Build;
 
 /// <summary>
 /// Manager class responsible for handling level data and information
@@ -69,6 +73,15 @@ public class SCR_LevelManager : MonoBehaviour
         CachePlayerProperties(playerOverworldMovement);
     }
 
+    public void OnSceneLoaded()
+    {
+        SCR_LevelCollectable[] levelCollectables = FindObjectsOfType<SCR_LevelCollectable>();
+        foreach (SCR_LevelCollectable levelCollectable in levelCollectables)
+        {
+            bool collectibleAlreadyExists = currentLevelData.LevelCollectablesObtained.Contains(levelCollectable.name);
+            levelCollectable.gameObject.SetActive(!collectibleAlreadyExists);
+        }
+    }
     public void CachePlayerProperties(SCR_PlayerOverworldMovement playerOverworldMovement)
     {
         previousSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -79,7 +92,13 @@ public class SCR_LevelManager : MonoBehaviour
     /// Called on the first frame in the overworld scene scene that transitioned from the level scene.
     /// </summary>
     /// <remarks>Sets the player's properties</remarks>
-    public void SetPlayerProperties()
+    public void OnOverworldSceneLoaded()
+    {
+        LoadPlayerProperties();
+        LoadLevelProperties();
+    }
+
+    private void LoadPlayerProperties()
     {
         SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<SCR_PlayerOverworldMovement>();
         playerOverworldMovement.transform.position = previousPlayerOverworldPosition;
@@ -92,6 +111,16 @@ public class SCR_LevelManager : MonoBehaviour
 
         previousPlayerOverworldPosition = Vector3.zero;
         previousSceneName = "";
+    }
+
+    private void LoadLevelProperties()
+    {
+        SCR_LevelNode[] levelNodes = FindObjectsOfType<SCR_LevelNode>();
+        foreach (SCR_LevelNode levelNode in levelNodes)
+        {
+            LevelData existingLevelData = SCR_GeneralManager.LevelManager.levelInformation.Find(lvl => lvl.LevelID == levelNode.LevelData.LevelID);
+            if (existingLevelData != null) { levelNode.UpdateLevelData(existingLevelData); }
+        }
     }
 
     /// <summary>

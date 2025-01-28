@@ -43,7 +43,7 @@ namespace UnityEngine.UI
                 SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
                 {
                     SceneName = SCR_GeneralManager.LevelManager.GetPreviousSceneName,
-                    OnSceneLoaded = SCR_GeneralManager.LevelManager.SetPlayerProperties,
+                    OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldSceneLoaded,
                     OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
                 });
                 _sceneName = ""; //set to empty so any key cannot be spammed

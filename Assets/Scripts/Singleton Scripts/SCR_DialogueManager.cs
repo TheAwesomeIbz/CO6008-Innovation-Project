@@ -113,6 +113,12 @@ namespace Dialogue
             answeredTime = 0;
             _continueIcon.SetActive(false);
             DialogueObject[] currentDialogueObjects = dialogueObjects;
+
+            if (currentDialogueObjects == null)
+            {
+                EndDialogueSequence();
+                return;
+            }
             
             //If the dialogue manager has run into the last object in the resultant dialogue in the choice dialogue object
             //then resume back to displaying the parent dialogue objects (cached locally)
@@ -265,22 +271,26 @@ namespace Dialogue
                 choiceUIObject.SetObjectActivity(false);
             }
 
-            bool choiceAlreadyExists = SCR_GeneralManager.Instance.PlayerData.SavableChoices.Find(ch => ch.ChoiceID == savableChoice.SavableChoice.ChoiceID) != null;
-
-            //if there is a savable choice that doesnt exist that can be saved to disk, then add it to the player data
-            bool canSaveToDisk = savableChoice != null && savableChoice.SaveQuestionToDisk && !choiceAlreadyExists;
-
-            bool quizExists = quizInterface != null && !choiceAlreadyExists;
-            bool correctQuizAnswer = quizExists && index == quizInterface?.CorrectChoice;
-            bool correctQuizAnsweredWithOneChance = correctQuizAnswer && (quizInterface?.OnlyOneChance ?? false);
-           
-            if (canSaveToDisk || correctQuizAnswer || correctQuizAnsweredWithOneChance)
+            ChoiceDialogueObject currentDialogueObject = cachedDialogueObjects[GetCurrentIndex] as ChoiceDialogueObject;
+            if (!currentDialogueObject.NonImpactingChoice)
             {
-                savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2));
-                SCR_GeneralManager.Instance.PlayerData.SavableChoices.Add(savableChoice.SavableChoice);
+                bool choiceAlreadyExists = SCR_GeneralManager.Instance.PlayerData.SavableChoices.Find(ch => ch.ChoiceID == savableChoice.SavableChoice.ChoiceID) != null;
+
+                //if there is a savable choice that doesnt exist that can be saved to disk, then add it to the player data
+                bool canSaveToDisk = savableChoice != null && !choiceAlreadyExists;
+                selectedCorrectChoice = currentDialogueObject.CorrectChoice == index;
+
+
+
+                if (canSaveToDisk && (selectedCorrectChoice || (quizInterface?.OnlyOneChance ?? false)))
+                {
+                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2));
+                    SCR_GeneralManager.Instance.PlayerData.SavableChoices.Add(savableChoice.SavableChoice);
+                }
             }
 
             choiceDialogueObjectIndex++;
+            cachedChoiceObjects[index].OnChoiceMade?.Invoke();
             DisplayNextDialogue(cachedChoiceObjects[index].ResultingDialogue);
         }
 

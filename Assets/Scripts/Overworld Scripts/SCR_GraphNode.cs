@@ -11,8 +11,12 @@ namespace Overworld
     [RequireComponent(typeof(CircleCollider2D))]
     public class SCR_GraphNode : MonoBehaviour
     {
+        const int C_GraphNodeRaycastLength = 3;
         [Header("GRAPH NODE PROPERTIES")]
+        [SerializeField] protected bool calculateAdjacentNodes = true;
         [SerializeField] protected List<GraphNode> graphNodes;
+
+        public IReadOnlyList<GraphNode> GetGraphNodes => graphNodes;
 
         /// <summary>
         /// Virtual method that allows the player to move to any conditional nodes if this condition is met.
@@ -24,9 +28,49 @@ namespace Overworld
             return false;
         }
         
-        void Start()
+        private void InitialiseGraphNodes()
         {
-            if (graphNodes == null) { graphNodes = new List<GraphNode>(); }
+            Func<GraphNode.Direction, Vector2> GetDirection = (direction) =>
+            {
+                return direction switch
+                {
+                    GraphNode.Direction.NORTH => Vector2.up,
+                    GraphNode.Direction.SOUTH => Vector2.down,
+                    GraphNode.Direction.EAST => Vector2.right,
+                    GraphNode.Direction.WEST => Vector2.left,
+                    _ => Vector2.zero,
+                };
+            };
+
+            for (int i = 0; i < 4; i++)
+            {
+                GraphNode.Direction currentDirection = (GraphNode.Direction)i;
+                RaycastHit2D[] graphNodeRaycast = Physics2D.RaycastAll(transform.position, GetDirection(currentDirection), C_GraphNodeRaycastLength, LayerMask.GetMask("Graph Nodes"));
+                foreach (RaycastHit2D raycastHit in graphNodeRaycast)
+                {
+                    bool validGraphNode = raycastHit.collider != null && raycastHit.collider.name != name;
+                    
+                    if (!validGraphNode) { continue; }
+                    bool directionAlreadyExists = graphNodes.Find(gn => gn.ValidDirection == currentDirection) != null;
+                    if (directionAlreadyExists) { continue; }
+
+                    GraphNode graphNode = new GraphNode
+                    {
+                        AdjacentNode = raycastHit.collider.GetComponent<SCR_GraphNode>(),
+                        ValidDirection = currentDirection,
+                        ConditionalNode = false
+                    };
+
+                    graphNodes.Add(graphNode);
+                }
+                
+            }
+        }
+        void Awake()
+        {
+            if (!calculateAdjacentNodes) { return; }
+            if (graphNodes.Count == 0) { graphNodes = new List<GraphNode>(); }
+            InitialiseGraphNodes();
         }
 
         /// <summary>

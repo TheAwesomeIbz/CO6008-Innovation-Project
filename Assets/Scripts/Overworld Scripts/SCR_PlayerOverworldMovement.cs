@@ -9,7 +9,10 @@ namespace Overworld
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] [Range(1, 20)] float _movementSpeed = 10f;
         [SerializeField] bool _currentlyMoving = false;
-        
+
+        [Header("ARROW PROPERTIES")]
+        [SerializeField] Transform parentArrowObject;
+
         SCR_GraphNode _graphNode;
         SCR_PlayerInputManager _playerInputManager;
         public SCR_GraphNode GraphNode => _graphNode;
@@ -28,8 +31,21 @@ namespace Overworld
             {
                 _graphNode = FindFirstObjectByType<SCR_GraphNode>();
             }
+
+            InitialiseDirectionalArrows(_graphNode);
+
         }
 
+        private void InitialiseDirectionalArrows(SCR_GraphNode graphNode)
+        {
+            foreach (Transform child in parentArrowObject){
+                child.gameObject.SetActive(false);
+            }
+            foreach (SCR_GraphNode.GraphNode gn in graphNode.GetGraphNodes)
+            {
+                parentArrowObject.GetChild((int)gn.ValidDirection).gameObject.SetActive(true);
+            }
+        }
         public void InitialiseCurrentNode(SCR_GraphNode graphNode) => this._graphNode = graphNode;
         // Update is called once per frame
         void Update()
@@ -95,6 +111,7 @@ namespace Overworld
                 yield return null;
 
             }
+            InitialiseDirectionalArrows(_graphNode);
             transform.position = _graphNode.transform.position;
             _currentlyMoving = false;
             _graphNode.OnPlayerLanded(this);

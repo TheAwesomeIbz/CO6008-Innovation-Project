@@ -30,6 +30,8 @@ namespace Overworld
             Debug.Log("OPEN LEVEL DESCRIPTION");
         }
 
+        public void UpdateLevelData(LevelData levelData) => LevelData = levelData;
+
         public void Interact(object playerObject)
         {
             if (string.IsNullOrEmpty(sceneName)) { return; }
@@ -39,6 +41,7 @@ namespace Overworld
             {
                 SceneName = sceneName,
                 EnablePlayerControls = true,
+                OnSceneLoaded = SCR_GeneralManager.LevelManager.OnSceneLoaded,
         });
         }
     }

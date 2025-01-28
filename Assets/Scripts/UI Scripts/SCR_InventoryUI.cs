@@ -14,31 +14,26 @@ namespace UnityEngine.UI
         [field : SerializeField] public bool InventoryEnabled { get; private set; }
         [SerializeField] GameObject _panelObject;
         [SerializeField] GameObject _title;
-        [SerializeField] Transform _hoverParentObject;
         [SerializeField] RawImage _selectedItemObject;
 
-        HoverUIObject _hoverUIObject;
         iUsableItem _usableItem;
         SCR_InventoryManager _inventoryManager;
-        SCR_InventoryUI_Slot[] _inventoryUISlots;
+        UI_InventoryUI_Slot[] _inventoryUISlots;
 
         void Start()
         {
-            _hoverUIObject = new HoverUIObject(_hoverParentObject);
             InventoryEnabled = false;
             _inventoryManager = SCR_GeneralManager.InventoryManager;
 
             _panelObject.SetActive(false);
             _title.SetActive(false);
-            _hoverParentObject.gameObject.SetActive(false);
             _selectedItemObject.gameObject.SetActive(false);
-            _inventoryUISlots = new SCR_InventoryUI_Slot[32];
+            _inventoryUISlots = new UI_InventoryUI_Slot[32];
         }
         void Update()
         {
-            _hoverUIObject.SetMousePosition();
             InventoryButtonUpdate();
-            InventorySlotUpdate();
+            //InventorySlotUpdate();
         }
 
 
@@ -55,33 +50,11 @@ namespace UnityEngine.UI
         {
             for (int i = 0; i < _inventoryUISlots.Length; i++)
             {
-                _inventoryUISlots[i] = _panelObject.transform.GetChild(i).GetComponent<SCR_InventoryUI_Slot>();
+                _inventoryUISlots[i] = _panelObject.transform.GetChild(i).GetComponent<UI_InventoryUI_Slot>();
 
                 SO_Item inventoryItem = i < _inventoryManager.Inventory.Count ? _inventoryManager.Inventory[i] : null;
                 _inventoryUISlots[i].InitializeSlot(inventoryItem);
             }
-        }
-
-        /// <summary>
-        /// Function called whenever a slot is hovered over within the Inventory Panel
-        /// </summary>
-        /// <param name="slot"></param>
-        public void OnSlotHovered(SCR_InventoryUI_Slot slot)
-        {
-            if (!slot.Item) { return; }
-
-            _usableItem = slot.Item as iUsableItem;
-            _hoverParentObject.gameObject.SetActive(true);
-            _hoverUIObject.SetItemText(slot.Item.SpriteName, slot.Item.SpriteDescription, _usableItem != null);
-        }
-
-        /// <summary>
-        /// Function called whenever the mouse cursor has stopped hovering within the Inventory Panel
-        /// </summary>
-        public void OnSlotUnHovered()
-        {
-            _hoverParentObject.gameObject.SetActive(false);
-            _usableItem = null;
         }
 
 
@@ -101,66 +74,21 @@ namespace UnityEngine.UI
                 UpdateUI();
                 
             }
-            else
-            {
-                _hoverParentObject.gameObject.SetActive(false);
-            }
         }
 
-        /// <summary>
-        /// Update() method that is responsible for using usable items within the inventory menu
-        /// </summary>
-        private void InventorySlotUpdate()
-        {
-            if (!InventoryEnabled) { return; }
+        ///// <summary>
+        ///// Update() method that is responsible for using usable items within the inventory menu
+        ///// </summary>
+        //private void InventorySlotUpdate()
+        //{
+        //    if (!InventoryEnabled) { return; }
 
-            if (Input.GetMouseButtonDown(1) && _usableItem != null)
-            {
-                _usableItem.UseItem();
-            }
-        }
+        //    if (Input.GetMouseButtonDown(0) && SCR_PlayerInputManager.PlayerControlsEnabled && _usableItem != null)
+        //    {
+        //        _usableItem.UseItem();
+        //    }
+        ///}
 
         
-    }
-
-    /// <summary>
-    /// Local model class that dynamically allows for easy modification for the hover UI object
-    /// </summary>
-    [Serializable]
-    public class HoverUIObject
-    {
-        private Transform _parentObject;
-        private TextMeshProUGUI _objectName;
-        private TextMeshProUGUI _objectDescription;
-        private GameObject _objectUsableText;
-
-        /// <summary>
-        /// Sets the Hover UI object text and description. DIsplays graphic whether item is usable or not
-        /// </summary>
-        /// <param name="itemName"></param>
-        /// <param name="itemDescription"></param>
-        /// <param name="itemUsable"></param>
-        public void SetItemText(string itemName, string itemDescription, bool itemUsable)
-        {
-            _objectName.text = itemName;
-            _objectDescription.text = itemDescription;
-            _objectUsableText.SetActive(itemUsable);
-        }
-        public HoverUIObject(Transform parentObject)
-        {
-            _parentObject = parentObject;
-            _objectName = parentObject.GetChild(0).GetComponent<TextMeshProUGUI>();
-            _objectDescription = parentObject.GetChild(1).GetComponent<TextMeshProUGUI>();
-            _objectUsableText = parentObject.GetChild(2).gameObject;
-        }
-
-        public bool HasEmptyFields => string.IsNullOrEmpty(_objectName.text) && string.IsNullOrEmpty(_objectDescription.text);
-        /// <summary>
-        /// Sets the parent object anchored position to the world cursor point of the mouse
-        /// </summary>
-        public void SetMousePosition()
-        {
-            _parentObject.transform.position = SCR_GeneralManager.PlayerInputManager.CursorWorldPoint;
-        }
     }
 }

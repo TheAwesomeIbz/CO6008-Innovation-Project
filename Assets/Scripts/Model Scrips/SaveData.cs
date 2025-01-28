@@ -15,11 +15,13 @@ public class SaveData
     public List<LevelData> LevelInformation;
     public List<SO_Item> InventoryInformation;
 
-    public SaveData(PlayerData playerData, List<LevelData> levelInformation, List<SO_Item> inventoryInformation)
+    public SaveData(SCR_GeneralManager generalManager)
     {
-        PlayerData = playerData;
-        LevelInformation = levelInformation;
-        InventoryInformation = inventoryInformation;
+        generalManager.PlayerData.UpdatePlayerData();
+        PlayerData = generalManager.PlayerData;
+        LevelInformation = SCR_GeneralManager.LevelManager.GetLevelInformation;
+        InventoryInformation = SCR_GeneralManager.InventoryManager.Inventory;
+        
     }
 }
 
@@ -69,21 +71,24 @@ public class PlayerData
     }
 
     /// <summary>
-    /// Returns an updated version of the player data that should be used for saving player data
+    /// Updates the version of the player data that should be used for saving player data
     /// </summary>
     /// <returns></returns>
-    public PlayerData SavePlayerData()
+
+    public void UpdatePlayerData()
     {
+        if (string.IsNullOrEmpty(PlayerName)) { PlayerName = "Alpha"; }
         PlayTime = SCR_GeneralManager.Instance.PlayerData.PlayTime + SCR_GeneralManager.Instance.CurrentSessionTime;
         SCR_GeneralManager.Instance.ResetCurrentSessionTime();
+
         DateLastSaved = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
+        if (DateStarted.Length == 0) { DateStarted = DateLastSaved; }
         RecentSceneName = SceneManager.GetActiveScene().name;
         SavableChoices = SCR_GeneralManager.Instance.PlayerData.SavableChoices;
         Overworld.SCR_PlayerOverworldMovement overworldMovement = UnityEngine.Object.FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
 
-        if (overworldMovement == null) { return this; }
+        if (overworldMovement == null) { return; }
         RecentPlayerPosition = new float[2] { overworldMovement.transform.position.x, overworldMovement.transform.position.y };
-        return this;
     }
 }
 
@@ -102,9 +107,8 @@ public static class SavingOperations
     /// </summary>
     public static void SaveInformation()
     {
-        SaveData saveData = new SaveData(SCR_GeneralManager.Instance.PlayerData.SavePlayerData(), 
-            SCR_GeneralManager.LevelManager.GetLevelInformation,
-            SCR_GeneralManager.InventoryManager.Inventory);
+
+        SaveData saveData = new SaveData(SCR_GeneralManager.Instance);
         File.WriteAllText(SaveDataPath, JsonUtility.ToJson(saveData));
 
     }

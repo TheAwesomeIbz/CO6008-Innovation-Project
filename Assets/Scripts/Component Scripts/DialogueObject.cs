@@ -10,6 +10,16 @@ namespace Dialogue
     /// </summary>
     [Serializable] public class DialogueObject
     {
+        public static DialogueObject[] CreateDialogue(params string[] dialogueText)
+        {
+            List<DialogueObject> dialogueObjects = new List<DialogueObject>();
+            foreach (string dialogue in dialogueText)
+            {
+                dialogueObjects.Add(new DialogueObject(dialogue));
+            }
+            return dialogueObjects.ToArray();
+        }
+
         [SerializeField] protected string _speakingCharacter;
         [SerializeField][TextArea(2, 2)] protected string _dialogueText;
         [SerializeField] protected AudioClip _speakingSFX;
@@ -43,6 +53,7 @@ namespace Dialogue
             this._speakingSFX = _speakingSFX;
         }
 
+        public void SetSpeakingCharacter(string text) => _speakingCharacter = text;
         public static DialogueObject[] NullDialogueObject { get; } = new DialogueObject[] { new DialogueObject("NullDialogueException") };
     }
 
@@ -52,9 +63,13 @@ namespace Dialogue
     [Serializable] public class ChoiceDialogueObject : DialogueObject
     {
         public ChoiceOption[] choiceOptions = new ChoiceOption[3];
-        public ChoiceDialogueObject(string _dialogueText) : base(_dialogueText)
-        {
+        public bool NonImpactingChoice = false;
 
+        public int CorrectChoice => Array.FindIndex(choiceOptions, choice => choice.CorrectAnswer);
+        public ChoiceDialogueObject(ChoiceOption[] choiceOptions, bool nonImpactingChoice, string _speakingCharacter, string _dialogueText, AudioClip _speakingSFX = null) : base(_speakingCharacter, _dialogueText, _speakingSFX = null)
+        {
+            this.choiceOptions = choiceOptions;
+            NonImpactingChoice = nonImpactingChoice;
         }
 
         /// <summary>
@@ -62,16 +77,18 @@ namespace Dialogue
         /// </summary>
         [Serializable] public class ChoiceOption
         {
-            public ChoiceOption(string choiceText, bool correctAnswer, DialogueObject[] resultingDialogue)
+            public ChoiceOption(string choiceText, DialogueObject[] resultingDialogue, Action onChoiceMade)
             {
                 ChoiceText = choiceText;
-                CorrectAnswer = correctAnswer;
+                CorrectAnswer = false;
                 ResultingDialogue = resultingDialogue;
+                OnChoiceMade = onChoiceMade;
             }
 
             [field: SerializeField] public string ChoiceText { get; private set; }
             [field: SerializeField] public bool CorrectAnswer { get; private set; }
             [field: SerializeField] public DialogueObject[] ResultingDialogue { get; private set; }
+            public Action OnChoiceMade { get; private set; }
 
         }
 
@@ -120,10 +137,6 @@ namespace Dialogue
     /// </summary>
     public interface ISavableChoice
     {
-        /// <summary>
-        /// Whether the answers and additional properties should be saved to the player's save file
-        /// </summary>
-        public bool SaveQuestionToDisk { get; }
 
         /// <summary>
         /// The savable choice attribites attached to this object

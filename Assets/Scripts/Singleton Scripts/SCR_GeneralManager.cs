@@ -15,6 +15,7 @@ public class SCR_GeneralManager : MonoBehaviour
 
     public static SCR_LevelManager LevelManager => Instance.GetComponent<SCR_LevelManager>();
 
+    
     /// <summary>
     /// Maximum play time allowed for the player in any given save.
     /// </summary>
@@ -27,7 +28,6 @@ public class SCR_GeneralManager : MonoBehaviour
 
     private void Awake()
     {
-        
         if (Instance == null)
         {
             Instance = this;
@@ -92,8 +92,8 @@ public class SCR_GeneralManager : MonoBehaviour
         playerOverworldMovement.Start();
 
         if (PlayerData.SavableChoices.Count == 0) { return; }
-        Overworld.SCR_ChoiceDialogueNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_ChoiceDialogueNode>();
-        foreach (Overworld.SCR_ChoiceDialogueNode choiceDialogueNode in choiceDialogueNodes)
+        Overworld.SCR_QuizDialogueNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_QuizDialogueNode>();
+        foreach (Overworld.SCR_QuizDialogueNode choiceDialogueNode in choiceDialogueNodes)
         {
             Dialogue.SavableChoice savableChoice = PlayerData.SavableChoices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
             choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect);

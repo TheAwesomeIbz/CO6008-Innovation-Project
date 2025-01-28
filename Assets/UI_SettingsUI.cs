@@ -11,7 +11,7 @@ namespace UnityEngine.UI
     public class UI_SettingsUI : MonoBehaviour
     {
         [field : SerializeField] public bool SettingsMenuEnabled { get; private set; }
-        [SerializeField] private SettingsInformation settingsInformation;
+        [field: SerializeField] public SettingsInformation settingsInformation { get; private set; }
 
         [Header("SETTINGS UI PROPERTIES")]
         [SerializeField] GameObject settingsParentObject;
@@ -23,11 +23,13 @@ namespace UnityEngine.UI
         [SerializeField] Slider audioScaleSlider;
         [SerializeField] TextMeshProUGUI audioScaleText;
 
-        void Start()
+        void Awake()
         {
             Settings settings = new Settings();
             settingsInformation = settings.SettingsInformation;
             InitialiseSettingsUI();
+            SettingsMenuEnabled = false;
+            settingsParentObject.gameObject.SetActive(false);
 
         }
 
@@ -37,6 +39,12 @@ namespace UnityEngine.UI
             textSpeedDropdown.value = (int)settingsInformation.TextSpeed;
             uiScaleSlider.value = (settingsInformation.UIScale - 0.75f) * 2f;
             audioScaleSlider.value = settingsInformation.AudioVolume;
+        }
+
+        public void DisplaySettingsUI(bool activity)
+        {
+            SettingsMenuEnabled = activity;
+            OnSettingsMenuPressed();
         }
         public void OnGameModeUpdated()
         {
@@ -73,6 +81,11 @@ namespace UnityEngine.UI
                 UIScale = 1f
             };
             InitialiseSettingsUI();
+        }
+
+        public void OnResumeButtonPressed()
+        {
+            DisplaySettingsUI(false);
         }
         public void OnSettingsMenuPressed()
         {

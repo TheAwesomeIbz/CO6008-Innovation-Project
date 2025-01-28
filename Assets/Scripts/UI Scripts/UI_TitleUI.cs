@@ -1,3 +1,4 @@
+using Dialogue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,41 +15,32 @@ namespace UnityEngine.UI.Title
     public class UI_TitleUI : MonoBehaviour
     {
         [Header("BUTTON PROPERTIES")]
-        [SerializeField] private Button _newGameButton;
-        [SerializeField] private Button _continueButton;
-        [SerializeField] private Button _deleteGameButton;
+        [SerializeField] Transform parentButtonObject; 
+        private List<Button> buttons = new List<Button>();
+        private Button _newGameButton;
+        private Button _continueButton;
+        private Button _deleteGameButton;
 
-        [Header("HOVER PROPERTIES")]
-        [SerializeField] private Transform _parentObject;
-        HoverUIObject _hoverUIObject;
+        [field : Header("SAVE DATA PROPERTIES")]
+        [field : SerializeField] public SaveData SaveData { get; private set; }
 
-        [Header("SAVE DATA PROPERTIES")]
-        [SerializeField] private SaveData _saveData;
-
-        void Start()
+        void Awake()
         {
-            UpdateButtonState();
-            _hoverUIObject = new HoverUIObject(_parentObject);
-            _hoverUIObject.SetItemText("", "", false);
-
-            _saveData = SavingOperations.LoadInformation();
-            UI_TitleButtons _continueButtonTitle = _continueButton.GetComponent<UI_TitleButtons>();
-
-            //update continue button title if save data exists
-            if (_saveData != null)
-            {
-                _continueButtonTitle.name = $"Continue ({_saveData.PlayerData.PlayerName})";
-                _continueButtonTitle.SetDescription(
-                    $"Last saved on <color=green>{_saveData.PlayerData.DateLastSaved[0]}/{_saveData.PlayerData.DateLastSaved[1]}/{_saveData.PlayerData.DateLastSaved[2]}</color> at <color=green>{_saveData.PlayerData.DateLastSaved[3]}</color>\n" +
-                    $"First started on <color=green>{_saveData.PlayerData.DateStarted[0]}/{_saveData.PlayerData.DateStarted[1]}/{_saveData.PlayerData.DateStarted[2]}</color> at <color=green>{_saveData.PlayerData.DateStarted[3]}</color>");
+            SaveData = SavingOperations.LoadInformation();
+            
+            
+            buttons = new List<Button>();
+            foreach (Transform child in parentButtonObject){
+                buttons.Add(child.GetComponent<Button>());
             }
+
+            _newGameButton = buttons[0];
+            _continueButton = buttons[1];
+            _deleteGameButton = buttons[2];
+
+            UpdateButtonState();
         }
 
-        void Update()
-        {
-            _parentObject.gameObject.SetActive(!_hoverUIObject.HasEmptyFields);
-            _hoverUIObject.SetMousePosition();
-        }
 
         /// <summary>
         /// Updates what buttons should be shown depending on if a save file exists
@@ -62,16 +54,14 @@ namespace UnityEngine.UI.Title
             _deleteGameButton.gameObject.SetActive(fileExists);
         }
 
-
-        /// <summary>
-        /// Update the hover objects UI depending on if it touches a button or not
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="description"></param>
-        public void UpdateHoverUI(string title, string description)
+        private void SetButtonActivity(bool activity)
         {
-            _hoverUIObject.SetItemText(title, description, true);
+            foreach (Button button in buttons)
+            {
+                button.interactable = activity;
+            }
         }
+
 
         #region BUTTON METHONDS
         public void OnNewGameSelected()
@@ -88,7 +78,7 @@ namespace UnityEngine.UI.Title
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
             {
-                SceneName = _saveData.PlayerData.RecentSceneName,
+                SceneName = SaveData.PlayerData.RecentSceneName,
                 OnSceneLoaded = () => {
                     SavingOperations.LoadInformation();
                 },
@@ -98,26 +88,40 @@ namespace UnityEngine.UI.Title
                 }
                 
             });
-            //if (_saveData == null) { return; }
-            //string description = $"<color=blue>{_saveData.PlayerData.PlayerName} </color>";
-            //titleButton.SetDescription(description);
         }
 
+        private ChoiceDialogueObject[] OnDeleteButtonDialogue()
+        {
+            Action onYesChoiceSelected = () =>
+            {
+                SaveData = null;
+                File.Delete(SavingOperations.SaveDataPath);
+                UpdateButtonState();
+            };
+
+
+            ChoiceDialogueObject.ChoiceOption yesChoice = new ChoiceDialogueObject.ChoiceOption("YES", null, onYesChoiceSelected);
+            ChoiceDialogueObject.ChoiceOption noChoice = new ChoiceDialogueObject.ChoiceOption("NO", null, null);
+
+            string deletionText = $"Do you wish to delete {SaveData.PlayerData.PlayerName}'s progress? This action CANNOT be undone.";
+
+            ChoiceDialogueObject dialogueObject = new ChoiceDialogueObject(new ChoiceDialogueObject.ChoiceOption[] { yesChoice, noChoice }, true, "", deletionText);
+            return new ChoiceDialogueObject[] {dialogueObject};
+        }
         public void OnDeleteSaveSelected()
         {
-            _saveData = null;
-            File.Delete(SavingOperations.SaveDataPath);
-            UpdateButtonState();
+            SetButtonActivity(false);
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(OnDeleteButtonDialogue(), () => SetButtonActivity(true));
         }
 
         public void OnSettingsSelected()
         {
-
+            SCR_GeneralManager.UIManager.FindUIObject<UI_SettingsUI>().DisplaySettingsUI(true);
         }
         
         public void OnInformationSelected()
         {
-
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties { SceneName = "Splash Scene", EnablePlayerControls = true });
         }
 
         public void OnQuitSelected()

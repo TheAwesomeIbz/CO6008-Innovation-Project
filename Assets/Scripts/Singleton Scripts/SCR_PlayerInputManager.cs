@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class SCR_PlayerInputManager : MonoBehaviour
+public sealed class SCR_PlayerInputManager : MonoBehaviour
 {
     /// <summary>
     /// Static boolean keeping track of whether the player controls should be enabled or not
     /// </summary>
     public static bool PlayerControlsEnabled;
-
+    [field: SerializeField] public Collider2D[] CollidedWithMouse { get; private set; }
     public MouseProperty LeftClick { get; private set; }
     public MouseProperty RightClick { get; private set; }
     public Vector3 CursorWorldPoint => new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y, 0);
@@ -28,6 +29,13 @@ public class SCR_PlayerInputManager : MonoBehaviour
         RightClick = new MouseProperty(1);
 
     }
+
+    private void Update()
+    {
+        if (PlayerControlsEnabled)
+        CollidedWithMouse = Physics2D.OverlapPointAll(CursorWorldPoint);
+    }
+
 
     public class AxisProperty
     {
