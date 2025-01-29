@@ -57,6 +57,33 @@ public class SCR_GeneralManager : MonoBehaviour
         {
             SavingOperations.LoadInformation();
         }
+
+        //if (Input.GetKeyDown(KeyCode.F5))
+        //{
+        //    string calculator = "CalculatorApp";
+        //    print(System.Diagnostics.Process.GetProcessesByName(calculator).Length);
+
+        //    if (System.Diagnostics.Process.GetProcesses().Length > 0)
+        //    {
+        //        print("CALC.EXE IS ALREADY OPEN");
+        //    }
+        //    else
+        //    {
+        //        System.Diagnostics.Process.Start(calculator);
+        //    }
+
+        //}
+
+        if (Application.platform == RuntimePlatform.OSXPlayer)
+        {
+            //do something
+        }
+
+        else if (Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            //do something
+        }
+
     }
 
     /// <summary>

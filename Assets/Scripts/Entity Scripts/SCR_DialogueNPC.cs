@@ -11,10 +11,19 @@ namespace Entities
     public class SCR_DialogueNPC : MonoBehaviour, iInteractable
     {
         public static event Action<SCR_DialogueNPC> OnDialogueStart;
+        [SerializeField] string NPCName;
         [SerializeField] DialogueObject[] dialogueObjects;
         public DialogueObject[] DialogueObjects => dialogueObjects;
 
         public bool Interactable => true;
+
+        private void Start()
+        {
+            if (!string.IsNullOrEmpty(NPCName)) {
+                dialogueObjects.InitialiseCharacterNames(NPCName);
+            }
+            
+        }
 
         public void Interact(object playerObject)
         {

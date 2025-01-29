@@ -51,29 +51,8 @@ namespace Overworld
                 }
             }
 
-            if (!string.IsNullOrEmpty(characterName)) { InitialiseCharacterName(); }
-        }
-
-        private void InitialiseCharacterName()
-        {
-            foreach (ChoiceDialogueObject choice in choiceDialogue)
-            {
-                choice.SetSpeakingCharacter(characterName);
-
-                if (choice.choiceOptions?.Length > 0)
-                {
-                    foreach (ChoiceDialogueObject.ChoiceOption option in choice.choiceOptions)
-                    {
-                        if (option.ResultingDialogue?.Length > 0)
-                        {
-                            foreach (DialogueObject dialogueObject in option.ResultingDialogue)
-                            {
-                                dialogueObject.SetSpeakingCharacter(characterName);
-                            }
-                        }
-                            
-                    }
-                }
+            if (!string.IsNullOrEmpty(characterName)) { 
+                choiceDialogue.InitialiseCharacterNames(characterName);
             }
         }
 

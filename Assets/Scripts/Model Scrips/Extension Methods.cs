@@ -1,4 +1,6 @@
 using Cinemachine;
+using Dialogue;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +8,31 @@ using UnityEngine;
 public static class ExtensionMethods
 {
 
+    public static void InitialiseCharacterNames<T>(this T[] array, string characterName) where T : DialogueObject
+    {
+        foreach (DialogueObject dialogueObject in array)
+        {
+            dialogueObject.SetSpeakingCharacter(characterName);
+
+            if (dialogueObject is not ChoiceDialogueObject) { continue; }
+            ChoiceDialogueObject choiceDialogueObject = (ChoiceDialogueObject) dialogueObject;
+
+            if (choiceDialogueObject.choiceOptions?.Length > 0)
+            {
+                foreach (ChoiceDialogueObject.ChoiceOption option in choiceDialogueObject.choiceOptions)
+                {
+                    if (option.ResultingDialogue?.Length > 0)
+                    {
+                        foreach (DialogueObject dObject in option.ResultingDialogue)
+                        {
+                            dObject.SetSpeakingCharacter(characterName);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
     public static T GetType<T>(this Component behaviour, out T type)
     {
         type = behaviour.GetComponent<T>();
