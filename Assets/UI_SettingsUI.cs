@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static Settings;
 
 namespace UnityEngine.UI
 {
@@ -73,13 +72,7 @@ namespace UnityEngine.UI
 
         public void OnResetSettingsButtonPressed()
         {
-            settingsInformation = new SettingsInformation
-            {
-                GameMode = SettingOption.DEFAULT,
-                TextSpeed = SettingOption.DEFAULT,
-                AudioVolume = 0.5f,
-                UIScale = 1f
-            };
+            settingsInformation = Settings.DefaultSettings;
             InitialiseSettingsUI();
         }
 

@@ -6,15 +6,10 @@ namespace UnityEngine.UI
 {
     public class UI_ScalableUI : MonoBehaviour
     {
-        [SerializeField] SettingsInformation settings;
-        void Start()
-        {
-            settings = SCR_GeneralManager.UIManager.FindUIObject<UI_SettingsUI>().settingsInformation;
-        }
-
         void Update()
         {
-            transform.localScale = Vector3.one * settings.UIScale;
+            if (SCR_GeneralManager.UIManager.FindUIObject<UI_SettingsUI>() == null) { return; }
+            transform.localScale = Vector3.one * SCR_GeneralManager.UIManager.FindUIObject<UI_SettingsUI>().settingsInformation.UIScale;
         }
     }
 }
