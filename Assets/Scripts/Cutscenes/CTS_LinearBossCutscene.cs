@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Cutscenes
 {
-    public class CTS_LinearBossCutscene : MonoBehaviour
+    public class CTS_LinearBossCutscene : CTS_BaseCutscene
     {
         [SerializeField] DialogueObject[] introductionDialogue;
         SCR_LinearBoss linearBoss;
@@ -16,20 +16,20 @@ namespace Cutscenes
             linearBoss = GetComponent<SCR_LinearBoss>();
             linearBoss.enabled = false;
         }
-        void Start()
-        {
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(introductionDialogue, OnDialogueEnd);
-        }
 
         private void OnDialogueEnd()
         {
             linearBoss.enabled = true;
         }
 
-        // Update is called once per frame
-        void Update()
+        public override void BeginCutscene()
         {
-
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(introductionDialogue, OnDialogueEnd);
         }
+    }
+
+    public abstract class CTS_BaseCutscene : MonoBehaviour
+    {
+        public abstract void BeginCutscene();
     }
 }

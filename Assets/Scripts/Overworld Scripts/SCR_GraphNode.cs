@@ -28,9 +28,12 @@ namespace Overworld
             return false;
         }
         
+        /// <summary>
+        /// Initialises all graph nodes by dynamically scanning for nodes in all valid directions.
+        /// </summary>
         private void InitialiseGraphNodes()
         {
-            Func<GraphNode.Direction, Vector2> GetDirection = (direction) =>
+            Func<GraphNode.Direction, Vector2> getDirection = (direction) =>
             {
                 return direction switch
                 {
@@ -45,14 +48,17 @@ namespace Overworld
             for (int i = 0; i < 4; i++)
             {
                 GraphNode.Direction currentDirection = (GraphNode.Direction)i;
-                RaycastHit2D[] graphNodeRaycast = Physics2D.RaycastAll(transform.position, GetDirection(currentDirection), C_GraphNodeRaycastLength, LayerMask.GetMask("Graph Nodes"));
+                RaycastHit2D[] graphNodeRaycast = Physics2D.RaycastAll(transform.position, getDirection(currentDirection), C_GraphNodeRaycastLength, LayerMask.GetMask("Graph Nodes"));
                 foreach (RaycastHit2D raycastHit in graphNodeRaycast)
                 {
                     bool validGraphNode = raycastHit.collider != null && raycastHit.collider.name != name;
                     
                     if (!validGraphNode) { continue; }
-                    bool directionAlreadyExists = graphNodes.Find(gn => gn.ValidDirection == currentDirection) != null;
-                    if (directionAlreadyExists) { continue; }
+                    GraphNode existingGraphNode = graphNodes.Find(gn => gn.ValidDirection == currentDirection);
+                    if (existingGraphNode != null && existingGraphNode.AdjacentNode == null) {
+                        existingGraphNode.AdjacentNode = raycastHit.collider.GetComponent<SCR_GraphNode>();
+                        continue;
+                    }
 
                     GraphNode graphNode = new GraphNode
                     {

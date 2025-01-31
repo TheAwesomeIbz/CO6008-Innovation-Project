@@ -61,12 +61,21 @@ public class PlayerData
     /// </summary>
     public float[] RecentPlayerPosition;
 
+    /// <summary>
+    /// List of all choices made and documented
+    /// </summary>
     public List<Dialogue.SavableChoice> SavableChoices;
+
+    /// <summary>
+    /// List of all collected overworld items the player collected.
+    /// </summary>
+    public List<string> CollectedItems;
 
     public PlayerData(string PlayerName)
     {
         this.PlayerName = PlayerName;
         SavableChoices = new List<Dialogue.SavableChoice>();
+        CollectedItems = new List<string>();
         DateStarted = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
     }
 

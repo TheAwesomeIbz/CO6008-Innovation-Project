@@ -58,7 +58,7 @@ public class Settings
     private void InitialiseSettings()
     {
         SettingsInformation = Settings.DefaultSettings;
-        File.WriteAllText(settingsPath, JsonUtility.ToJson(new SettingsInformation()));
+        File.WriteAllText(settingsPath, JsonUtility.ToJson(SettingsInformation));
     }
 
 }

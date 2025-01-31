@@ -62,7 +62,7 @@ namespace Dialogue
     /// </summary>
     [Serializable] public class ChoiceDialogueObject : DialogueObject
     {
-        public ChoiceOption[] choiceOptions = new ChoiceOption[3];
+        public ChoiceOption[] choiceOptions;
         public bool NonImpactingChoice = false;
 
         public int CorrectChoice => Array.FindIndex(choiceOptions, choice => choice.CorrectAnswer);

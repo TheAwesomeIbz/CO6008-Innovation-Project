@@ -8,7 +8,7 @@ namespace Overworld
     public class SCR_LevelNode : SCR_GraphNode, iInteractable
     {
         [Header("LEVEL NODE PROPERIES")]
-        [SerializeField] string sceneName;
+        [SerializeField] protected string sceneName;
         [field : SerializeField] public LevelData LevelData { get; private set; }
 
         public bool Interactable => true;
@@ -32,7 +32,7 @@ namespace Overworld
 
         public void UpdateLevelData(LevelData levelData) => LevelData = levelData;
 
-        public void Interact(object playerObject)
+        public virtual void Interact(object playerObject)
         {
             if (string.IsNullOrEmpty(sceneName)) { return; }
 

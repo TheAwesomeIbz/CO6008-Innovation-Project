@@ -52,7 +52,7 @@ namespace Overworld
         {
             if (_currentlyMoving) { return; }
             iInteractable interactable = _graphNode?.GetComponent<iInteractable>() ?? null;
-            if (_playerInputManager.Submit.PressedThisFrame() && interactable != null)
+            if (_playerInputManager.Submit.PressedThisFrame() && (interactable?.Interactable ?? false))
             {
                 interactable.Interact(this);
             }

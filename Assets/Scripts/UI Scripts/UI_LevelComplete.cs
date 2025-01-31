@@ -12,8 +12,7 @@ namespace UnityEngine.UI
     {
         [Header("LEVEL UI PROPERTIES")]
         [SerializeField] GameObject _levelCompleteContentObject;
-        string _sceneName;
-
+        
         void Start()
         {
             _levelCompleteContentObject.SetActive(false);
@@ -23,12 +22,11 @@ namespace UnityEngine.UI
         /// Displays the Level completion UI
         /// </summary>
         /// <param name="sceneName"></param>
-        public void DisplayUI(string sceneName)
+        public void DisplayUI()
         {
             //TODO : DISPLAY THE LEVEL COMPLETION TIME AND THE AMOUNT OF COLLECTIBLES OBTAINED
             LevelData levelData = SCR_GeneralManager.LevelManager.GetCurrentLevelData;
             _levelCompleteContentObject.SetActive(true);
-            _sceneName = sceneName;
         }
 
         void Update()
@@ -37,7 +35,7 @@ namespace UnityEngine.UI
             if (!_levelCompleteContentObject.activeInHierarchy) { return; }
 
             //If any key is pressed, then begin the transition
-            if (Input.anyKeyDown && !string.IsNullOrEmpty(_sceneName))
+            if (Input.anyKeyDown && !string.IsNullOrEmpty(SCR_GeneralManager.LevelManager.GetPreviousSceneName))
             {
                 _levelCompleteContentObject.SetActive(false);
                 SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
@@ -46,7 +44,6 @@ namespace UnityEngine.UI
                     OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldSceneLoaded,
                     OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
                 });
-                _sceneName = ""; //set to empty so any key cannot be spammed
             }
         }
 

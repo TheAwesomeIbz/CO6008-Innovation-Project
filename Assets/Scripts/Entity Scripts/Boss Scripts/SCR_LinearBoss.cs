@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Entities.Boss
@@ -25,7 +26,7 @@ namespace Entities.Boss
         [SerializeField] protected int _bossPhase;
         [SerializeField] protected int _localPhasePasses;
 
-        protected const int BossInterpolationSpeed = 5;
+        private const int BossInterpolationSpeed = 5;
         protected const float _horizonatalMultipier = 4;
         protected const float _verticalPeriodMultipler = 2;
 
@@ -388,6 +389,8 @@ namespace Entities.Boss
 
         private void OnDialogueEnd()
         {
+            SCR_GeneralManager.LevelManager.OnLevelCompleted();
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LevelComplete>().DisplayUI();
             print("TODO : REWARD ITEMS AND TRANSITION TO HUB AREA");
         }
 

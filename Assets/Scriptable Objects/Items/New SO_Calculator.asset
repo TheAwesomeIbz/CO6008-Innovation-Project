@@ -12,3 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2ca0287fb80c94aabc0d6e3c5e163d, type: 3}
   m_Name: New SO_Calculator
   m_EditorClassIdentifier: 
+  <SpriteIcon>k__BackingField: {fileID: 0}
+  <SpriteName>k__BackingField: 
+  <SpriteDescription>k__BackingField: 
+  windowsApplicationPath: calc.exe
+  macApplicationPath: /System/Applications/Calculator.app
+  windowsApplicationName: CalculatorApp
+  macApplicationName: Calculator
