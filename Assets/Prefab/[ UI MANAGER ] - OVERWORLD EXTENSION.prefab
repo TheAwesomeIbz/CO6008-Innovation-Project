@@ -2754,7 +2754,6 @@ GameObject:
   - component: {fileID: 3903230611450108437}
   - component: {fileID: 4681530734027838554}
   - component: {fileID: 8679763022312972754}
-  - component: {fileID: 4533953118039108245}
   m_Layer: 5
   m_Name: resumeButton_001
   m_TagString: Untagged
@@ -2876,22 +2875,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4533953118039108245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8157728750742340540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ad0c4f0c6e9c374aad1e13057d42d06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  header: 
-  description: 
-  useDefaultUsageDescription: 0
-  usageDescription: 
 --- !u!1 &8365847889938962987
 GameObject:
   m_ObjectHideFlags: 0
@@ -2904,7 +2887,7 @@ GameObject:
   - component: {fileID: 4559135950187354684}
   - component: {fileID: 2374904313264717687}
   m_Layer: 5
-  m_Name: INVENTORY UI
+  m_Name: inventoryUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

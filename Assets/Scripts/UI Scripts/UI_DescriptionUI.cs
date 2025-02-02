@@ -75,8 +75,10 @@ namespace UnityEngine.UI
            
         }
 
-
-        private void FindAllContacts()
+        /// <summary>
+        /// Find all colliders that collided with mouse and check if they're descriptive objects.
+        /// </summary>
+        private void DetectAllSceneObjects()
         {
             if (EventSystems.EventSystem.current.IsPointerOverGameObject()) { 
                 return; 
@@ -92,22 +94,21 @@ namespace UnityEngine.UI
             descriptiveObject = descriptive;
         }
 
-        private void UpdatePosition()
+        /// <summary>
+        /// Updates the pivot of the UI object, depending on where the mouse position is.
+        /// </summary>
+        private void UpdateAnchorPoint()
         {
             Vector2 offset = new Vector2(-offsetValue, offsetValue);
-
-            if (Input.mousePosition.x > Screen.width / 4)
+            if (Input.mousePosition.x > Screen.width / 4f)
             {
                 offset.x = offsetValue;
             }
-            if (Input.mousePosition.y < Screen.height / 4)
+            if (Input.mousePosition.y < Screen.height / 4f)
             {
                 offset.y = -offsetValue;
             }
-
             rectTransform.pivot = centerPivot + offset;
-
-
         }
 
         void Update()
@@ -117,8 +118,8 @@ namespace UnityEngine.UI
                 return; 
             }
 
-            UpdatePosition();
-            FindAllContacts();
+            UpdateAnchorPoint();
+            DetectAllSceneObjects();
             if (descriptiveObject != null && descriptiveObject.GameObject.activeInHierarchy)
             {
                 SetMousePosition();
@@ -133,12 +134,25 @@ namespace UnityEngine.UI
             SCR_DialogueManager.OnDialogueStartEvent -= OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent -= OnDialogueEndEvent;
         }
+        
+        /// <summary>
+        /// Interface for objects that the description UI can detect and display relevant information.
+        /// </summary>
         public interface IDescriptive
         {
             public GameObject GameObject { get; }
+            /// <summary>
+            /// Title of the description
+            /// </summary>
             public string Header { get; }
             public string Description { get; }
+            /// <summary>
+            /// Text that displays if the entity is clickable
+            /// </summary>
             public string UsageDesctiption { get; }
+            /// <summary>
+            /// Invoked when the object is usable
+            /// </summary>
             public void OnOptionUsed();
         }
     }

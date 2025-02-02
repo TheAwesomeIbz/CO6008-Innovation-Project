@@ -51,6 +51,8 @@ public class SCR_EquationRenderer : MonoBehaviour
         if (_continuousValueSpeed == 0) { _continuousValueSpeed = 1; }
         _lineRenderer.positionCount = _nodes.Count;
     }
+    
+    
 
     private void UpdateLineRenderer()
     {

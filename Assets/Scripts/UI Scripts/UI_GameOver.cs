@@ -19,6 +19,10 @@ namespace UnityEngine.UI
             SCR_PlayerMovement.OnPlayerDefeated += OnPlayerDefeated;
         }
 
+        /// <summary>
+        /// Action called anytime the OnDefeatedEvent is called from the player class
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnPlayerDefeated(SCR_PlayerMovement obj)
         {
             SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths += 1;
@@ -36,7 +40,11 @@ namespace UnityEngine.UI
             }
 
         }
-
+        
+        /// <summary>
+        /// Coroutine called that gradually reveals game over information
+        /// </summary>
+        /// <returns></returns>
         IEnumerator OnGameOverCoroutine()
         {
             descriptionText.text = $"TIMES FAILED : {SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths}";
@@ -73,6 +81,7 @@ namespace UnityEngine.UI
 
         private void OnTransitionFinished()
         {
+            //Looks for any cutscene objects in the scene and plays them
             FindObjectOfType<Cutscenes.CTS_BaseCutscene>()?.BeginCutscene();
         }
 

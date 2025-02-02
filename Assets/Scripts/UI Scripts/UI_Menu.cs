@@ -10,7 +10,7 @@ namespace UnityEngine.UI
         [Header("MENU UI PROPERTIES")]
         [SerializeField] private GameObject parentGameObject;
         [SerializeField] private Transform parentButtonObject;
-        List<Button> buttons;
+        private List<Button> buttons;
 
         [field: Header("MENU UI STATE")]
         [field : SerializeField] public bool MenuEnabled { get; private set; }
@@ -33,7 +33,11 @@ namespace UnityEngine.UI
                 buttons.Add(child.GetComponent<Button>());
             }
         }
-
+        
+        /// <summary>
+        /// Set all buttons to be interactable or not
+        /// </summary>
+        /// <param name="state">The state of the button's intertactability</param>
         public void SetButtonInteractability(bool state)
         {
             foreach (Button button in buttons)
@@ -41,7 +45,7 @@ namespace UnityEngine.UI
                 button.interactable = state;
             }
         }
-
+        
         private bool MenuButtonPressed() { return Input.GetKeyDown(KeyCode.Escape) && SCR_PlayerInputManager.PlayerControlsEnabled; }
 
         private void ToggleMenu()

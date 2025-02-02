@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Dialogue;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -57,8 +58,22 @@ namespace Entities.Player
             WeaponProperties = GetComponent<SCR_PlayerShooting>().WeaponProperties;
             //_playerInteraction.gameObject.SetActive(false);
 
+
+            SCR_DialogueManager.OnDialogueStartEvent += OnDialogueStarted;
+            SCR_DialogueManager.OnDialogueEndEvent += OnDialogueEnded;
+
             HitboxComponent.OnDamageEvent += OnDamageEvent;
             HitboxComponent.OnZeroHPEvent += OnZeroHPEvent;
+        }
+
+        private void OnDialogueStarted(DialogueObject[] dialogue)
+        {
+            BoxCollider2D.enabled = false; 
+        }
+
+        private void OnDialogueEnded()
+        {
+            BoxCollider2D.enabled = true; 
         }
 
         /// <summary>
@@ -277,6 +292,8 @@ namespace Entities.Player
         {
             HitboxComponent.OnDamageEvent -= OnDamageEvent;
             HitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
+            SCR_DialogueManager.OnDialogueStartEvent -= OnDialogueStarted;
+            SCR_DialogueManager.OnDialogueEndEvent -= OnDialogueEnded;
         }
 
         #region PLAYER MOVEMENT PROPERTY OBJECTS

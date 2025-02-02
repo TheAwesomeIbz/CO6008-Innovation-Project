@@ -10,7 +10,7 @@ namespace UnityEngine.UI
     public class UI_SettingsUI : MonoBehaviour
     {
         [field : SerializeField] public bool SettingsMenuEnabled { get; private set; }
-        [field: SerializeField] public SettingsInformation settingsInformation { get; private set; }
+        [field: SerializeField] public SettingsInformation SettingsInformation { get; private set; }
 
         [Header("SETTINGS UI PROPERTIES")]
         [SerializeField] GameObject settingsParentObject;
@@ -25,34 +25,44 @@ namespace UnityEngine.UI
         void Awake()
         {
             Settings settings = new Settings();
-            settingsInformation = settings.SettingsInformation;
+            SettingsInformation = settings.SettingsInformation;
             InitialiseSettingsUI();
             SettingsMenuEnabled = false;
             settingsParentObject.gameObject.SetActive(false);
 
         }
 
+        /// <summary>
+        /// Sets the settings UI object to the settings information values
+        /// </summary>
         private void InitialiseSettingsUI()
         {
-            gameModeDropdown.value = (int)settingsInformation.GameMode;
-            textSpeedDropdown.value = (int)settingsInformation.TextSpeed;
-            uiScaleSlider.value = (settingsInformation.UIScale - 0.75f) * 2f;
-            audioScaleSlider.value = settingsInformation.AudioVolume;
+            gameModeDropdown.value = (int)SettingsInformation.GameMode;
+            textSpeedDropdown.value = (int)SettingsInformation.TextSpeed;
+            uiScaleSlider.value = (SettingsInformation.UIScale - 0.75f) * 2f;
+            audioScaleSlider.value = SettingsInformation.AudioVolume;
         }
 
         public void DisplaySettingsUI(bool activity)
         {
             SettingsMenuEnabled = activity;
-            OnSettingsMenuEnabled();
+            settingsParentObject.gameObject.SetActive(SettingsMenuEnabled);
+            if (!SettingsMenuEnabled)
+            {
+                SettingsInformation.SaveSettings();
+            }
         }
+
+        #region BUTTON METHODS
+
         public void OnGameModeUpdated()
         {
-            settingsInformation.GameMode = (Settings.SettingOption)gameModeDropdown.value;
+            SettingsInformation.GameMode = (Settings.SettingOption)gameModeDropdown.value;
         }
 
         public void OnTextSpeedUpdated()
         {
-            settingsInformation.TextSpeed = (Settings.SettingOption)textSpeedDropdown.value;
+            SettingsInformation.TextSpeed = (Settings.SettingOption)textSpeedDropdown.value;
         }
 
         public void OnUIScaleUpdated()
@@ -60,19 +70,19 @@ namespace UnityEngine.UI
             double processedValue = Math.Round((uiScaleSlider.value / 2f) + 0.75f, 2); 
             uiScaleText.text = $"{processedValue * 100}%";
 
-            settingsInformation.UIScale = (float)processedValue;
+            SettingsInformation.UIScale = (float)processedValue;
         }
 
         public void OnAudioScaleUpdated()
         {
             float processedValue = (float)Math.Round(audioScaleSlider.value, 2);
             audioScaleText.text = $"{processedValue * 100}%";
-            settingsInformation.AudioVolume = processedValue;
+            SettingsInformation.AudioVolume = processedValue;
         }
-
+        
         public void OnResetSettingsButtonPressed()
         {
-            settingsInformation = Settings.DefaultSettings;
+            SettingsInformation = Settings.DefaultSettings;
             InitialiseSettingsUI();
         }
 
@@ -84,14 +94,8 @@ namespace UnityEngine.UI
             menu?.SetButtonInteractability(true);
 
         }
-        public void OnSettingsMenuEnabled()
-        {
-            settingsParentObject.gameObject.SetActive(SettingsMenuEnabled);
-            if (!SettingsMenuEnabled)
-            {
-                settingsInformation.SaveSettings();
-            }
-        }
+
+        #endregion
 
     }
 }

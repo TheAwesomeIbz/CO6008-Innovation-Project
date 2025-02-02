@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Overworld
 {
     /// <summary>
-    /// Overworld node that can quiz the player, and may reqard them or grant access to other nodes
+    /// Overworld node that can quiz the player, and may regard them or grant access to other nodes
     /// </summary>
     public class SCR_QuizDialogueNode : SCR_GraphNode, IQuizInterface, iInteractable, ISavableChoice, IDialogueInterface
     {
@@ -79,7 +79,7 @@ namespace Overworld
 
         public void Interact(object playerObject)
         {
-            //Determine whether this ChoiceID already exists within the existing playerdata
+            //Determine whether this ChoiceID already exists within the existing playerData
             bool choiceAlreadyMade = SCR_GeneralManager.Instance.PlayerData.SavableChoices.Find(ch => ch.ChoiceID == savableChoice.ChoiceID) != null;
             if (!choiceAlreadyMade)
             {
@@ -89,7 +89,7 @@ namespace Overworld
 
             //If resulting dialogue exists after a choice has been made, display that dialogue
             //Otherwise, find the first occuring question, and play the resulting dialogue from the choice dialogue object
-            if (resultantDialogueObjects != null && resultantDialogueObjects.Length > 0)
+            if (resultantDialogueObjects?.Length > 0)
             {
                 SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(resultantDialogueObjects);
             }

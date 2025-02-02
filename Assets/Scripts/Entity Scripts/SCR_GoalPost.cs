@@ -12,6 +12,7 @@ public class SCR_GoalPost : MonoBehaviour
 
         SCR_PlayerInputManager.PlayerControlsEnabled = false;
         playerMovement.StopAllCoroutines();
+        playerMovement.BoxCollider2D.enabled = false;
         playerMovement.Rigidbody2D.velocity = Vector2.zero;
         SCR_GeneralManager.LevelManager.OnLevelCompleted();
         
