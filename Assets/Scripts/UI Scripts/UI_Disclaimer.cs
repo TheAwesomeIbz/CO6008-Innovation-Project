@@ -71,7 +71,7 @@ namespace UnityEngine.UI.Title
                 _textIndex++;
             }
 
-            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = "Title Scene"
             });

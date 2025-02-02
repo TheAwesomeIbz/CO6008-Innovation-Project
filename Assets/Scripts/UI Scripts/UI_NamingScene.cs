@@ -54,7 +54,7 @@ namespace UnityEngine.UI.Title
                 return;
             }
 
-            if (SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().Loading)
+            if (SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().Loading)
             {
                 return;
             }
@@ -79,13 +79,13 @@ namespace UnityEngine.UI.Title
 
             Action onDialogueFinished = () =>
             {
-                SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+                SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
                 {
                     SceneName = _sceneName,
                     OnTransitionFinished = OnTransitionFinished,
                 });
 
-                SCR_GeneralManager.Instance.LoadPlayerData(new PlayerData(text));
+                SCR_GeneralManager.Instance.SetPlayerName(text);
                 SavingOperations.SaveInformation();
             };
 

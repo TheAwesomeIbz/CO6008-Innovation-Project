@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 
@@ -12,10 +13,14 @@ namespace UnityEngine.UI
     {
         [Header("LEVEL UI PROPERTIES")]
         [SerializeField] GameObject _levelCompleteContentObject;
+        [SerializeField] TextMeshProUGUI descriptionText;
+        [SerializeField] GameObject continueButton;
         
         void Start()
         {
             _levelCompleteContentObject.SetActive(false);
+            descriptionText.gameObject.SetActive(false);
+            continueButton.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -25,28 +30,40 @@ namespace UnityEngine.UI
         public void DisplayUI()
         {
             //TODO : DISPLAY THE LEVEL COMPLETION TIME AND THE AMOUNT OF COLLECTIBLES OBTAINED
-            LevelData levelData = SCR_GeneralManager.LevelManager.GetCurrentLevelData;
-            _levelCompleteContentObject.SetActive(true);
+            StopAllCoroutines();
+            StartCoroutine(LevelCompleteCoroutine());
         }
 
-        void Update()
+        private IEnumerator LevelCompleteCoroutine()
         {
-            //if the object is not enabled, then the level hasnt been completed so don't do anything
-            if (!_levelCompleteContentObject.activeInHierarchy) { return; }
-
-            //If any key is pressed, then begin the transition
-            if (Input.anyKeyDown && !string.IsNullOrEmpty(SCR_GeneralManager.LevelManager.GetPreviousSceneName))
-            {
-                _levelCompleteContentObject.SetActive(false);
-                SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
-                {
-                    SceneName = SCR_GeneralManager.LevelManager.GetPreviousSceneName,
-                    OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldSceneLoaded,
-                    OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
-                });
-            }
+            float levelCompletedTime = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCompletedTime;
+            string ss = (levelCompletedTime % 60).ToString("00");
+            string mm = ((levelCompletedTime % 60) / 60).ToString("00");
+            descriptionText.text = $"TIME:<color=green>{mm}:{ss}</color>";
+            
+            _levelCompleteContentObject.SetActive(true);
+            yield return new WaitForSeconds(0.25f);
+            descriptionText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.25f);
+            continueButton.gameObject.SetActive(true);
         }
 
+        public void OnContinueButtonPressed()
+        {
+            _levelCompleteContentObject.SetActive(false);
+            descriptionText.gameObject.SetActive(false);
+            continueButton.gameObject.SetActive(false);
+
+            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
+            {
+                SceneName = SCR_GeneralManager.LevelManager.GetPreviousSceneName,
+                OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldSceneLoaded,
+                OnTransitionFinished = SCR_GeneralManager.LevelManager.OnTransitionFinished,
+                EnablePlayerControls = !SCR_GeneralManager.LevelManager.LevelFirstCompleted,
+            });
+        }
+
+        
 
     }
 

@@ -106,6 +106,15 @@ namespace Entities.Boss
 
             _bossPhaseActions = new List<Action>() { FirstPhase, SecondPhase, ThirdPhase };
 
+            SCR_PlayerMovement.OnPlayerDefeated += OnPlayerDefeated;
+        }
+
+        private void OnPlayerDefeated(SCR_PlayerMovement obj)
+        {
+            StopAllCoroutines();
+            _firstPhaseParentObject.SetActive(false);
+            _secondPhaseParentObject.gameObject.SetActive(false);
+            enabled = false;
         }
 
         protected void Update()
@@ -384,7 +393,7 @@ namespace Entities.Boss
                 yield return null;
             }
 
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(_defeatDialogue, OnDialogueEnd);
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(_defeatDialogue, OnDialogueEnd, false);
         }
 
         private void OnDialogueEnd()
@@ -400,6 +409,7 @@ namespace Entities.Boss
         {
             _hitboxComponent.OnZeroHPEvent -= OnZeroHPEvent;
             _hitboxComponent.OnDamageEvent -= OnDamageEvent;
+            SCR_PlayerMovement.OnPlayerDefeated -= OnPlayerDefeated;
         }
 
 

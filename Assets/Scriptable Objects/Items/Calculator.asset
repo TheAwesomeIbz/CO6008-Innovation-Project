@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb2ca0287fb80c94aabc0d6e3c5e163d, type: 3}
-  m_Name: New SO_Calculator
+  m_Name: Calculator
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 0}
-  <SpriteName>k__BackingField: 
-  <SpriteDescription>k__BackingField: 
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: b3abce7efa3854a4cb1dd6b47f553027, type: 3}
+  <SpriteDescription>k__BackingField: A mystic relic that allows you to perform mathematical
+    calculations. This item has been rumoured to exist.
   windowsApplicationPath: calc.exe
   macApplicationPath: /System/Applications/Calculator.app
   windowsApplicationName: CalculatorApp

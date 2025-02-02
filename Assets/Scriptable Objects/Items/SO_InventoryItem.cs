@@ -10,8 +10,7 @@ namespace UnityEngine
     {
         [field : Header("BASE ITEM PROPERTIES")]
         [field: SerializeField] public Texture2D SpriteIcon { get; protected set; }
-        [field: SerializeField] public string SpriteName { get; protected set; }
-        [field: SerializeField] public string SpriteDescription { get; protected set; }
+        [field: SerializeField] [field: TextArea(3,3)] public string SpriteDescription { get; protected set; }
     }
 
 }

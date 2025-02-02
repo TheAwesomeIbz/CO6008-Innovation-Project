@@ -16,7 +16,7 @@ namespace Overworld
         public override void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
             SCR_GeneralManager.LevelManager.CachePlayerProperties(playerOverworldMovement);
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = sceneName,
                 EnablePlayerControls = true,

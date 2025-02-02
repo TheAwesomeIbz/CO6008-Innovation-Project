@@ -24,7 +24,7 @@ public class SCR_GeneralManager : MonoBehaviour
     [field: SerializeField] public PlayerData PlayerData { get; private set; }
     [SerializeField] private float _currentSessionTime;
     public float CurrentSessionTime => _currentSessionTime;
-    UI_LoadScenes _loadScenes;
+    UI_LoadScene _loadScenes;
 
     private void Awake()
     {
@@ -40,51 +40,17 @@ public class SCR_GeneralManager : MonoBehaviour
 
     private void Start()
     {
-        _loadScenes = UIManager.FindUIObject<UI_LoadScenes>();
-    }
-
-    private void Update()
-    {
-        UpdateCurrentSessionTime();
-
-        if (Input.GetKeyDown(KeyCode.F2) && FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>())
-        {
-            SavingOperations.SaveInformation();
-            if (Input.GetKey(KeyCode.LeftShift)) { System.Diagnostics.Process.Start(Application.persistentDataPath); }
-        }
-
-        if (Input.GetKeyDown(KeyCode.F3) && FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>())
-        {
-            SavingOperations.LoadInformation();
-        }
-
-
-        
-
-    }
-
-    /// <summary>
-    /// Sets the current session time to 0
-    /// </summary>
-    public void ResetCurrentSessionTime() => _currentSessionTime = 0;
-
-    /// <summary>
-    /// Updates the current session time every frame depending on the current game state
-    /// </summary>
-    private void UpdateCurrentSessionTime()
-    {
-        if (PlayerData == null || PlayerData.PlayTime >= C_MaximumPlayTime) { return; }
-        if (_loadScenes != null && _loadScenes.Loading) { return; }
-
-        _currentSessionTime += Time.deltaTime;
+        _loadScenes = UIManager.FindUIObject<UI_LoadScene>();
+        SavingOperations.OnSaveDataLoaded += OnSaveDataLoaded;
     }
 
     /// <summary>
     /// Loads the current player data to the Game Manager
     /// </summary>
     /// <param name="playerData"></param>
-    public void LoadPlayerData(PlayerData playerData)
+    private void OnSaveDataLoaded(SaveData saveData)
     {
+        PlayerData playerData = saveData.PlayerData;
         PlayerData = playerData;
 
         if (playerData == null) { return; }
@@ -103,6 +69,41 @@ public class SCR_GeneralManager : MonoBehaviour
             choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect);
         }
 
+    }
 
+    public void SetPlayerName(string playerName) => PlayerData.PlayerName = playerName;
+
+    private void Update()
+    {
+        UpdateCurrentSessionTime();
+
+        if (Input.GetKeyDown(KeyCode.F1) && Input.GetKey(KeyCode.LeftShift))
+        {
+            System.Diagnostics.Process.Start(Application.persistentDataPath);
+        }
+    }
+
+    /// <summary>
+    /// Sets the current session time to 0
+    /// </summary>
+    public void ResetCurrentSessionTime() => _currentSessionTime = 0;
+
+    /// <summary>
+    /// Updates the current session time every frame depending on the current game state
+    /// </summary>
+    private void UpdateCurrentSessionTime()
+    {
+        if (PlayerData == null || PlayerData.PlayTime >= C_MaximumPlayTime) { return; }
+        if (_loadScenes != null && _loadScenes.Loading) { return; }
+
+        _currentSessionTime += Time.deltaTime;
+    }
+
+    
+
+
+    private void OnDisable()
+    {
+        
     }
 }

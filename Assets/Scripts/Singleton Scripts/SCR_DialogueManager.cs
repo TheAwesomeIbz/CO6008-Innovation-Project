@@ -4,7 +4,6 @@ using UnityEngine;
 using TMPro;
 using System;
 
-
 namespace Dialogue
 {
     /// <summary>
@@ -42,7 +41,7 @@ namespace Dialogue
         ISavableChoice savableChoice;
         IQuizInterface quizInterface;
         bool selectedCorrectChoice;
-
+        bool enablePlayerControlsOnFinish;
         /// <summary>
         /// The current index of either the choice dialogue objects or default dialogue objects. 
         /// This depends on whether the dialogue manager is running through any resultant dialogue within the choice dialogue object.
@@ -69,7 +68,7 @@ namespace Dialogue
         /// DIsplays the dialogue objects within the dialogue manager UI. Flexibly display the instructions of any object that implements this interface.
         /// </summary>
         /// <param name="dialogueObjects"></param>
-        public void DisplayDialogue(IDialogueInterface dialogueInterface, Action OnDialogueEnd = null)
+        public void DisplayDialogue(IDialogueInterface dialogueInterface, Action OnDialogueEnd = null, bool enablePlayerControlsOnFinish = true)
         {
             if (dialogueInterface is ISavableChoice){
                 savableChoice = dialogueInterface as ISavableChoice;
@@ -77,15 +76,26 @@ namespace Dialogue
             if (dialogueInterface is IQuizInterface){
                 quizInterface = dialogueInterface as IQuizInterface;
             }
-            DisplayDialogue(dialogueInterface.DialogueObjects, OnDialogueEnd);
+            DisplayDialogue(dialogueInterface.DialogueObjects, OnDialogueEnd, enablePlayerControlsOnFinish);
         }
 
         /// <summary>
         /// DIsplays the dialogue objects within the dialogue manager UI
         /// </summary>
         /// <param name="dialogueObjects"></param>
-        public void DisplayDialogue(DialogueObject[] dialogueObjects, Action OnDialogueEnd = null)
+        public void DisplayDialogue(DialogueObject[] dialogueObjects, Action OnDialogueEnd = null, bool enablePlayerControlsOnFinish = true)
         {
+            bool dialogueAlreadyActive = _dialogueBox.activeInHierarchy;
+            if (dialogueAlreadyActive && choiceDialogueObjectIndex > -1)
+            {
+                DialogueObject[] combinedArray = new DialogueObject[cachedDialogueObjects.Length + dialogueObjects.Length];
+                cachedDialogueObjects.CopyTo(combinedArray, 0);
+                dialogueObjects.CopyTo(combinedArray, cachedDialogueObjects.Length);
+                cachedDialogueObjects = combinedArray;
+                return;
+            }
+
+            this.enablePlayerControlsOnFinish = enablePlayerControlsOnFinish;
             cachedDialogueObjects = dialogueObjects;
             dialogueObjectIndex = 0;
             choiceDialogueObjectIndex = -1;
@@ -177,23 +187,20 @@ namespace Dialogue
             OnDialogueEndEvent?.Invoke();
             OnDialogueEnd?.Invoke();
 
-            if (quizInterface != null) {
-                if (selectedCorrectChoice)
-                {
-                    quizInterface.OnCorrectChoiceMade();
-                }
-                else
-                {
-                    quizInterface.OnIncorrectChoiceMade();
-                }
-            }
+            
             OnDialogueEnd = null;
             quizInterface = null;
             choiceDialogueObjectIndex = -1;
             dialogueObjectIndex = 0;
             cachedDialogueObjects = null;
             cachedChoiceObjects = null;
-            SCR_PlayerInputManager.PlayerControlsEnabled = true;
+
+            if (enablePlayerControlsOnFinish)
+            {
+                SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            }
+            
+
         }
 
 
@@ -214,9 +221,11 @@ namespace Dialogue
                 _dialogueText.text = tempString;
                 yield return new WaitForSeconds(0.005f);
             }
+            
 
             //If any choices exist, then display choices and relevant UI, else default to normal text settings.
             ChoiceDialogueObject choiceDialogueObject = currentDialogueObject as ChoiceDialogueObject;
+            
             if (choiceDialogueObject?.choiceOptions.Length > 0)
             {
                 DisplayChoices(choiceDialogueObject);
@@ -233,7 +242,8 @@ namespace Dialogue
                 else{
                     dialogueObjectIndex++;
                 }
-               
+
+                currentDialogueObject.OnSentenceFinished?.Invoke();
                 DisplayNextDialogue(dialogueObjects);
             } 
 
@@ -287,10 +297,21 @@ namespace Dialogue
                     savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2));
                     SCR_GeneralManager.Instance.PlayerData.SavableChoices.Add(savableChoice.SavableChoice);
                 }
+
+                
             }
+
 
             choiceDialogueObjectIndex++;
             cachedChoiceObjects[index].OnChoiceMade?.Invoke();
+            if (selectedCorrectChoice)
+            {
+                quizInterface?.OnCorrectChoiceMade();
+            }
+            else
+            {
+                quizInterface?.OnIncorrectChoiceMade();
+            }
             DisplayNextDialogue(cachedChoiceObjects[index].ResultingDialogue);
         }
 

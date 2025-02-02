@@ -43,7 +43,7 @@ namespace UnityEngine.UI
         public void DisplaySettingsUI(bool activity)
         {
             SettingsMenuEnabled = activity;
-            OnSettingsMenuPressed();
+            OnSettingsMenuEnabled();
         }
         public void OnGameModeUpdated()
         {
@@ -79,8 +79,12 @@ namespace UnityEngine.UI
         public void OnResumeButtonPressed()
         {
             DisplaySettingsUI(false);
+            
+            UI_Menu menu = SCR_GeneralManager.UIManager.FindUIObject<UI_Menu>();
+            menu?.SetButtonInteractability(true);
+
         }
-        public void OnSettingsMenuPressed()
+        public void OnSettingsMenuEnabled()
         {
             settingsParentObject.gameObject.SetActive(SettingsMenuEnabled);
             if (!SettingsMenuEnabled)
@@ -88,14 +92,6 @@ namespace UnityEngine.UI
                 settingsInformation.SaveSettings();
             }
         }
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.F4) && SCR_PlayerInputManager.PlayerControlsEnabled) {
-                SettingsMenuEnabled = !SettingsMenuEnabled;
-                OnSettingsMenuPressed();
-            }
-        }
-
 
     }
 }

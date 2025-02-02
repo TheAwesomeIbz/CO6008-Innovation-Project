@@ -11,7 +11,7 @@ namespace UnityEngine.UI
     /// <summary>
     /// 
     /// </summary>
-    public class UI_LoadScenes : MonoBehaviour
+    public class UI_LoadScene : MonoBehaviour
     {
         [field : Header("LOAD SCENE PROPERTIES")]
         [field : SerializeField] public bool Loading { get; private set; }

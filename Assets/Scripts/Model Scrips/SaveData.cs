@@ -51,6 +51,8 @@ public class PlayerData
     /// </summary>
     public float PlayTime;
 
+    public int AmountOfDeaths;
+
     /// <summary>
     /// The last scene in which the player saved in.
     /// </summary>
@@ -93,6 +95,7 @@ public class PlayerData
         DateLastSaved = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
         if (DateStarted.Length == 0) { DateStarted = DateLastSaved; }
         RecentSceneName = SceneManager.GetActiveScene().name;
+        AmountOfDeaths = SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths;
         SavableChoices = SCR_GeneralManager.Instance.PlayerData.SavableChoices;
         Overworld.SCR_PlayerOverworldMovement overworldMovement = UnityEngine.Object.FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
 
@@ -122,6 +125,8 @@ public static class SavingOperations
 
     }
 
+    public static event Action<SaveData> OnSaveDataLoaded;
+
     /// <summary>
     /// Retrieves save data from the directory and deserializes JSON data to a SaveData object if it exists.
     /// </summary>
@@ -131,14 +136,12 @@ public static class SavingOperations
         try
         {
             SaveData saveData = JsonUtility.FromJson<SaveData>(File.ReadAllText(SaveDataPath));
-
-            SCR_GeneralManager.Instance.LoadPlayerData(saveData.PlayerData);
-            SCR_GeneralManager.LevelManager.LoadLevelInformation(saveData.LevelInformation);
-            SCR_GeneralManager.InventoryManager.LoadInventoryInformation(saveData.InventoryInformation);
+            OnSaveDataLoaded?.Invoke(saveData);
             return saveData;
         }
-        catch
+        catch (Exception e)
         {
+            Debug.LogWarning(e.Message);
             return null;
         }
     }

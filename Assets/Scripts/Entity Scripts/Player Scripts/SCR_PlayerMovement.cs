@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 namespace Entities.Player
 {
     public class SCR_PlayerMovement : MonoBehaviour, iDodgeable
     {
+        public static event Action<SCR_PlayerMovement> OnPlayerDefeated;
         public const int MaximumPlayerSpeed = 15;
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
@@ -66,6 +68,9 @@ namespace Entities.Player
         private void OnZeroHPEvent(SCR_DamageCollider damageCollider)
         {
             //TODO : Disable player collider and display game over screen
+            BoxCollider2D.enabled = false;
+            OnPlayerDefeated?.Invoke(this);
+            SCR_PlayerInputManager.PlayerControlsEnabled = false;
         }
 
         /// <summary>

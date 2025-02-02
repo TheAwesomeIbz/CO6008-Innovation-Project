@@ -66,7 +66,7 @@ namespace UnityEngine.UI.Title
         #region BUTTON METHONDS
         public void OnNewGameSelected()
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = "Naming Scene",
                 OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
@@ -76,7 +76,7 @@ namespace UnityEngine.UI.Title
 
         public void OnContinueSelected()
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = SaveData.PlayerData.RecentSceneName,
                 OnSceneLoaded = () => {
@@ -121,7 +121,7 @@ namespace UnityEngine.UI.Title
         
         public void OnInformationSelected()
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScenes>().LoadScene(new UI_LoadScenes.TransitionProperties { SceneName = "Splash Scene", EnablePlayerControls = true });
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties { SceneName = "Splash Scene", EnablePlayerControls = true });
         }
 
         public void OnQuitSelected()

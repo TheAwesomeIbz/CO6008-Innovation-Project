@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 99b71e9f4bd37d840aa2da5647f830f8, type: 3}
-  m_Name: New SO_Equation Scroll
+  m_Name: Quadratic Equation Scroll
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  <SpriteName>k__BackingField: equation scroll
-  <SpriteDescription>k__BackingField: cool scroll
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 1201c14bb4ee74d8e99e56dc4f3f4fd1, type: 3}
+  <SpriteDescription>k__BackingField: Equation Scroll that displays the equation
+    of a second degree, quadratic polynomial equation.

@@ -66,13 +66,14 @@ namespace Overworld
         public void OnCorrectChoiceMade()
         {
             if (rewardItem){
-                SCR_GeneralManager.InventoryManager.AddItem(rewardItem);
+                SCR_GeneralManager.InventoryManager.AddItemWithDialogue(rewardItem);
             }
             print("ON RIGHT");
         }
 
         public void OnIncorrectChoiceMade()
         {
+            SCR_PlayerInputManager.PlayerControlsEnabled = true;
             print("ON WRONG");
         }
 

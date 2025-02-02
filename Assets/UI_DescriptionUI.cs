@@ -19,12 +19,17 @@ namespace UnityEngine.UI
 
         private bool dialogueManagerEnabled;
 
+        Vector2 centerPivot = new Vector2(0.5f, 0.5f);
+        const float offsetValue = 0.5625f;
+        RectTransform rectTransform;
+
         void Start()
         {
             _objectHeader = _parentObject.GetChild(0).GetComponent<TextMeshProUGUI>();
             _objectDescription = _parentObject.GetChild(1).GetComponent<TextMeshProUGUI>();
             _objectUsageText = _parentObject.GetChild(2).GetComponent<TextMeshProUGUI>();
             playerInputManager = SCR_GeneralManager.PlayerInputManager;
+            rectTransform = _parentObject.GetComponent<RectTransform>();
 
             SCR_DialogueManager.OnDialogueStartEvent += OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent += OnDialogueEndEvent;
@@ -54,7 +59,7 @@ namespace UnityEngine.UI
             _objectDescription.text = descriptive.Description;
             _objectUsageText.text = descriptive.UsageDesctiption;
 
-            if (Input.GetMouseButtonDown(0) && SCR_PlayerInputManager.PlayerControlsEnabled && !string.IsNullOrWhiteSpace(descriptive.UsageDesctiption))
+            if (Input.GetMouseButtonDown(0) && !string.IsNullOrWhiteSpace(descriptive.UsageDesctiption))
             {
                 descriptive.OnOptionUsed();
             }
@@ -67,6 +72,7 @@ namespace UnityEngine.UI
         private void SetMousePosition()
         {
             _parentObject.transform.position = SCR_GeneralManager.PlayerInputManager.CursorWorldPoint;
+           
         }
 
 
@@ -86,6 +92,23 @@ namespace UnityEngine.UI
             descriptiveObject = descriptive;
         }
 
+        private void UpdatePosition()
+        {
+            Vector2 offset = new Vector2(-offsetValue, offsetValue);
+
+            if (Input.mousePosition.x > Screen.width / 4)
+            {
+                offset.x = offsetValue;
+            }
+            if (Input.mousePosition.y < Screen.height / 4)
+            {
+                offset.y = -offsetValue;
+            }
+
+            rectTransform.pivot = centerPivot + offset;
+
+
+        }
 
         void Update()
         {
@@ -94,8 +117,10 @@ namespace UnityEngine.UI
                 return; 
             }
 
+            UpdatePosition();
             FindAllContacts();
-            if (descriptiveObject != null && descriptiveObject.GameObject.activeInHierarchy) { 
+            if (descriptiveObject != null && descriptiveObject.GameObject.activeInHierarchy)
+            {
                 SetMousePosition();
                 SetUIInformation(descriptiveObject);
                 _parentObject.gameObject.SetActive(true);

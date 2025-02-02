@@ -6,6 +6,7 @@ using Level;
 using System;
 using Unity.VisualScripting;
 using UnityEditor.Build;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manager class responsible for handling level data and information
@@ -14,27 +15,35 @@ public class SCR_LevelManager : MonoBehaviour
 {
     [field: Header("LEVEL MANAGER PROPERTIES")]
     [SerializeField] private List<LevelData> levelInformation;
+    [SerializeField] private bool levelBegan;
 
     [Header("LEVEL TRANSITION PROPERTIES")]
     [SerializeField] private string previousSceneName;
     [SerializeField] private Vector3 previousPlayerOverworldPosition;
     [SerializeField] private LevelData currentLevelData;
 
-    public string GetPreviousSceneName => previousSceneName;
+    
+    public string GetPreviousSceneName => previousSceneName ?? "Overworld Scene";
     public List<LevelData> GetLevelInformation => levelInformation;
     public LevelData GetCurrentLevelData => currentLevelData;
+    private UI_LoadScene loadScenes;
 
-
+    public bool LevelFirstCompleted { get; private set; }   
+    private SCR_LevelNode cachedLevelNode;
     void Start()
     {
-
+        loadScenes = SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>();
+        SavingOperations.OnSaveDataLoaded += OnSaveDataLoaded;
     }
 
     /// <summary>
     /// Populates level data list from disk or any source
     /// </summary>
-    /// <param name="levelInformation"></param>
-    public void LoadLevelInformation(List<LevelData> levelInformation) => this.levelInformation = levelInformation;
+    private void OnSaveDataLoaded(SaveData saveData)
+    {
+        levelInformation = saveData.LevelInformation;
+        OnOverworldSceneLoaded();
+    }
 
     /// <summary>
     /// Finds level by ID within the level data list
@@ -67,7 +76,7 @@ public class SCR_LevelManager : MonoBehaviour
     /// </summary>
     /// <param name="leveldata"></param>
     /// <param name="playerOverworldMovement"></param>
-    public void OnLevelTransition(LevelData leveldata, SCR_PlayerOverworldMovement playerOverworldMovement)
+    public void OnTransitionToLevel(LevelData leveldata, SCR_PlayerOverworldMovement playerOverworldMovement)
     {
         currentLevelData = leveldata;
         CachePlayerProperties(playerOverworldMovement);
@@ -81,7 +90,11 @@ public class SCR_LevelManager : MonoBehaviour
             bool collectibleAlreadyExists = currentLevelData.LevelCollectablesObtained.Contains(levelCollectable.name);
             levelCollectable.gameObject.SetActive(!collectibleAlreadyExists);
         }
+        levelBegan = true;
+        LevelFirstCompleted = false;
+        cachedLevelNode = null;
     }
+    
     public void CachePlayerProperties(SCR_PlayerOverworldMovement playerOverworldMovement)
     {
         previousSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -98,9 +111,16 @@ public class SCR_LevelManager : MonoBehaviour
         LoadLevelProperties();
     }
 
+    public void OnTransitionFinished()
+    {
+        cachedLevelNode?.OnLevelCompleted();
+        cachedLevelNode = null;
+    }
+
     private void LoadPlayerProperties()
     {
         SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<SCR_PlayerOverworldMovement>();
+        if (playerOverworldMovement == null) { return; }
         playerOverworldMovement.transform.position = previousPlayerOverworldPosition;
         Collider2D[] colliders = Physics2D.OverlapPointAll(previousPlayerOverworldPosition);
         foreach (Collider2D collider in colliders)
@@ -116,11 +136,23 @@ public class SCR_LevelManager : MonoBehaviour
     private void LoadLevelProperties()
     {
         SCR_LevelNode[] levelNodes = FindObjectsOfType<SCR_LevelNode>();
-        foreach (SCR_LevelNode levelNode in levelNodes)
-        {
-            LevelData existingLevelData = SCR_GeneralManager.LevelManager.levelInformation.Find(lvl => lvl.LevelID == levelNode.LevelData.LevelID);
-            if (existingLevelData != null) { levelNode.UpdateLevelData(existingLevelData); }
+        if (levelNodes == null) { return; }
+
+        if (LevelFirstCompleted){
+            cachedLevelNode = Array.Find(levelNodes, lvlNode => lvlNode.LevelData.LevelID == currentLevelData.LevelID);
         }
+        
+
+        foreach (SCR_LevelNode levelNode in levelNodes)
+        {   
+            LevelData existingLevelData = SCR_GeneralManager.LevelManager.levelInformation.Find(lvl => lvl.LevelID == levelNode.LevelData.LevelID);
+            if (existingLevelData != null) { 
+                levelNode.UpdateLevelData(existingLevelData); 
+            }
+        }
+
+        
+        
     }
 
     /// <summary>
@@ -128,12 +160,14 @@ public class SCR_LevelManager : MonoBehaviour
     /// </summary>
     public void OnLevelCompleted()
     {
+        levelBegan = false;
         LevelData levelData = FindLevelByID(currentLevelData.LevelID);
 
         //If there is no level data present, that means it doesnt exist in the list, so append to level information
         if (levelData == null)
         {
             levelInformation.Add(currentLevelData);
+            LevelFirstCompleted = true;
             return;
         }
 
@@ -147,4 +181,22 @@ public class SCR_LevelManager : MonoBehaviour
         }
     }
 
+    private void UpdateLevelTimer()
+    {
+        if (!levelBegan) { return; }
+        if (!SCR_PlayerInputManager.PlayerControlsEnabled) { return; }
+        if (loadScenes?.Loading ?? false) { return; }
+
+        currentLevelData?.UpdateLevelTime();
+    }
+    private void Update()
+    {
+        UpdateLevelTimer();
+
+    }
+
+    private void OnDisable()
+    {
+        SavingOperations.OnSaveDataLoaded -= OnSaveDataLoaded;
+    }
 }

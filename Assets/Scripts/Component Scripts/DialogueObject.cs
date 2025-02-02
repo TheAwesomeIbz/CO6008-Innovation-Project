@@ -23,7 +23,7 @@ namespace Dialogue
         [SerializeField] protected string _speakingCharacter;
         [SerializeField][TextArea(2, 2)] protected string _dialogueText;
         [SerializeField] protected AudioClip _speakingSFX;
-
+        public Action OnSentenceFinished { get; private set; }
         /// <summary>
         /// The name of the character that is speaking
         /// </summary>
@@ -53,6 +53,7 @@ namespace Dialogue
             this._speakingSFX = _speakingSFX;
         }
 
+        public DialogueObject SetOnSentenceFinishedAction(Action action) { OnSentenceFinished = action; return this; }
         public void SetSpeakingCharacter(string text) => _speakingCharacter = text;
         public static DialogueObject[] NullDialogueObject { get; } = new DialogueObject[] { new DialogueObject("NullDialogueException") };
     }
@@ -64,6 +65,7 @@ namespace Dialogue
     {
         public ChoiceOption[] choiceOptions;
         public bool NonImpactingChoice = false;
+        
 
         public int CorrectChoice => Array.FindIndex(choiceOptions, choice => choice.CorrectAnswer);
         public ChoiceDialogueObject(ChoiceOption[] choiceOptions, bool nonImpactingChoice, string _speakingCharacter, string _dialogueText, AudioClip _speakingSFX = null) : base(_speakingCharacter, _dialogueText, _speakingSFX = null)

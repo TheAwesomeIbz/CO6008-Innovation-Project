@@ -13,13 +13,15 @@ public class LevelData
 {
     [field: Header("LEVEL DATA PROPERTIES")]
     [field: SerializeField] public string LevelID { get; private set; }
-    [field: SerializeField] public float LevelCompletedTime { get; private set; } = -1;
+    [field: SerializeField] public float LevelCompletedTime { get; private set; } = 0;
     [field: SerializeField]
     public List<string> LevelCollectablesObtained { get; private set; } = new List<string>();
 
     /// <summary>
-    /// Determines if level is completed if a level completed time is not its default value (-1).
+    /// Determines if level is completed if a level completed time is not its default value (0).
     /// </summary>
-    public bool LevelCompleted => LevelCompletedTime != -1;
+    public bool LevelCompleted => LevelCompletedTime > 0;
+
+    public void UpdateLevelTime() {  LevelCompletedTime += Time.deltaTime; }
 
 }

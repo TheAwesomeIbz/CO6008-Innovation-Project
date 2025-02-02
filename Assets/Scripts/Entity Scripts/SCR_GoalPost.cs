@@ -10,7 +10,11 @@ public class SCR_GoalPost : MonoBehaviour
     {
         if (!collision.GetType(out SCR_PlayerMovement playerMovement)) { return; }
 
+        SCR_PlayerInputManager.PlayerControlsEnabled = false;
+        playerMovement.StopAllCoroutines();
+        playerMovement.Rigidbody2D.velocity = Vector2.zero;
         SCR_GeneralManager.LevelManager.OnLevelCompleted();
+        
         SCR_GeneralManager.UIManager.FindUIObject<UI_LevelComplete>().DisplayUI();
     }
 }

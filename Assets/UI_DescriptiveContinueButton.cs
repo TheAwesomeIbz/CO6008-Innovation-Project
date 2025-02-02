@@ -16,7 +16,7 @@ namespace UnityEngine.UI.Title
 
         void Update()
         {
-            if (string.IsNullOrEmpty(saveData.PlayerData.PlayerName)) { return; }
+            if (string.IsNullOrEmpty(saveData?.PlayerData.PlayerName ?? "")) { return; }
 
             header = $"Continue with {saveData.PlayerData.PlayerName}";
             description =

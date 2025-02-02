@@ -623,8 +623,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerLevel: 3
+  _moveIn2DSpace: 0
   _currentlyMoving: 0
   _gridSpeed: 5
+  _gridDisplacement: 1
   _playerSpeedProperties:
     Speed: 7.5
     SpeedMultiplier: 2
@@ -652,8 +654,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa4ced47047a2b4f943a1a390a98156, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _HP: 500
-  _maxHP: 500
+  _HP: 3
+  _maxHP: 250
 --- !u!114 &7423791606490795386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,7 +674,6 @@ MonoBehaviour:
   _halfwayObject: {fileID: 6403445897993878346}
   _midpointThreshold: 2
   cooldown: 0
-  dialogueEnabled: 0
   _trackPlayerCursor: 0
   relativeMousePosition: {x: 0, y: 0, z: 0}
   _cameraZoom: 0

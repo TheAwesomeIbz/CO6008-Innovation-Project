@@ -1655,6 +1655,11 @@ Transform:
   - {fileID: 17115977}
   m_Father: {fileID: 1917153726}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &320516562 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 3928792843782766341, guid: 14ce3d6d9c22d6f4886d2ff60facd9cc, type: 3}
+  m_PrefabInstance: {fileID: 7217299127943774522}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &323665895
 GameObject:
   m_ObjectHideFlags: 0
@@ -6763,6 +6768,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7639953236830522498, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 320516562}
+    - target: {fileID: 7639953236830522498, guid: dc4960be1144a964b96a294a2757343a, type: 3}
       propertyPath: m_RenderMode
       value: 1
       objectReference: {fileID: 0}
@@ -9470,7 +9479,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2081e9eeb68b8b74c910769858780678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneName: Overworld Scene
 --- !u!61 &1711616344
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -11,17 +11,21 @@ namespace Overworld
         [SerializeField] private SO_Item overworldItem;
         private bool ItemAlreadyExists => SCR_GeneralManager.Instance.PlayerData.CollectedItems.Contains(name);
         public bool Interactable => !ItemAlreadyExists;
+        SCR_DescriptiveObject descriptiveObject;
+
+        private void Start()
+        {
+            descriptiveObject = GetComponent<SCR_DescriptiveObject>();
+        }
         public void Interact(object playerObject)
         {
             SCR_GeneralManager.Instance.PlayerData.CollectedItems.Add(name);
-            SCR_GeneralManager.InventoryManager.AddItem(overworldItem);
+            SCR_GeneralManager.InventoryManager.AddItemWithDialogue(overworldItem);
+        }
 
-            bool startsWithVowel = "aeiou".Contains(overworldItem.name.ToLower()[0]);
-            DialogueObject[] dialogueObjects = DialogueObject.CreateDialogue(
-                $"{SCR_GeneralManager.Instance.PlayerData.PlayerName} found {(startsWithVowel ? "an" : "a")} {overworldItem.name}!",
-                $"The {overworldItem.name} was stored into your inventory."
-                );
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects);
+        void Update()
+        {
+            if (!Interactable && descriptiveObject) { Destroy(descriptiveObject); }
         }
     }
 }

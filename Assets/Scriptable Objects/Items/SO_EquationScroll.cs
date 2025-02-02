@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Inventory Items/Equation Scroll")]
-public class SO_EquationScroll : SO_Item, iUsableItem
+public class SO_EquationScroll : SO_Item
 {
     public void UseItem()
     {
