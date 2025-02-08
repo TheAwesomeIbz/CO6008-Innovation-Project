@@ -2112,6 +2112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78871c1f1edac34ebdae6ec90664c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LevelCollectable>k__BackingField:
+    <CollectableID>k__BackingField: 2
+    <CollectableObtained>k__BackingField: 0
 --- !u!61 &425463357
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2256,6 +2259,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78871c1f1edac34ebdae6ec90664c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LevelCollectable>k__BackingField:
+    <CollectableID>k__BackingField: 0
+    <CollectableObtained>k__BackingField: 0
 --- !u!61 &454674367
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6704,6 +6710,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e78871c1f1edac34ebdae6ec90664c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <LevelCollectable>k__BackingField:
+    <CollectableID>k__BackingField: 1
+    <CollectableObtained>k__BackingField: 0
 --- !u!61 &1284407233
 BoxCollider2D:
   m_ObjectHideFlags: 0

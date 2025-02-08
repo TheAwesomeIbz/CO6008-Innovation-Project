@@ -478,7 +478,13 @@ MonoBehaviour:
   <LevelData>k__BackingField:
     <LevelID>k__BackingField: level1
     <LevelCompletedTime>k__BackingField: 0
-    <LevelCollectablesObtained>k__BackingField: []
+    <LevelCollectablesObtained>k__BackingField:
+    - <CollectableID>k__BackingField: 0
+      <CollectableObtained>k__BackingField: 0
+    - <CollectableID>k__BackingField: 1
+      <CollectableObtained>k__BackingField: 0
+    - <CollectableID>k__BackingField: 2
+      <CollectableObtained>k__BackingField: 0
 --- !u!58 &64762268
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -4480,6 +4486,7 @@ MonoBehaviour:
     <ChoiceID>k__BackingField: 
     <SelectedChoice>k__BackingField: 0
     <TimeTakenToSelect>k__BackingField: 0
+    <CorrectAnswer>k__BackingField: 0
   resultantDialogueObjects: []
   onlyOneChance: 1
   rewardItem: {fileID: 11400000, guid: c63f0e63b3501974782093e1747dfccf, type: 2}
@@ -6046,6 +6053,7 @@ MonoBehaviour:
     <ChoiceID>k__BackingField: 
     <SelectedChoice>k__BackingField: 0
     <TimeTakenToSelect>k__BackingField: 0
+    <CorrectAnswer>k__BackingField: 0
   resultantDialogueObjects:
   - _speakingCharacter: 
     _dialogueText: An ancient relic. I don't know what it does.

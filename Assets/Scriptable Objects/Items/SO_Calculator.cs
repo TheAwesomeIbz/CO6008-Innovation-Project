@@ -30,10 +30,10 @@ public class SO_Calculator : SO_Item, iUsableItem
 
     private void OpenCalculator(string applicationPath, string applicationProcessName)
     {
-        if (Process.GetProcessesByName(applicationProcessName).Length > 0)
+        Process[] allCalculatorProcesses = Process.GetProcessesByName(applicationProcessName);
+        if (allCalculatorProcesses.Length > 0)
         {
-            //TODO: Have a notification pop up with this window.
-            UnityEngine.Debug.Log($"THE CALCULATOR IS ALREADY OPEN ON {Application.platform}");
+            foreach (Process pr in allCalculatorProcesses) { pr.Kill(); }
         }
         else
         {

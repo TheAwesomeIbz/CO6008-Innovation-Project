@@ -21,6 +21,7 @@ namespace Entities.Boss
         protected SCR_EntityShooting _entityShooting;
         protected CMP_HitboxComponent _hitboxComponent;
 
+
         [Header("PHASE PROPERTIES")]
         [SerializeField] protected bool _inAttackPhase;
         [SerializeField] protected int _bossPhase;
@@ -73,9 +74,10 @@ namespace Entities.Boss
 
             _inAttackPhase = false;
             _bossDefeated = false;
-            _localPhasePasses = UnityEngine.Random.Range(2, 5);
+            _localPhasePasses = UnityEngine.Random.Range(4, 8);
             _defaultPosition = transform.position;
             _movementCounter = Mathf.PI / 2;
+            
 
             if (_questionObjects.Length == 0)
             {
@@ -182,6 +184,7 @@ namespace Entities.Boss
             
             IEnumerator HalfHPCoroutine(Action action)
             {
+                _playerMovementReference.BoxCollider2D.enabled = false;
                 while ((transform.position - _defaultPosition).magnitude > 0.25f)
                 {
                     transform.position = Vector3.Lerp(transform.position, _defaultPosition, Time.deltaTime * 5);
@@ -204,10 +207,11 @@ namespace Entities.Boss
             
             _firstPhaseParentObject.SetActive(true);
             _firstPhaseUIObjects.SetQuestionnaireVisibility(true);
-            QuestionObject randomQuestion = _questionObjects[UnityEngine.Random.Range(0, QuestionObject.MaximumQuizQuestions)].ShuffleAnswers();
+            int maximumQuestionIndex = _questionObjects.Length - 1;
+            QuestionObject randomQuestion = _questionObjects[UnityEngine.Random.Range(0, maximumQuestionIndex)].ShuffleAnswers();
             while (_previousQuestionName == randomQuestion.Question)
             {
-                randomQuestion = _questionObjects[UnityEngine.Random.Range(0, QuestionObject.MaximumQuizQuestions)].ShuffleAnswers();
+                randomQuestion = _questionObjects[UnityEngine.Random.Range(0, maximumQuestionIndex)].ShuffleAnswers();
             }
             _firstPhaseUIObjects.DisplayQuestion(randomQuestion);
             _previousQuestionName = randomQuestion.Question;
@@ -244,7 +248,7 @@ namespace Entities.Boss
             
             _firstPhaseUIObjects.DisableColliders();
 
-            yield return new WaitForSeconds(2f / _bossSpeed);
+            yield return new WaitForSeconds(5f / _bossSpeed);
 
             _firstPhaseUIObjects.EnableIncorrectColliders(randomQuestion);
 
@@ -416,7 +420,6 @@ namespace Entities.Boss
 
         [Serializable] protected class QuestionObject
         {
-            public const int MaximumQuizQuestions = 3;
             public QuestionObject(string question, string[] answers, string correctAnswer)
             {
                 Question = question;
@@ -438,13 +441,13 @@ namespace Entities.Boss
             {
                 List<string> answers = new List<string>();
                 List<int> randomIndexes = new List<int>();
-                int randomNumber = UnityEngine.Random.Range(0, MaximumQuizQuestions);
+                int randomNumber = UnityEngine.Random.Range(0, 3);
 
                 for (int i = 0; i < 3; i++)
                 {
                     while (randomIndexes.Contains(randomNumber))
                     {
-                        randomNumber = UnityEngine.Random.Range(0, MaximumQuizQuestions);
+                        randomNumber = UnityEngine.Random.Range(0, 3);
                     }
                     randomIndexes.Add(randomNumber);
                     answers.Add(Answers[randomNumber]);
@@ -476,7 +479,7 @@ namespace Entities.Boss
                 _questionParent = zerothPhaseObject.transform.GetChild(0).gameObject;
                 _quizQuestionObject = _questionParent.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
 
-                _quizAnswersObjects = new TextMeshProUGUI[QuestionObject.MaximumQuizQuestions];
+                _quizAnswersObjects = new TextMeshProUGUI[3];
                 for (int i = 1; i < _questionParent.transform.childCount; i++)
                 {
                     _quizAnswersObjects[i - 1] = _questionParent.transform.GetChild(i).GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -493,7 +496,7 @@ namespace Entities.Boss
                 _quizDamageColliderParent.gameObject.SetActive(true);
 
                 _quizQuestionObject.text = questionObject.Question;
-                for (int i = 0; i < QuestionObject.MaximumQuizQuestions; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     _quizAnswersObjects[i].text = questionObject.Answers[i];
                 }

@@ -1,7 +1,6 @@
 using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Timeline;
 using UnityEngine;
 
 namespace Entities

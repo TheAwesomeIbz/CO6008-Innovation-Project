@@ -84,19 +84,30 @@ namespace UnityEngine.UI.Title
                     SceneName = _sceneName,
                     OnTransitionFinished = OnTransitionFinished,
                 });
-
                 SCR_GeneralManager.Instance.SetPlayerName(text);
-                SavingOperations.SaveInformation();
+                
             };
 
             _inputField.interactable = false;
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, onDialogueFinished);
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, onDialogueFinished, false);
             
         }
 
         private void OnTransitionFinished()
         {
-            SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            DialogueObject[] onTransitionDialogue = DialogueObject.CreateDialogue(
+                "This is the overworld map that the player can navigate.",
+                "There are various nodes on the map that the player can go to.",
+                "Use [WASD] or the [ARROW KEYS] to navigate to each point.",
+                "Press submit to interact with any interactable nodes. These will be denoted with text above them.",
+                "There are bosses you can fight also in this demo. Thank you for listening",
+                "Best of luck and enjoy this demo!"
+                );
+
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(onTransitionDialogue, () =>
+            {
+                SavingOperations.SaveInformation();
+            });
         }
 
         /// <summary>

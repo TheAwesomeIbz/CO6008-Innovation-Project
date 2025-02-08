@@ -113,13 +113,15 @@ namespace Dialogue
         /// </summary>
         /// <param name="selectedChoice"></param>
         /// <param name="timeTaken"></param>
-        public void SetChoice(int selectedChoice, float timeTaken) {
+        public void SetChoice(int selectedChoice, float timeTaken, bool correctAnswer) {
             SelectedChoice = selectedChoice;
             TimeTakenToSelect = timeTaken;
+            CorrectAnswer = correctAnswer;
         } 
         [field : SerializeField] public string ChoiceID { get; private set; }
         [field: SerializeField] public int SelectedChoice { get; private set; }
         [field: SerializeField] public float TimeTakenToSelect {  get; private set; }
+        [field: SerializeField] public bool CorrectAnswer { get; private set;}
         
     }
 

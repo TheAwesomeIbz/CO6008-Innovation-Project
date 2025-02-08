@@ -12,6 +12,8 @@ namespace Entities
     [RequireComponent(typeof(Collider2D))]
     public class SCR_DamageCollider : MonoBehaviour
     {
+
+        SettingsInformation settings;
         [Header("ATTACKING PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
         [SerializeField] protected int _attack = 5;
@@ -37,7 +39,10 @@ namespace Entities
         /// <summary>
         /// Returns constant attack value
         /// </summary>
-        public int Attack => _attack;
+        public int Attack => _damageableTo == Attackable.PLAYER ?
+            Mathf.RoundToInt(_attack * (0.5f + ((float)settings.GameMode * 0.5f))) :
+            Mathf.RoundToInt((2 * _attack) / (float)(1 + (int)settings.GameMode) );
+            
 
         /// <summary>
         /// Returns attack percentage float from 0 to 1
@@ -65,8 +70,10 @@ namespace Entities
             hitbox.DealDamage(this);
         }
 
+
         protected virtual IEnumerator Start()
         {
+            settings = SCR_GeneralManager.Instance.Settings;
             GetComponent<Collider2D>().isTrigger = true;
             yield return null;
         }

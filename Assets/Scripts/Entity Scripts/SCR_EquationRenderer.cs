@@ -7,20 +7,20 @@ public class SCR_EquationRenderer : MonoBehaviour
 {
     const int C_MaximumNodes = 100;
     [Header("LINE UI ELEMENTS")]
-    [SerializeField] GraphType _graphType;
-    [SerializeField] TextMeshProUGUI _equationText;
-    [SerializeField] GameObject _equationPointPrefab;
+    [SerializeField] protected GraphType _graphType;
+    [SerializeField] protected TextMeshProUGUI _equationText;
+    [SerializeField] protected GameObject _equationPointPrefab;
     [field : SerializeField] public Transform ParentObject { get; private set; }
-    [SerializeField] Transform _pointsParentObject;
+    [SerializeField] protected Transform _pointsParentObject;
 
     [Header("COEFFICIENTS")]
-    [SerializeField] float[] _polynomialCoefficients;
+    [SerializeField] protected List<float> _polynomialCoefficients;
 
     [Header("SINUSOIDAL EQUATIONS")]
-    [SerializeField] bool _continuousValue;
-    [SerializeField] [Range(-20, 20)] float _continuousValueSpeed;
-    [SerializeField] float valueOffset;
-    [SerializeField] float[] sinusoidalCoefficients;
+    [SerializeField] protected bool _continuousValue;
+    [SerializeField] [Range(-20, 20)] protected float _continuousValueSpeed;
+    [SerializeField] protected float valueOffset;
+    [SerializeField] protected List<float> sinusoidalCoefficients;
 
     bool animatingFunction = false;
     
@@ -78,7 +78,7 @@ public class SCR_EquationRenderer : MonoBehaviour
         switch (_graphType)
         {
             case GraphType.POLYNOMIAL:
-                if (_polynomialCoefficients.Length == 0 || _polynomialCoefficients[0] == 0) { return; }
+                if (_polynomialCoefficients.Count == 0 || _polynomialCoefficients[0] == 0) { return; }
 
                 _equationText.transform.position = (_polynomialCoefficients[0] < 0 ?
                     new Vector3(_equationText.transform.position.x, 1) :
@@ -90,7 +90,7 @@ public class SCR_EquationRenderer : MonoBehaviour
                 break;
         }
 
-        if (sinusoidalCoefficients.Length == 0 || sinusoidalCoefficients[0] == 0) { return; }
+        if (sinusoidalCoefficients.Count == 0 || sinusoidalCoefficients[0] == 0) { return; }
         switch (_graphType)
         {
             case GraphType.SINE:
@@ -102,7 +102,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
     private void Quadratic()
     {
-        if (_polynomialCoefficients.Length != 3) { return; }
+        if (_polynomialCoefficients.Count != 3) { return; }
         for (int i = - C_MaximumNodes / 2; i < C_MaximumNodes / 2; i++)
         {
             float indexValue = i / _pointQuotient;
@@ -116,7 +116,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
     private void Cubic()
     {
-        if (_polynomialCoefficients.Length != 4) { return; }
+        if (_polynomialCoefficients.Count != 4) { return; }
         for (int i = - C_MaximumNodes / 2; i < C_MaximumNodes / 2; i++)
         {
             float indexValue = i / _pointQuotient;
@@ -131,7 +131,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
     private void Quartic()
     {
-        if (_polynomialCoefficients.Length != 5) { return; }
+        if (_polynomialCoefficients.Count != 5) { return; }
         for (int i = - C_MaximumNodes / 2; i < C_MaximumNodes / 2; i++)
         {
             float indexValue = i / _pointQuotient;
@@ -147,7 +147,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
     private void Sine()
     {
-        if (sinusoidalCoefficients.Length != 2) { return; }
+        if (sinusoidalCoefficients.Count != 2) { return; }
 
         if (_continuousValue)
         {
@@ -164,7 +164,7 @@ public class SCR_EquationRenderer : MonoBehaviour
 
 
 
-    public void SetPolynomialCoefficients(float[] polynomialCoefficients) => _polynomialCoefficients = polynomialCoefficients;
+    public void SetPolynomialCoefficients(List<float> polynomialCoefficients) => _polynomialCoefficients = polynomialCoefficients;
     public void SetGlobalPosition(Vector3 position) => ParentObject.transform.position = position;
     public void AnimateGraph(float speed = 1)
     {
@@ -209,7 +209,7 @@ public class SCR_EquationRenderer : MonoBehaviour
         //print(collision);
     }
 
-    private enum GraphType
+    protected enum GraphType
     {
         POLYNOMIAL,
         SINE,

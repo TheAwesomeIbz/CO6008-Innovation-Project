@@ -8,12 +8,18 @@ namespace Level
 {
     public class SCR_LevelCollectable : BaseCollectable
     {
+        [field: Header("LEVEL COLLECTABLE PROPERTIES")]
+        [field : SerializeField] public LevelCollectable LevelCollectable { get; private set; }
         protected override void OnPlayerCollided(SCR_PlayerMovement playerMovement)
         {
             if (SCR_GeneralManager.LevelManager.GetCurrentLevelData == null) { return; }
-            if (SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Contains(name)) { return; }
 
-            SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Add(name);
+            LevelCollectable existingLevelCollectable = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Find(lvl => lvl.CollectableID == LevelCollectable.CollectableID);
+            
+            if (!existingLevelCollectable?.CollectableObtained ?? false)
+            {
+                existingLevelCollectable.Collect();
+            }
             gameObject.SetActive(false);
         }
     }

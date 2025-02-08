@@ -72,7 +72,7 @@ namespace Entities.Boss
             _movementCounter = initialValue;
 
             _equationRenderer.ParentObject.gameObject.SetActive(true);
-            _equationRenderer.SetPolynomialCoefficients(new float[] { 0.5f, 0, 0 });
+            _equationRenderer.SetPolynomialCoefficients(new List<float> { 0.5f, 0, 0 });
 
             yield return _equationRenderer.DisplayGraphCoroutine(1 * _bossSpeed);
 

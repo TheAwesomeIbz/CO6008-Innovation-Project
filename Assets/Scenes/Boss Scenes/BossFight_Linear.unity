@@ -3845,24 +3845,25 @@ MonoBehaviour:
   _localPhasePasses: 0
   _firstPhaseParentObject: {fileID: 1508705860}
   _questionObjects:
-  - <Question>k__BackingField: QUESTION 1
+  - <Question>k__BackingField: Which expression  is NOT an equation of a line?
     <Answers>k__BackingField:
-    - CORRECT
-    - B
-    - C
-    <CorrectAnswer>k__BackingField: CORRECT
-  - <Question>k__BackingField: QUESTION 2
+    - "x\xB2 + y\xB2 = 1"
+    - y = mx + c
+    - ax +by - c
+    <CorrectAnswer>k__BackingField: "x\xB2 + y\xB2 = 1"
+  - <Question>k__BackingField: At how many points does a linear equation cross the
+      y axis?
     <Answers>k__BackingField:
-    - D
-    - CORRECT
-    - F
-    <CorrectAnswer>k__BackingField: CORRECT
-  - <Question>k__BackingField: QUESTION 3
+    - 2
+    - 1
+    - 0
+    <CorrectAnswer>k__BackingField: 1
+  - <Question>k__BackingField: How do you find the slope of a line?
     <Answers>k__BackingField:
-    - G
-    - H
-    - CORRECT
-    <CorrectAnswer>k__BackingField: CORRECT
+    - rise / run
+    - x / y
+    - mx + c
+    <CorrectAnswer>k__BackingField: rise / run
   _secondPhaseParentObject: {fileID: 759382826}
   _alternatingPeriod: 1
   _halfHPDialogue:
@@ -3872,6 +3873,10 @@ MonoBehaviour:
   - _speakingCharacter: 
     _dialogueText: Alternatively, a cutscene or custom functionality can be implemented
       here.
+    _speakingSFX: {fileID: 0}
+  - _speakingCharacter: 
+    _dialogueText: The boss will get speed up and become more difficult. Be prepared
+      to be challenged!
     _speakingSFX: {fileID: 0}
   _defeatDialogue:
   - _speakingCharacter: 
@@ -4054,8 +4059,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa4ced47047a2b4f943a1a390a98156, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _HP: 1000
-  _maxHP: 1000
+  _HP: 3000
+  _maxHP: 3000
 --- !u!114 &1162284123
 MonoBehaviour:
   m_ObjectHideFlags: 0

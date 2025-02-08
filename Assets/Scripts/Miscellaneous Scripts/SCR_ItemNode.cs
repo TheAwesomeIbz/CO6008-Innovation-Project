@@ -9,7 +9,7 @@ namespace Overworld
     public class SCR_ItemNode : SCR_GraphNode, iInteractable
     {
         [SerializeField] private SO_Item overworldItem;
-        private bool ItemAlreadyExists => SCR_GeneralManager.Instance.PlayerData.CollectedItems.Contains(name);
+        private bool ItemAlreadyExists => SCR_GeneralManager.Instance.CollectedItems.Contains(name);
         public bool Interactable => !ItemAlreadyExists;
         SCR_DescriptiveObject descriptiveObject;
 
@@ -19,7 +19,7 @@ namespace Overworld
         }
         public void Interact(object playerObject)
         {
-            SCR_GeneralManager.Instance.PlayerData.CollectedItems.Add(name);
+            SCR_GeneralManager.Instance.CollectedItems.Add(name);
             SCR_GeneralManager.InventoryManager.AddItemWithDialogue(overworldItem);
         }
 

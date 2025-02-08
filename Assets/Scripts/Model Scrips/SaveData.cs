@@ -14,6 +14,8 @@ public class SaveData
     public PlayerData PlayerData;
     public List<LevelData> LevelInformation;
     public List<SO_Item> InventoryInformation;
+    public List<Dialogue.SavableChoice> Choices;
+    public List<string> CollectedItems;
 
     public SaveData(SCR_GeneralManager generalManager)
     {
@@ -21,6 +23,8 @@ public class SaveData
         PlayerData = generalManager.PlayerData;
         LevelInformation = SCR_GeneralManager.LevelManager.GetLevelInformation;
         InventoryInformation = SCR_GeneralManager.InventoryManager.Inventory;
+        Choices = SCR_GeneralManager.Instance.Choices;
+        CollectedItems = SCR_GeneralManager.Instance.CollectedItems;
         
     }
 }
@@ -39,12 +43,12 @@ public class PlayerData
     /// <summary>
     /// Date in which the player started the game. Will be in the format DD-MM-YYY and HH:MM
     /// </summary>
-    public string[] DateStarted;
+    public string DateStarted;
 
     /// <summary>
     /// Date in which the player last saved the game. Will be in the format DD-MM-YYY and HH:MM
     /// </summary>
-    public string[] DateLastSaved;
+    public string DateLastSaved;
 
     /// <summary>
     /// The current play time of the save.
@@ -63,22 +67,12 @@ public class PlayerData
     /// </summary>
     public float[] RecentPlayerPosition;
 
-    /// <summary>
-    /// List of all choices made and documented
-    /// </summary>
-    public List<Dialogue.SavableChoice> SavableChoices;
-
-    /// <summary>
-    /// List of all collected overworld items the player collected.
-    /// </summary>
-    public List<string> CollectedItems;
+    
 
     public PlayerData(string PlayerName)
     {
         this.PlayerName = PlayerName;
-        SavableChoices = new List<Dialogue.SavableChoice>();
-        CollectedItems = new List<string>();
-        DateStarted = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
+        DateStarted = DateTime.Now.ToString();
     }
 
     /// <summary>
@@ -92,11 +86,10 @@ public class PlayerData
         PlayTime = SCR_GeneralManager.Instance.PlayerData.PlayTime + SCR_GeneralManager.Instance.CurrentSessionTime;
         SCR_GeneralManager.Instance.ResetCurrentSessionTime();
 
-        DateLastSaved = new string[] { string.Format("{0:00}", DateTime.Now.Day), string.Format("{0:00}", DateTime.Now.Month), DateTime.Now.Year.ToString(), string.Format("{0:00}", DateTime.Now.Hour) + ":" + string.Format("{0:00}", DateTime.Now.Minute) };
+        DateLastSaved = DateTime.Now.ToString();
         if (DateStarted.Length == 0) { DateStarted = DateLastSaved; }
         RecentSceneName = SceneManager.GetActiveScene().name;
         AmountOfDeaths = SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths;
-        SavableChoices = SCR_GeneralManager.Instance.PlayerData.SavableChoices;
         Overworld.SCR_PlayerOverworldMovement overworldMovement = UnityEngine.Object.FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
 
         if (overworldMovement == null) { return; }

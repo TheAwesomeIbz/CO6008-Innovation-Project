@@ -73,14 +73,14 @@ namespace Overworld
 
         public void OnIncorrectChoiceMade()
         {
-            SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            
             print("ON WRONG");
         }
 
         public void Interact(object playerObject)
         {
             //Determine whether this ChoiceID already exists within the existing playerData
-            bool choiceAlreadyMade = SCR_GeneralManager.Instance.PlayerData.SavableChoices.Find(ch => ch.ChoiceID == savableChoice.ChoiceID) != null;
+            bool choiceAlreadyMade = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == savableChoice.ChoiceID) != null;
             if (!choiceAlreadyMade)
             {
                 SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(this);

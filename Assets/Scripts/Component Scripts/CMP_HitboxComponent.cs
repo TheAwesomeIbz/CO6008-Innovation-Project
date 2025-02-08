@@ -19,6 +19,7 @@ namespace Entities
         /// </summary>
         public event System.Action<SCR_DamageCollider> OnZeroHPEvent;
 
+        SettingsInformation settings;
         [Header("DAMAGEABLE COMPONENT PROPERTIES")]
         [SerializeField] Attackable _damageableBy;
         [SerializeField] CMP_HealthComponent _healthComponent;
@@ -37,6 +38,7 @@ namespace Entities
 
         void Start()
         {
+            settings = SCR_GeneralManager.Instance.Settings;
             _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
             _rigidbody2D = GetComponentInParent<Rigidbody2D>() ?? GetComponent<Rigidbody2D>();
             _dodgeableInterface = GetComponentInParent<iDodgeable>();
@@ -104,7 +106,8 @@ namespace Entities
 
             if (_healthComponent.HP <= 0) { return; }
 
-            int damage = damageCollider.AttackCalculatedByPercentage ? Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP) : damageCollider.Attack;
+            int damage = damageCollider.AttackCalculatedByPercentage ? Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP) 
+                : damageCollider.Attack;
             _healthComponent.LoseHP(damage);
 
             if (_healthComponent.HP == 0) {

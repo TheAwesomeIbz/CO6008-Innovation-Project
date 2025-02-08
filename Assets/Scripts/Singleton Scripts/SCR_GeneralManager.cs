@@ -1,7 +1,9 @@
+using Dialogue;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class SCR_GeneralManager : MonoBehaviour
     public static SCR_UIManager UIManager => Instance.GetComponentInChildren<SCR_UIManager>();
 
     public static SCR_LevelManager LevelManager => Instance.GetComponent<SCR_LevelManager>();
+    public SettingsInformation Settings => UIManager.FindUIObject<UI_SettingsUI>().SettingsInformation;
 
     
     /// <summary>
@@ -22,9 +25,12 @@ public class SCR_GeneralManager : MonoBehaviour
     public const int C_MaximumPlayTime = 3599940;
     [field: Header("PLAYER SAVE PROPERTIES")]
     [field: SerializeField] public PlayerData PlayerData { get; private set; }
+    [field: SerializeField] public List<SavableChoice> Choices { get; private set; }
+    [field: SerializeField] public List<string> CollectedItems { get; private set; }
     [SerializeField] private float _currentSessionTime;
     public float CurrentSessionTime => _currentSessionTime;
     UI_LoadScene _loadScenes;
+
 
     private void Awake()
     {
@@ -50,23 +56,24 @@ public class SCR_GeneralManager : MonoBehaviour
     /// <param name="playerData"></param>
     private void OnSaveDataLoaded(SaveData saveData)
     {
-        PlayerData playerData = saveData.PlayerData;
-        PlayerData = playerData;
+        PlayerData = saveData.PlayerData;
+        Choices = saveData.Choices;
+        CollectedItems = saveData.CollectedItems;
 
-        if (playerData == null) { return; }
-        if (playerData.RecentPlayerPosition == null) { return; }
+        if (PlayerData == null) { return; }
+        if (PlayerData.RecentPlayerPosition == null) { return; }
 
         Overworld.SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<Overworld.SCR_PlayerOverworldMovement>();
         if (playerOverworldMovement == null) { return; }
-        playerOverworldMovement.transform.position = new Vector3(playerData.RecentPlayerPosition[0], playerData.RecentPlayerPosition[1]);
+        playerOverworldMovement.transform.position = new Vector3(PlayerData.RecentPlayerPosition[0], PlayerData.RecentPlayerPosition[1]);
         playerOverworldMovement.Start();
 
-        if (PlayerData.SavableChoices.Count == 0) { return; }
+        if (Choices.Count == 0) { return; }
         Overworld.SCR_QuizDialogueNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_QuizDialogueNode>();
         foreach (Overworld.SCR_QuizDialogueNode choiceDialogueNode in choiceDialogueNodes)
         {
-            Dialogue.SavableChoice savableChoice = PlayerData.SavableChoices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
-            choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect);
+            SavableChoice savableChoice = Choices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
+            choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect, savableChoice.CorrectAnswer);
         }
 
     }
@@ -77,10 +84,10 @@ public class SCR_GeneralManager : MonoBehaviour
     {
         UpdateCurrentSessionTime();
 
-        if (Input.GetKeyDown(KeyCode.F1) && Input.GetKey(KeyCode.LeftShift))
-        {
-            System.Diagnostics.Process.Start(Application.persistentDataPath);
-        }
+        //if (Input.GetKeyDown(KeyCode.F1) && Input.GetKey(KeyCode.LeftShift))
+        //{
+        //    System.Diagnostics.Process.Start(Application.persistentDataPath);
+        //}
     }
 
     /// <summary>
@@ -99,11 +106,4 @@ public class SCR_GeneralManager : MonoBehaviour
         _currentSessionTime += Time.deltaTime;
     }
 
-    
-
-
-    private void OnDisable()
-    {
-        
-    }
 }

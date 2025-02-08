@@ -47,6 +47,8 @@ namespace Entities.Player
         /// Get the Current Player level
         /// </summary>
         public PlayerLevel PlayerLevel => _playerLevel;
+
+        SpriteRenderer spriteRenderer;
         void Start()
         {
             _inputManager = SCR_GeneralManager.PlayerInputManager;
@@ -56,6 +58,7 @@ namespace Entities.Player
             _playerInteraction = GetComponentInChildren<SCR_PlayerInteraction>();
             HitboxComponent = GetComponentInChildren<CMP_HitboxComponent>();
             WeaponProperties = GetComponent<SCR_PlayerShooting>().WeaponProperties;
+            spriteRenderer = GetComponent<SpriteRenderer>();
             //_playerInteraction.gameObject.SetActive(false);
 
 
@@ -69,6 +72,7 @@ namespace Entities.Player
         private void OnDialogueStarted(DialogueObject[] dialogue)
         {
             BoxCollider2D.enabled = false; 
+            Rigidbody2D.velocity = Vector3.zero;
         }
 
         private void OnDialogueEnded()
@@ -113,7 +117,7 @@ namespace Entities.Player
             }
             IEnumerator SpriteFlickerCoroutine()
             {
-                SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+                
                 for (int i = 0; i < 4; i++)
                 {
                     spriteRenderer.enabled = false;
@@ -201,6 +205,7 @@ namespace Entities.Player
             if (_currentlyMoving) { return; }
             if (_inputManager.Axis2D.IsPressed()){
                 StopAllCoroutines();
+                spriteRenderer.enabled = true;
                 StartCoroutine(GridMovement(direction));
             }
 

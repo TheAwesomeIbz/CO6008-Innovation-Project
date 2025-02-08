@@ -197,6 +197,7 @@ namespace Dialogue
 
             if (enablePlayerControlsOnFinish)
             {
+
                 SCR_PlayerInputManager.PlayerControlsEnabled = true;
             }
             
@@ -212,14 +213,22 @@ namespace Dialogue
         /// <returns></returns>
         private IEnumerator TypeSentence(DialogueObject[] dialogueObjects)
         {
-            
+            float typeSpeed = 0.03125f - (0.015625f * (float)SCR_GeneralManager.Instance.Settings.TextSpeed);
+
             DialogueObject currentDialogueObject = dialogueObjects[GetCurrentIndex];
             string tempString = "";
+            float currentTime = Time.time;
             foreach (char character in currentDialogueObject.DialogueText)
             {
                 tempString += character;
                 _dialogueText.text = tempString;
-                yield return new WaitForSeconds(0.005f);
+
+                if (Time.time - currentTime > 0.25f && Input.GetButtonDown("Submit"))
+                {
+                    _dialogueText.text = currentDialogueObject.DialogueText;
+                    break;
+                }
+                yield return new WaitForSeconds(typeSpeed);
             }
             
 
@@ -284,21 +293,25 @@ namespace Dialogue
             ChoiceDialogueObject currentDialogueObject = cachedDialogueObjects[GetCurrentIndex] as ChoiceDialogueObject;
             if (!currentDialogueObject.NonImpactingChoice)
             {
-                bool choiceAlreadyExists = SCR_GeneralManager.Instance.PlayerData.SavableChoices.Find(ch => ch.ChoiceID == savableChoice.SavableChoice.ChoiceID) != null;
+                bool choiceDoesntExist = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == savableChoice.SavableChoice.ChoiceID) == null;
 
                 //if there is a savable choice that doesnt exist that can be saved to disk, then add it to the player data
-                bool canSaveToDisk = savableChoice != null && !choiceAlreadyExists;
                 selectedCorrectChoice = currentDialogueObject.CorrectChoice == index;
 
+                //if a quiz interface exists and can only be attempted once
+                bool attemptQuestionOnce = quizInterface?.OnlyOneChance ?? false;
 
-
-                if (canSaveToDisk && (selectedCorrectChoice || (quizInterface?.OnlyOneChance ?? false)))
+                if (attemptQuestionOnce)
                 {
-                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2));
-                    SCR_GeneralManager.Instance.PlayerData.SavableChoices.Add(savableChoice.SavableChoice);
+                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
+                    SCR_GeneralManager.Instance.Choices.Add(savableChoice.SavableChoice);
+                }
+                else if (choiceDoesntExist && selectedCorrectChoice)
+                {
+                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
+                    SCR_GeneralManager.Instance.Choices.Add(savableChoice.SavableChoice);
                 }
 
-                
             }
 
 

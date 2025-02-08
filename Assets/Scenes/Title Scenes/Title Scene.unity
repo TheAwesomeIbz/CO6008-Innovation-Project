@@ -762,14 +762,16 @@ MonoBehaviour:
   <SaveData>k__BackingField:
     PlayerData:
       PlayerName: 
-      DateStarted: []
-      DateLastSaved: []
+      DateStarted: 
+      DateLastSaved: 
       PlayTime: 0
+      AmountOfDeaths: 0
       RecentSceneName: 
       RecentPlayerPosition: []
-      SavableChoices: []
     LevelInformation: []
     InventoryInformation: []
+    Choices: []
+    CollectedItems: []
 --- !u!1 &867822460
 GameObject:
   m_ObjectHideFlags: 0
@@ -2747,7 +2749,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "DRAFT BUILD VERSION 0.1 \nLAST UPDATED 31/01/2025"
+  m_text: ' VERSION 0.1 UNITY 2022.3.30f1
+
+    LAST UPDATED 06/02/2025'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

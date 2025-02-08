@@ -3657,8 +3657,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faa4ced47047a2b4f943a1a390a98156, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _HP: 1500
-  _maxHP: 1500
+  _HP: 5000
+  _maxHP: 5000
 --- !u!114 &1162284123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3695,7 +3695,52 @@ MonoBehaviour:
   _bossPhase: 0
   _localPhasePasses: 0
   _firstPhaseParentObject: {fileID: 1508705860}
-  _questionObjects: []
+  _questionObjects:
+  - <Question>k__BackingField: Which expression  is NOT an equation of a line?
+    <Answers>k__BackingField:
+    - "x\xB2 + y\xB2 = 1"
+    - y = mx + c
+    - ax +by - c
+    <CorrectAnswer>k__BackingField: "x\xB2 + y\xB2 = 1"
+  - <Question>k__BackingField: At how many points does a linear equation cross the
+      y axis?
+    <Answers>k__BackingField:
+    - 2
+    - 1
+    - 0
+    <CorrectAnswer>k__BackingField: 1
+  - <Question>k__BackingField: How do you find the slope of a line?
+    <Answers>k__BackingField:
+    - rise / run
+    - x / y
+    - mx + c
+    <CorrectAnswer>k__BackingField: rise / run
+  - <Question>k__BackingField: How many roots will a quadratic polynomial always
+      have?
+    <Answers>k__BackingField:
+    - 2
+    - 3
+    - 1
+    <CorrectAnswer>k__BackingField: 2
+  - <Question>k__BackingField: What is the inverse of squaring a number?
+    <Answers>k__BackingField:
+    - Square root
+    - "Log\xB2 "
+    - Division
+    <CorrectAnswer>k__BackingField: Square root
+  - <Question>k__BackingField: What is the quadratic discriminant?
+    <Answers>k__BackingField:
+    - "b\xB2  \u2013 4ac"
+    - "ax\xB2 + bx + c"
+    - "(a + bx)\xB2 "
+    <CorrectAnswer>k__BackingField: "b\xB2  \u2013 4ac"
+  - <Question>k__BackingField: "When b\xB2  \u2013 4ac = 0, how many distinct roots
+      would the parent equation have?"
+    <Answers>k__BackingField:
+    - 2
+    - 1
+    - 0
+    <CorrectAnswer>k__BackingField: 1
   _secondPhaseParentObject: {fileID: 759382826}
   _alternatingPeriod: 2
   _halfHPDialogue:
@@ -3705,6 +3750,10 @@ MonoBehaviour:
   - _speakingCharacter: 
     _dialogueText: Alternatively, a cutscene or custom functionality can be implemented
       here.
+    _speakingSFX: {fileID: 0}
+  - _speakingCharacter: 
+    _dialogueText: The boss will get speed up and become more difficult. Be prepared
+      to be challenged!
     _speakingSFX: {fileID: 0}
   _defeatDialogue:
   - _speakingCharacter: 

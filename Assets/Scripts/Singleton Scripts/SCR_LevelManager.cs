@@ -5,7 +5,6 @@ using Overworld;
 using Level;
 using System;
 using Unity.VisualScripting;
-using UnityEditor.Build;
 using UnityEngine.UI;
 
 /// <summary>
@@ -87,8 +86,10 @@ public class SCR_LevelManager : MonoBehaviour
         SCR_LevelCollectable[] levelCollectables = FindObjectsOfType<SCR_LevelCollectable>();
         foreach (SCR_LevelCollectable levelCollectable in levelCollectables)
         {
-            bool collectibleAlreadyExists = currentLevelData.LevelCollectablesObtained.Contains(levelCollectable.name);
-            levelCollectable.gameObject.SetActive(!collectibleAlreadyExists);
+            bool collectableObtained = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Find
+                (lvl => lvl.CollectableID == levelCollectable.LevelCollectable.CollectableID)?.CollectableObtained ?? false;
+
+            levelCollectable.gameObject.SetActive(!collectableObtained);
         }
         levelBegan = true;
         LevelFirstCompleted = false;
