@@ -1,3 +1,4 @@
+using Dialogue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.IO;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
@@ -20,6 +22,11 @@ namespace UnityEngine.UI.Title
         [SerializeField] TextMeshProUGUI _textObject;
         [SerializeField] [TextArea(4, 4)] string[] _disclaimer;
         int _textIndex;
+
+        [Header("INITIAL COMMAND PROPERTIES")]
+        [SerializeField] GameObject gameModeObject;
+        [SerializeField] RawImage buttonOverlay;
+        [SerializeField] Button[] allButtons;
 
         void Start()
         {
@@ -71,12 +78,55 @@ namespace UnityEngine.UI.Title
                 _textIndex++;
             }
 
-            SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
+            LeanTween.value(1, 0, 0.75f).setOnUpdate((value) =>
+            {
+                buttonOverlay.color = new Color(buttonOverlay.color.r, buttonOverlay.color.g, buttonOverlay.color.b, value);
+            }).setOnComplete(() =>
+            {
+                _textObject.gameObject.SetActive(false);
+                buttonOverlay.gameObject.SetActive(false);
+            });
+
+
+
+        }
+
+        public void TakeStandardExam()
+        {
+            foreach (Button button in allButtons)
+            {
+                button.interactable = false;
+            }
+
+            if (File.Exists(Application.persistentDataPath + "/ExamCompleted.txt"))
+            {
+                EventSystem.current.SetSelectedGameObject(null);
+                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(
+                    DialogueObject.CreateDialogue("The exam has already been completed on this device.", "You cannot reattempt this exam again."), 
+                    OnDialogueEnd: () =>
+                    {
+                        foreach (Button button in allButtons)
+                        {
+                            button.interactable = true;
+                        }
+                    });
+                return;
+            }
+
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
+            {
+                SceneName = "Exam Scene"
+            });
+        }
+
+        public void PlayProjectPolynomial()
+        {
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = "Title Scene"
             });
-
         }
+
     }
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using Models;
 
 namespace Dialogue
 {
@@ -126,7 +127,7 @@ namespace Dialogue
 
             if (currentDialogueObjects == null)
             {
-                EndDialogueSequence();
+                EndDialogue();
                 return;
             }
             
@@ -141,7 +142,7 @@ namespace Dialogue
 
             if (GetCurrentIndex >= currentDialogueObjects.Length)
             {
-                EndDialogueSequence();
+                EndDialogue();
                 return;
             }
             else
@@ -181,8 +182,13 @@ namespace Dialogue
         /// <summary>
         /// Called when dialogue sequence is over when the last dialogue object has been reached.
         /// </summary>
-        private void EndDialogueSequence()
+        public void EndDialogue()
         {
+            foreach (ChoiceUIObject choiceUIObject in choiceUIObjects)
+            {
+                choiceUIObject.SetObjectActivity(false);
+            }
+
             SetDialogueActivity(false, null);
             OnDialogueEndEvent?.Invoke();
             OnDialogueEnd?.Invoke();
