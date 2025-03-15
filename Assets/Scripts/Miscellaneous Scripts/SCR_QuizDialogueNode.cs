@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Overworld
 {
@@ -56,6 +57,12 @@ namespace Overworld
             }
         }
 
+        public override void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
+        {
+            SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().DisplayUI();
+        }
+
+        
         public override bool ConditionalNode()
         {
             return correctChoice == savableChoice.SelectedChoice;

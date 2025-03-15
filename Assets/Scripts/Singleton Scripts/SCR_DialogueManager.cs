@@ -212,6 +212,8 @@ namespace Dialogue
 
 
 
+
+
         /// <summary>
         /// Enumaration called to type sentence in dialogue text box
         /// </summary>
@@ -221,6 +223,10 @@ namespace Dialogue
         {
             float typeSpeed = 0.03125f - (0.015625f * (float)SCR_GeneralManager.Instance.Settings.TextSpeed);
 
+            //predicate used to check whether input is pressed to continue
+            Func<bool> inputHeldPredicate = () => { return Input.GetButton("Submit") || Input.GetMouseButton(0); };
+            Func<bool> inputPressedPredicate = () => { return Input.GetButtonDown("Submit") || Input.GetMouseButtonDown(0); };
+
             DialogueObject currentDialogueObject = dialogueObjects[GetCurrentIndex];
             string tempString = "";
             float currentTime = Time.time;
@@ -229,7 +235,7 @@ namespace Dialogue
                 tempString += character;
                 _dialogueText.text = tempString;
 
-                if (Time.time - currentTime > 0.25f && Input.GetButtonDown("Submit"))
+                if (Time.time - currentTime > 0.125f && inputHeldPredicate())
                 {
                     _dialogueText.text = currentDialogueObject.DialogueText;
                     break;
@@ -247,9 +253,9 @@ namespace Dialogue
             }
             else
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.25f);
                 _continueIcon.SetActive(true);
-                yield return new WaitUntil(() => { return Input.GetButtonDown("Submit"); });
+                yield return new WaitUntil(inputPressedPredicate);
 
                 if (choiceDialogueObjectIndex > -1){
                     choiceDialogueObjectIndex++;

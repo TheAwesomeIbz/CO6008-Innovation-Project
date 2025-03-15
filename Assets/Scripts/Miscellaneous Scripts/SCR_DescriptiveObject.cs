@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Collider2D))]
 public class SCR_DescriptiveObject : MonoBehaviour, UI_DescriptionUI.IDescriptive
 {
-    [SerializeField] Collider2D currentCollider;
+    Collider2D currentCollider;
 
     [Header("DESCRIPTIVE OBJECT PROPERTIES")]
     [SerializeField] protected string header;

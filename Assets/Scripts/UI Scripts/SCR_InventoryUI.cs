@@ -13,6 +13,7 @@ namespace UnityEngine.UI
         [field : Header("INVENTORY UI PROPERTIES")]
         [field : SerializeField] public bool InventoryEnabled { get; private set; }
         [SerializeField] private GameObject _panelObject;
+        [SerializeField] private Transform inventorySlotParent;
         [SerializeField] private UI_Menu menu;
 
         SCR_InventoryManager _inventoryManager;
@@ -25,7 +26,7 @@ namespace UnityEngine.UI
             InventoryEnabled = false;
             _inventoryManager = SCR_GeneralManager.InventoryManager;
 
-            _inventoryUISlots = new UI_InventoryUI_Slot[32];
+            _inventoryUISlots = new UI_InventoryUI_Slot[16];
             gameObject.SetActive(false);
         }
 
@@ -38,7 +39,7 @@ namespace UnityEngine.UI
         {
             for (int i = 0; i < _inventoryUISlots.Length; i++)
             {
-                _inventoryUISlots[i] = _panelObject.transform.GetChild(0).GetChild(i).GetComponent<UI_InventoryUI_Slot>();
+                _inventoryUISlots[i] = inventorySlotParent.GetChild(i).GetComponent<UI_InventoryUI_Slot>();
 
                 SO_Item inventoryItem = i < _inventoryManager.Inventory.Count ? _inventoryManager.Inventory[i] : null;
                 _inventoryUISlots[i].InitializeSlot(inventoryItem);

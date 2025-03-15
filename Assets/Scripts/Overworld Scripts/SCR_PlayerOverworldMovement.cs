@@ -87,7 +87,7 @@ namespace Overworld
             yield return new WaitForSeconds(0.25f);
             
             SCR_GraphNode.GraphNode graphNode = _graphNode.GetNode(direction);
-            SCR_GraphNode adjacentGraphNode = graphNode.AdjacentNode;
+            SCR_GraphNode adjacentGraphNode = graphNode?.AdjacentNode;
 
             if (adjacentGraphNode == null)
             {

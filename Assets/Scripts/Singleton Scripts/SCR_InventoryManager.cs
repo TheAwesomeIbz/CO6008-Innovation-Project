@@ -2,6 +2,7 @@ using Dialogue;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class SCR_InventoryManager : MonoBehaviour
@@ -25,7 +26,7 @@ public class SCR_InventoryManager : MonoBehaviour
         bool startsWithVowel = "aeiou".Contains(item.name.ToLower()[0]);
         DialogueObject[] dialogue = DialogueObject.CreateDialogue($"{SCR_GeneralManager.Instance.PlayerData.PlayerName} obtained {(startsWithVowel ? "an" : "a")} {item.name}!",
                 $"The {item.name} was stored into your inventory.");
-        SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue);
+        SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, () => { SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().HideUI(); });
 
         return AddItem(item);
     }

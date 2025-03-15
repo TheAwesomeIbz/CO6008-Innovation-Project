@@ -1,4 +1,5 @@
 using Dialogue;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace UnityEngine.UI
 {
     public class UI_Menu : MonoBehaviour
     {
+        public static event Action<bool> OnMenuToggled;
         [Header("MENU UI PROPERTIES")]
         [SerializeField] private GameObject parentGameObject;
         [SerializeField] private Transform parentButtonObject;
@@ -51,6 +53,7 @@ namespace UnityEngine.UI
         private void ToggleMenu()
         {
             MenuEnabled = !MenuEnabled;
+            OnMenuToggled?.Invoke(MenuEnabled);
             parentGameObject.SetActive(MenuEnabled);
 
             SCR_PlayerInputManager.PlayerControlsEnabled = !MenuEnabled;

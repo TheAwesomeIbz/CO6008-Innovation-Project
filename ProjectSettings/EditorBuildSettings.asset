@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Title Scenes/Splash Scene.unity
     guid: 75bd3f171637277449abf83486ffab84
   - enabled: 1
-    path: Assets/Scenes/Level Scenes/Level Scene.unity
+    path: Assets/Scenes/Level Scenes/[TEST] Level Scene 2.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/Boss Scenes/BossFight_Linear.unity
@@ -27,7 +27,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Introductory Scenes/Naming Scene.unity
     guid: 2784e49849b77cd418f1846be50f00a9
   - enabled: 1
-    path: Assets/Scenes/Overworld Scene.unity
+    path: Assets/Scenes/[TEST] Overworld Scene.unity
     guid: 1e45c70ca67b23f44aca895803ffd26a
   - enabled: 1
     path: Assets/Scenes/Title Scenes/Title Scene.unity

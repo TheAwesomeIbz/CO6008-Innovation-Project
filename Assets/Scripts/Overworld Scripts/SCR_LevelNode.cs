@@ -21,15 +21,10 @@ namespace Overworld
         {
             return LevelData.LevelCompleted;
         }
-
-        public override void OnPlayerMoved(SCR_PlayerOverworldMovement playerOverworldMovement)
-        {
-            Debug.Log("HIDE LEVEL DESCRIPTION");
-        }
-
         public override void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
-            Debug.Log("OPEN LEVEL DESCRIPTION");
+            string uiDisplayText = name.ToLower().Contains("boss") ? "<color=green>[ENTER]</color> FIGHT POLYNOMIAL BOSS" : "<color=green>[ENTER]</color> BEGIN LEVEL";
+            SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().DisplayUI(uiDisplayText);
         }
 
         public void UpdateLevelData(LevelData levelData) => LevelData = levelData;

@@ -1,7 +1,9 @@
+using Dialogue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Overworld
 {
@@ -79,6 +81,7 @@ namespace Overworld
             InitialiseGraphNodes();
         }
 
+
         /// <summary>
         /// Determines whether a node contains a valid direction
         /// </summary>
@@ -102,7 +105,7 @@ namespace Overworld
         /// <param name="playerOverworldMovement">Player overworld movement reference</param>
         public virtual void OnPlayerMoved(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
-
+            SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>()?.HideUI();
         }
 
         /// <summary>
@@ -114,7 +117,7 @@ namespace Overworld
         /// <param name="playerOverworldMovement">Player overworld movement reference</param>
         public virtual void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
-
+            
         }
 
         /// <summary>

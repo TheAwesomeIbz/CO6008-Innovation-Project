@@ -28,6 +28,7 @@ namespace UnityEngine.UI
             if (_button != null)
             {
                 _button.interactable = item != null;
+                _iconTexture.gameObject.SetActive(item != null);
                 if (item != null)
                 {
                     _iconTexture.texture = item.SpriteIcon;
