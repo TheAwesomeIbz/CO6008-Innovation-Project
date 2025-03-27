@@ -22,12 +22,13 @@ namespace Entities.Player
 
         private void SCR_DialogueManager_OnDialogueEnd()
         {
+            StopAllCoroutines();
             StartCoroutine(DisableCollider());
 
             IEnumerator DisableCollider()
             {
                 _circleCollider.enabled = false;
-                yield return new WaitForSeconds(0.125f);
+                yield return new WaitForSeconds(0.55f);
                 _circleCollider.enabled = true;
             }
         }
@@ -58,7 +59,7 @@ namespace Entities.Player
 
         private void Update()
         {
-            if (_inputManager.Submit.IsPressed() && _interactableObject != null)
+            if (_inputManager.Submit.PressedThisFrame() && _interactableObject != null)
             {
                 _interactableObject.Interact(_playerMovement);
             }

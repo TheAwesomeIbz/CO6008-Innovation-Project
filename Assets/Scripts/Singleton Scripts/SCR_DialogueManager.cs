@@ -39,7 +39,6 @@ namespace Dialogue
         [Header("CACHED DIALOGUE OBJECTS")]
         [SerializeReference] DialogueObject[] cachedDialogueObjects;
         [SerializeField] ChoiceDialogueObject.ChoiceOption[] cachedChoiceObjects;
-        ISavableChoice savableChoice;
         IQuizInterface quizInterface;
         bool selectedCorrectChoice;
         bool enablePlayerControlsOnFinish;
@@ -65,19 +64,11 @@ namespace Dialogue
 
         }
 
-        /// <summary>
-        /// DIsplays the dialogue objects within the dialogue manager UI. Flexibly display the instructions of any object that implements this interface.
-        /// </summary>
-        /// <param name="dialogueObjects"></param>
-        public void DisplayDialogue(IDialogueInterface dialogueInterface, Action OnDialogueEnd = null, bool enablePlayerControlsOnFinish = true)
+
+        public void DisplayDialogue(IQuizInterface quizInterface, Action OnDialogueEnd = null, bool enablePlayerControlsOnFinish = true)
         {
-            if (dialogueInterface is ISavableChoice){
-                savableChoice = dialogueInterface as ISavableChoice;
-            }
-            if (dialogueInterface is IQuizInterface){
-                quizInterface = dialogueInterface as IQuizInterface;
-            }
-            DisplayDialogue(dialogueInterface.DialogueObjects, OnDialogueEnd, enablePlayerControlsOnFinish);
+            this.quizInterface = quizInterface;
+            DisplayDialogue(quizInterface.QuizDialogueObjects, OnDialogueEnd, enablePlayerControlsOnFinish);
         }
 
         /// <summary>
@@ -190,11 +181,10 @@ namespace Dialogue
             }
 
             SetDialogueActivity(false, null);
-            OnDialogueEndEvent?.Invoke();
-            OnDialogueEnd?.Invoke();
+            
 
             
-            OnDialogueEnd = null;
+            
             quizInterface = null;
             choiceDialogueObjectIndex = -1;
             dialogueObjectIndex = 0;
@@ -206,8 +196,11 @@ namespace Dialogue
 
                 SCR_PlayerInputManager.PlayerControlsEnabled = true;
             }
-            
 
+            OnDialogueEndEvent?.Invoke();
+            OnDialogueEnd?.Invoke();
+            OnDialogueEnd = null;
+            
         }
 
 
@@ -305,24 +298,17 @@ namespace Dialogue
             ChoiceDialogueObject currentDialogueObject = cachedDialogueObjects[GetCurrentIndex] as ChoiceDialogueObject;
             if (!currentDialogueObject.NonImpactingChoice)
             {
-                bool choiceDoesntExist = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == savableChoice.SavableChoice.ChoiceID) == null;
+                bool choiceDoesntExist = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == quizInterface.SavableChoice.ChoiceID) == null;
 
                 //if there is a savable choice that doesnt exist that can be saved to disk, then add it to the player data
                 selectedCorrectChoice = currentDialogueObject.CorrectChoice == index;
 
-                //if a quiz interface exists and can only be attempted once
-                bool attemptQuestionOnce = quizInterface?.OnlyOneChance ?? false;
-
-                if (attemptQuestionOnce)
+                quizInterface.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
+                if (quizInterface.SaveQuestionToDisk)
                 {
-                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
-                    SCR_GeneralManager.Instance.Choices.Add(savableChoice.SavableChoice);
+                    SCR_GeneralManager.Instance.Choices.Add(quizInterface.SavableChoice);
                 }
-                else if (choiceDoesntExist && selectedCorrectChoice)
-                {
-                    savableChoice.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
-                    SCR_GeneralManager.Instance.Choices.Add(savableChoice.SavableChoice);
-                }
+                
 
             }
 
@@ -331,11 +317,11 @@ namespace Dialogue
             cachedChoiceObjects[index].OnChoiceMade?.Invoke();
             if (selectedCorrectChoice)
             {
-                quizInterface?.OnCorrectChoiceMade();
+                quizInterface?.OnCorrectChoiceMade?.Invoke();
             }
             else
             {
-                quizInterface?.OnIncorrectChoiceMade();
+                quizInterface?.OnIncorrectChoiceMade?.Invoke();
             }
             DisplayNextDialogue(cachedChoiceObjects[index].ResultingDialogue);
         }

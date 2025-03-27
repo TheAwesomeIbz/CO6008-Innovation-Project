@@ -21,7 +21,7 @@ namespace Dialogue
         }
 
         [SerializeField] protected string _speakingCharacter;
-        [SerializeField][TextArea(2, 2)] protected string _dialogueText;
+        [SerializeField][TextArea(4, 4)] protected string _dialogueText;
         [SerializeField] protected AudioClip _speakingSFX;
         public Action OnSentenceFinished { get; private set; }
         /// <summary>
@@ -126,47 +126,25 @@ namespace Dialogue
     }
 
     /// <summary>
-    /// An object that inherits this interface can be one with dialogue instructions
-    /// </summary>
-    public interface IDialogueInterface
-    {
-        /// <summary>
-        /// The dialogue instructions attached to this object
-        /// </summary>
-        public DialogueObject[] DialogueObjects { get; }
-    }
-
-    /// <summary>
-    /// An object that inherits this interface can have questions saved to the player's save file
-    /// </summary>
-    public interface ISavableChoice
-    {
-
-        /// <summary>
-        /// The savable choice attribites attached to this object
-        /// </summary>
-        public SavableChoice SavableChoice { get; }
-    }
-
-    /// <summary>
     /// An object that inherits this interface essentially acts like a quiz, with the use of a multiple choice question dialogue for the dialogue manager to recognise.
     /// </summary>
     public interface IQuizInterface
     {
+        public DialogueObject[] QuizDialogueObjects { get; }
+
+        public SavableChoice SavableChoice { get; }
         public int CorrectChoice { get; }
-        /// <summary>
-        /// Whether the quiz is only answerable once, whether the right answer is chosen or not.
-        /// </summary>
-        public bool OnlyOneChance {  get; }
+
+        public bool SaveQuestionToDisk { get; }
 
         /// <summary>
         /// Method called when the right choice is made
         /// </summary>
-        public void OnCorrectChoiceMade();
+        public Action OnCorrectChoiceMade { get; }
 
         /// <summary>
         /// Method called when the wrong choice is made
         /// </summary>
-        public void OnIncorrectChoiceMade();
+        public Action OnIncorrectChoiceMade { get; }
     }
 }

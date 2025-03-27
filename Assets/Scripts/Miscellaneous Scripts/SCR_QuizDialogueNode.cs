@@ -10,7 +10,7 @@ namespace Overworld
     /// <summary>
     /// Overworld node that can quiz the player, and may regard them or grant access to other nodes
     /// </summary>
-    public class SCR_QuizDialogueNode : SCR_GraphNode, IQuizInterface, iInteractable, ISavableChoice, IDialogueInterface
+    public class SCR_QuizDialogueNode : SCR_GraphNode, IQuizInterface, iInteractable
     {
         [Header("CHOICE NODE PROPERTIES")]
         [SerializeField] protected string characterName;
@@ -23,7 +23,7 @@ namespace Overworld
 
         [Header("QUIZ DIALOGUE PROPERTIES")]
         [Tooltip("Depending on whether this is toggled or not, the question can only be answered once")]
-        [SerializeField] bool onlyOneChance;
+        [SerializeField] bool saveQuestionToDisk;
 
         int correctChoice;
 
@@ -35,7 +35,7 @@ namespace Overworld
 
         public SavableChoice SavableChoice => savableChoice;
 
-        public DialogueObject[] DialogueObjects => choiceDialogue;
+        public DialogueObject[] QuizDialogueObjects => choiceDialogue;
         
         protected void Start()
         {
@@ -68,7 +68,11 @@ namespace Overworld
             return correctChoice == savableChoice.SelectedChoice;
         }
         public int CorrectChoice => correctChoice - 1;
-        public bool OnlyOneChance => onlyOneChance;
+        public bool SaveQuestionToDisk => saveQuestionToDisk;
+
+        Action IQuizInterface.OnCorrectChoiceMade => throw new NotImplementedException();
+
+        Action IQuizInterface.OnIncorrectChoiceMade => throw new NotImplementedException();
 
         public void OnCorrectChoiceMade()
         {
@@ -90,7 +94,7 @@ namespace Overworld
             bool choiceAlreadyMade = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == savableChoice.ChoiceID) != null;
             if (!choiceAlreadyMade)
             {
-                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(this);
+                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(choiceDialogue);
                 return;
             }
 

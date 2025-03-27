@@ -24,7 +24,7 @@ namespace Entities.Player
 
         [Header("COOLDOWN PROPERTIES")]
         [SerializeField] float cooldown;
-        [SerializeField] bool CanShoot => cooldown <= 0;
+        public bool CanShoot => cooldown <= 0;
 
         bool dialogueEnabled;
 
@@ -37,6 +37,8 @@ namespace Entities.Player
         CinemachineVirtualCamera _virtualCamera;
         float _lensOrthoSize;
 
+
+        public void SetTargetDisplay(bool state) => _mouseCursor.gameObject.SetActive(state);
         public Attackable DamageableTo => _damageableTo;
 
         protected void Start()
@@ -47,6 +49,7 @@ namespace Entities.Player
             _lensOrthoSize = _virtualCamera.m_Lens.OrthographicSize;
 
             _halfwayObject.transform.parent = null;
+            _mouseCursor.transform.parent = null;
         }
 
         private void OnEnable()
@@ -72,7 +75,7 @@ namespace Entities.Player
         protected void ShootingUpdate()
         {
             if (_weaponProperties == null) { return; }
-            if (dialogueEnabled) { return; }
+            if (dialogueEnabled) { SetTargetDisplay(false); return; }
 
             cooldown -= Time.deltaTime;
             cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);

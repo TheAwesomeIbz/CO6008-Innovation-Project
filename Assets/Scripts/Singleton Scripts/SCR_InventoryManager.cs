@@ -23,12 +23,13 @@ public class SCR_InventoryManager : MonoBehaviour
 
     public bool AddItemWithDialogue(SO_Item item)
     {
+        if (!AddItem(item)) { return false; }
         bool startsWithVowel = "aeiou".Contains(item.name.ToLower()[0]);
         DialogueObject[] dialogue = DialogueObject.CreateDialogue($"{SCR_GeneralManager.Instance.PlayerData.PlayerName} obtained {(startsWithVowel ? "an" : "a")} {item.name}!",
                 $"The {item.name} was stored into your inventory.");
         SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, () => { SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().HideUI(); });
 
-        return AddItem(item);
+        return true;
     }
 
     /// <summary>
@@ -40,7 +41,7 @@ public class SCR_InventoryManager : MonoBehaviour
     {
         bool itemExist = Inventory.Contains(item);
         if (!itemExist) { Inventory.Add(item); }
-        return itemExist;
+        return !itemExist;
     }
 
 

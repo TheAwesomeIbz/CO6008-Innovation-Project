@@ -15,6 +15,7 @@ namespace Entities
         [SerializeField] DialogueObject[] dialogueObjects;
         public DialogueObject[] DialogueObjects => dialogueObjects;
 
+        private Action onDialogueFinish;
         public bool Interactable => true;
 
         private void Start()
@@ -24,6 +25,9 @@ namespace Entities
             }
             
         }
+
+
+        public void SetDialogueFinishAction(Action action) => onDialogueFinish = action;
 
         public void Interact(object playerObject)
         {
@@ -37,7 +41,7 @@ namespace Entities
                 Debug.LogWarning("<color=yellow>THERE IS NO DIALOGUE OBJECTS ATTACHED TO THIS GAME OBJECT</color>");
                 return;
             }
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects);
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects, onDialogueFinish);
             OnDialogueStart?.Invoke(this);
         }
 

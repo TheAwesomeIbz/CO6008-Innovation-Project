@@ -6,12 +6,15 @@ using Level;
 using System;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using Entities.Player;
 
 /// <summary>
 /// Manager class responsible for handling level data and information
 /// </summary>
 public class SCR_LevelManager : MonoBehaviour
 {
+    public SCR_PlayerMovement playerMovement { get; private set; }
+
     [field: Header("LEVEL MANAGER PROPERTIES")]
     [SerializeField] private List<LevelData> levelInformation;
     [SerializeField] private bool levelBegan;
@@ -29,6 +32,11 @@ public class SCR_LevelManager : MonoBehaviour
 
     public bool LevelFirstCompleted { get; private set; }   
     private SCR_LevelNode cachedLevelNode;
+
+    private void Awake()
+    {
+        if (playerMovement == null) { playerMovement = FindObjectOfType<SCR_PlayerMovement>(); }
+    }
     void Start()
     {
         loadScenes = SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>();
@@ -84,6 +92,7 @@ public class SCR_LevelManager : MonoBehaviour
     public void OnSceneLoaded()
     {
         SCR_LevelCollectable[] levelCollectables = FindObjectsOfType<SCR_LevelCollectable>();
+        playerMovement = FindObjectOfType<SCR_PlayerMovement>();
         foreach (SCR_LevelCollectable levelCollectable in levelCollectables)
         {
             bool collectableObtained = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Find

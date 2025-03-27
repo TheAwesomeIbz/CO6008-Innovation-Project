@@ -50,7 +50,7 @@ namespace Entities
             if (_bulletAmount == 1)
             {
                 SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
-                obj.transform.position = bulletProperties.ShootingObject.position + new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0);
+                obj.transform.position = bulletProperties.ShootingObject.position /*+ new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0);*/;
                 bulletProperties.BulletMagnitude = _bulletMagnitude;
                 obj.InitializeProjectile(this, bulletProperties);
             }

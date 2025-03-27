@@ -13,6 +13,7 @@ namespace Entities
         public int HP => _HP;
         public int MaxHP => _maxHP;
 
+        public float HealthDecimal => _HP / (float)_maxHP;
         public bool IsHalfHP => _HP <= _maxHP / 2;
 
         private void Start()

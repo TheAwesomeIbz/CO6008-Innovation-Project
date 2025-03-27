@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Dialogue;
+using Overworld;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ namespace Entities.Player
     {
         public static event Action<SCR_PlayerMovement> OnPlayerDefeated;
         public const int MaximumPlayerSpeed = 15;
+
         [Header("PLAYER MOVEMENT PROPERTIES")]
         [SerializeField] PlayerLevel _playerLevel;
         [SerializeField] bool _moveIn2DSpace;
@@ -32,6 +34,8 @@ namespace Entities.Player
         [SerializeField] PlayerPowerupProperty _knockbackPowerupProperty;
         [SerializeField] PlayerPowerupProperty _agilityPowerupProperty;
 
+        
+
         public PlayerPowerupProperty DamagePowerupProperty => _damagePowerupProperty;
         public PlayerPowerupProperty KnockbackPowerupProperty => _knockbackPowerupProperty;
         public PlayerPowerupProperty AgilityPowerupProperty => _agilityPowerupProperty;
@@ -42,11 +46,24 @@ namespace Entities.Player
         public Rigidbody2D Rigidbody2D { get; private set; }
         public BoxCollider2D BoxCollider2D { get; private set; }
         public bool IsDodging => _playerDodgeProperties.IsDodging;
+        public bool IsMoving { get
+            {
+                switch (_playerLevel)
+                {
+                    case PlayerLevel.INTEGER_LEVEL:
+                    case PlayerLevel.WHOLE_LEVEL:
+                        return _currentlyMoving;
+                    default:
+                        return Rigidbody2D.velocity.sqrMagnitude > 1 && _inputManager.Axis2D.IsPressed();
+                }
+            }
+        }
         public SO_WeaponProperties WeaponProperties { get; private set; }
         /// <summary>
         /// Get the Current Player level
         /// </summary>
         public PlayerLevel PlayerLevel => _playerLevel;
+        public void SetPlayerLevel(PlayerLevel playerLevel) => _playerLevel = playerLevel;
 
         SpriteRenderer spriteRenderer;
         void Start()
@@ -172,6 +189,9 @@ namespace Entities.Player
         /// </remarks>
         private void PlayerMovementUpdate()
         {
+            if (_inputManager.CursorWorldPoint.x > transform.position.x) { transform.localScale = Vector3.one; }
+            else { transform.localScale = new Vector3(-1, 1); }
+
             Vector2 directionVector = _inputManager.Axis2D.AxisValue;
             switch (_playerLevel)
             {
@@ -212,25 +232,25 @@ namespace Entities.Player
             IEnumerator GridMovement(int direction)
             {
                 _currentlyMoving = true;
-                Vector2 currentPosition = transform.position;
-                Vector2 targetPosition = transform.position + (Vector3.right * direction * _gridDisplacement);
+                Vector2 currentPosition = Rigidbody2D.position;
+                Vector2 targetPosition = Rigidbody2D.position + (Vector2.right * direction * _gridDisplacement);
                 transform.localScale = direction < 0 ? new Vector3(-1, 1) : Vector3.one;
 
-                RaycastHit2D boundaryRaycast = Physics2D.Raycast(currentPosition, new Vector2(direction, 0), _gridDisplacement + 1, GlobalMasks.BoundaryLayerMask);
+                Collider2D boundaryRaycast = Physics2D.OverlapPoint(currentPosition + new Vector2(direction, 0), GlobalMasks.BoundaryLayerMask);
 
-                while (Mathf.Abs(targetPosition.x - transform.position.x) > 0.1f && boundaryRaycast.collider == null)
+                while (Mathf.Abs(targetPosition.x - Rigidbody2D.position.x) > 0.1f && boundaryRaycast == null)
                 {
-                    transform.position = Vector3.Lerp(transform.position, new Vector3(targetPosition.x, transform.position.y), _gridSpeed * Time.deltaTime);
-                    boundaryRaycast = Physics2D.Raycast(currentPosition, new Vector2(direction, 0), _gridDisplacement, GlobalMasks.BoundaryLayerMask);
+                    Rigidbody2D.position = Vector3.Lerp(Rigidbody2D.position, new Vector3(targetPosition.x, Rigidbody2D.position.y), _gridSpeed * Time.deltaTime);
+                    boundaryRaycast = Physics2D.OverlapPoint(currentPosition + new Vector2(direction, 0), GlobalMasks.BoundaryLayerMask);
                     yield return new WaitForEndOfFrame();
                 }
 
-                if (boundaryRaycast.collider != null) {
-                    transform.position = new Vector3(Mathf.RoundToInt(transform.position.x), transform.position.y);
+                if (boundaryRaycast != null) {
+                    Rigidbody2D.position = new Vector3(Mathf.RoundToInt(transform.position.x), transform.position.y);
                     _currentlyMoving = false;
                     yield break; 
                 }
-                transform.position = new Vector3(Mathf.RoundToInt(targetPosition.x), transform.position.y);
+                Rigidbody2D.position = new Vector3(Mathf.RoundToInt(targetPosition.x), transform.position.y);
                 _currentlyMoving = false;
             }
         }
@@ -254,8 +274,7 @@ namespace Entities.Player
                 Rigidbody2D.velocity = Vector2.Lerp(Rigidbody2D.velocity, Vector2.zero, Time.deltaTime * _playerSpeedProperties.Deceleration * _agilityPowerupProperty.PowerupMultiplier);
             }
 
-            if (directionVector.x > 0) { transform.localScale = Vector3.one; }
-            else if (directionVector.x < 0) { transform.localScale = new Vector3(-1, 1);}
+            
         }
 
         /// <summary>
@@ -308,7 +327,7 @@ namespace Entities.Player
             public float SpeedMultiplier = 1;
 
             public float Acceleration = 2;
-            [Range(0, 1)] public float Deceleration = 0.75f;
+            [Range(0, 5)] public float Deceleration = 2f;
         }
 
         [Serializable] class PlayerDodgeProperties
