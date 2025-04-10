@@ -21,27 +21,33 @@ public class SCR_InventoryManager : MonoBehaviour
         Inventory = obj.InventoryInformation;
     }
 
+    /// <summary>
+    /// Adds an item to the inventory with dialogue
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>Whether the item already exists in the inventory or not</returns>
     public bool AddItemWithDialogue(SO_Item item)
     {
-        if (!AddItem(item)) { return false; }
+        bool itemExists = AddItem(item);
+        if (itemExists) { return true; }
         bool startsWithVowel = "aeiou".Contains(item.name.ToLower()[0]);
-        DialogueObject[] dialogue = DialogueObject.CreateDialogue($"{SCR_GeneralManager.Instance.PlayerData.PlayerName} obtained {(startsWithVowel ? "an" : "a")} {item.name}!",
+        DialogueObject[] dialogue = DialogueObject.CreateDialogue($"<NAME> obtained {(startsWithVowel ? "an" : "a")} {item.name}!",
                 $"The {item.name} was stored into your inventory.");
         SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogue, () => { SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().HideUI(); });
 
-        return true;
+        return false;
     }
 
     /// <summary>
     /// Adds an item to the inventory
     /// </summary>
     /// <param name="item"></param>
-    /// <returns>Whether the item already exci</returns>
+    /// <returns>Whether the item already exists</returns>
     public bool AddItem(SO_Item item)
     {
         bool itemExist = Inventory.Contains(item);
         if (!itemExist) { Inventory.Add(item); }
-        return !itemExist;
+        return itemExist;
     }
 
 

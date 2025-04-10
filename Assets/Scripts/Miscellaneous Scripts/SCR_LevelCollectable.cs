@@ -1,3 +1,4 @@
+using System;
 using Entities;
 using Entities.Player;
 using System.Collections;
@@ -6,21 +7,23 @@ using UnityEngine;
 
 namespace Level
 {
-    public class SCR_LevelCollectable : BaseCollectable
+    public class SCR_LevelCollectable : MonoBehaviour
     {
         [field: Header("LEVEL COLLECTABLE PROPERTIES")]
         [field : SerializeField] public LevelCollectable LevelCollectable { get; private set; }
-        protected override void OnPlayerCollided(SCR_PlayerMovement playerMovement)
+        
+
+        public void CollectItem()
         {
             if (SCR_GeneralManager.LevelManager.GetCurrentLevelData == null) { return; }
-
             LevelCollectable existingLevelCollectable = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Find(lvl => lvl.CollectableID == LevelCollectable.CollectableID);
-            
-            if (!existingLevelCollectable?.CollectableObtained ?? false)
-            {
+
+            if (!existingLevelCollectable?.CollectableObtained ?? false) {
                 existingLevelCollectable.Collect();
             }
             gameObject.SetActive(false);
         }
+        
+        
     }
 }

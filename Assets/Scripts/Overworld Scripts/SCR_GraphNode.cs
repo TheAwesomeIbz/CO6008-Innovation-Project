@@ -53,6 +53,8 @@ namespace Overworld
                 RaycastHit2D[] graphNodeRaycast = Physics2D.RaycastAll(transform.position, getDirection(currentDirection), C_GraphNodeRaycastLength, LayerMask.GetMask("Graph Nodes"));
                 foreach (RaycastHit2D raycastHit in graphNodeRaycast)
                 {
+                    bool directionExists = graphNodes.Find(node => node.ValidDirection == currentDirection) != null;
+                    if (directionExists) { continue; }
                     bool validGraphNode = raycastHit.collider != null && raycastHit.collider.name != name;
                     
                     if (!validGraphNode) { continue; }

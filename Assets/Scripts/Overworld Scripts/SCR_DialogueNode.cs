@@ -24,6 +24,6 @@ namespace Overworld
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().DisplayUI("<color=green>[ENTER]</color> INTERACT WITH NPC");
         }
-
+        
     }
 }

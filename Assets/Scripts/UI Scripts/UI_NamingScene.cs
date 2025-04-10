@@ -68,13 +68,13 @@ namespace UnityEngine.UI.Title
         /// <param name="text"></param>
         private void OnValidNameEntered(string text)
         {
-
+            SCR_GeneralManager.Instance.SetPlayerName(text);
             DialogueObject[] dialogue = DialogueObject.CreateDialogue(
-                $"Hello {text}, this is PROJECT POLYNOMIAL Ver. {Application.version} ran on Unity {Application.unityVersion}.",
+                $"Hello <NAME>, this is PROJECT POLYNOMIAL Ver. {Application.version} ran on Unity {Application.unityVersion}.",
                 "This build contains the abstract frameworks and game mechanics that will be featured in the final game.",
-                $"{text} will load into the overworld, in which they can interact with objects and levels.",
+                "<NAME> will load into the overworld, in which they can interact with objects and levels.",
                 "If you get stuck or confused about anything, always try to hover over objects with your mouse for more information!",
-                $"Good luck {text}, and enjoy this prototype!"
+                "Good luck <NAME>, and enjoy this prototype!"
                 );
 
             Action onDialogueFinished = () =>
@@ -84,7 +84,7 @@ namespace UnityEngine.UI.Title
                     SceneName = _sceneName,
                     OnTransitionFinished = OnTransitionFinished,
                 });
-                SCR_GeneralManager.Instance.SetPlayerName(text);
+                
                 
             };
 
@@ -95,19 +95,8 @@ namespace UnityEngine.UI.Title
 
         private void OnTransitionFinished()
         {
-            DialogueObject[] onTransitionDialogue = DialogueObject.CreateDialogue(
-                "This is the overworld map that the player can navigate.",
-                "There are various nodes on the map that the player can go to.",
-                "Use [WASD] or the [ARROW KEYS] to navigate to each point.",
-                "Press submit to interact with any interactable nodes. These will be denoted with text above them.",
-                "There are bosses you can fight also in this demo. Thank you for listening",
-                "Best of luck and enjoy this demo!"
-                );
-
-            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(onTransitionDialogue, () =>
-            {
-                SavingOperations.SaveInformation();
-            });
+            SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            
         }
 
         /// <summary>

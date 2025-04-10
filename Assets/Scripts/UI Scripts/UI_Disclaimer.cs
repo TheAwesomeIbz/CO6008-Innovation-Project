@@ -93,26 +93,6 @@ namespace UnityEngine.UI.Title
 
         public void TakeStandardExam()
         {
-            foreach (Button button in allButtons)
-            {
-                button.interactable = false;
-            }
-
-            if (File.Exists(Application.persistentDataPath + "/ExamCompleted.txt"))
-            {
-                EventSystem.current.SetSelectedGameObject(null);
-                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(
-                    DialogueObject.CreateDialogue("The exam has already been completed on this device.", "You cannot reattempt this exam again."), 
-                    OnDialogueEnd: () =>
-                    {
-                        foreach (Button button in allButtons)
-                        {
-                            button.interactable = true;
-                        }
-                    });
-                return;
-            }
-
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = "Exam Scene"

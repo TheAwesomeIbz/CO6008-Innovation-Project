@@ -2,6 +2,7 @@ using Dialogue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace UnityEngine.UI
@@ -23,6 +24,10 @@ namespace UnityEngine.UI
 
         [Header("INVENTORY UI PROPERTIES")]
         [SerializeField] private SCR_InventoryUI inventoryUI;
+        public SCR_InventoryUI InventoryUI => inventoryUI;
+
+        [Header("COLLECTABLE UI PROPERTIES")] 
+        [SerializeField] private TextMeshProUGUI collectableText;
 
         void Start()
         {
@@ -34,6 +39,7 @@ namespace UnityEngine.UI
             foreach (Transform child in parentButtonObject){
                 buttons.Add(child.GetComponent<Button>());
             }
+            collectableText.text = $"COLLECTABLES OBTAINED: <color=yellow>{SCR_GeneralManager.LevelManager.GetCollectableCount}</color>";
         }
         
         /// <summary>
@@ -55,7 +61,6 @@ namespace UnityEngine.UI
             MenuEnabled = !MenuEnabled;
             OnMenuToggled?.Invoke(MenuEnabled);
             parentGameObject.SetActive(MenuEnabled);
-
             SCR_PlayerInputManager.PlayerControlsEnabled = !MenuEnabled;
         }
 

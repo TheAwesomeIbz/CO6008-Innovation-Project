@@ -8,12 +8,11 @@ namespace Entities
     /// <summary>
     /// Scriptable object used to store information about projectiles and shoot aformentioned projectile(s) from a given entity with customisable attributes
     /// </summary>
-    [CreateAssetMenu(menuName = "Scriptable Objects/Weapon Property")]
-    public class SO_WeaponProperties : ScriptableObject
+    public class SO_WeaponProperties : MonoBehaviour
     {
         [Header("SHOOTING PROPERTIES")]
         [SerializeField] GameObject _bulletPrefab;
-        [SerializeField] [Range(5, 50)] int _bulletMagnitude;
+        [SerializeField] [Range(0, 50)] int _bulletMagnitude = 5;
         [SerializeField] [Range(0f, 3f)] float _weaponCooldown;
         [SerializeField] [Range(1, 30)] int _bulletAmount;
         [SerializeField] bool _dodgeableBullet;
@@ -21,12 +20,19 @@ namespace Entities
         [Header("RANDOM PROPERTIES")]
         [SerializeField] [Range(0f, 1)] float _bulletSpreadRange;
         [SerializeField] [Range(0, 10)] int _bulletMagnitudeRange;
+        
+        [Header("DAMAGE PROPERTIES")]
+        [SerializeField] private int damage;
+        [SerializeField] private float damageMultiplier;
 
         [Header("KNOCKBACK PROPERTIES")]
         [SerializeField] [Range(0, 30f)] int _recoilImpulse;
         [SerializeField] float _knockbackDirection;
         [SerializeField] int _knockbackMagnitude;
+       
 
+        public SpriteRenderer SpriteRenderer => _bulletPrefab.GetComponent<SpriteRenderer>();
+        public ParticleSystem ParticleSystem => _bulletPrefab.GetComponentInChildren<ParticleSystem>();
 
 
         /// <summary>
@@ -47,6 +53,8 @@ namespace Entities
         /// <param name="bulletProperties">Flexible class used to add additonal parameters flexibly</param>
         public void SpawnBullet(BulletProperties bulletProperties)
         {
+            bulletProperties.Attack = damage;
+            bulletProperties.AttackModifier = damageMultiplier;
             if (_bulletAmount == 1)
             {
                 SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
@@ -60,7 +68,7 @@ namespace Entities
                 for (int i = 0; i < _bulletAmount; i++)
                 {
                     SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
-                    obj.transform.position = bulletProperties.ShootingObject.position + new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0);
+                    obj.transform.position = bulletProperties.ShootingObject.position;
                     float randomDirectionAngle = Random.Range(defaultDirectionAngle - _bulletSpreadRange, defaultDirectionAngle + _bulletSpreadRange);
                     bulletProperties.InputDirection = randomDirectionAngle;
                     bulletProperties.BulletMagnitude = _bulletMagnitudeRange + Random.Range(_bulletMagnitude - _bulletMagnitudeRange, _bulletMagnitude + _bulletMagnitudeRange);
@@ -81,6 +89,8 @@ namespace Entities
             SCR_Projectile obj = Instantiate(_bulletPrefab, null).GetComponent<SCR_Projectile>();
             obj.transform.position = bulletProperties.ShootingObject.position /*+ new Vector3(Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), 0)*/;
             bulletProperties.BulletMagnitude = _bulletMagnitude;
+            bulletProperties.Attack = damage;
+            bulletProperties.AttackModifier = damageMultiplier;
             obj.InitializeProjectile(this, bulletProperties);
         }
 
@@ -92,6 +102,8 @@ namespace Entities
             public Transform ShootingObject;
             public float InputDirection;
             public float BulletMagnitude;
+            public int Attack;
+            public float AttackModifier;
 
         }
     }

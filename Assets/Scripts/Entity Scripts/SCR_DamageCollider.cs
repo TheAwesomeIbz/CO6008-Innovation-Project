@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Entities.Player;
 using UnityEngine.UI;
 
 namespace Entities
@@ -17,8 +18,7 @@ namespace Entities
         [Header("ATTACKING PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
         [SerializeField] protected int _attack = 5;
-        [SerializeField] [Range(0, 1)] protected float _attackPercentage;
-        [SerializeField] protected bool _attackCalculatedByPercentage;
+        protected float attackMultiplier = 1;
         [SerializeField] [Range(0, 2)] protected float _stunTimer;
         [field: SerializeField] public bool DodgeableCollider { get; protected set; }
 
@@ -26,12 +26,7 @@ namespace Entities
         /// Amount of time an entity should be stunned for once hit with this collider
         /// </summary>
         public float StunTimer => _stunTimer;
-
-        /// <summary>
-        /// Returns whether the attack should be calculated by a percentage value or fixed value
-        /// </summary>
-        public bool AttackCalculatedByPercentage => _attackCalculatedByPercentage;
-
+        
         [Header("KNOCKBACK PROPERTIES")]
         [SerializeField] protected float _knockbackDirection;
         [SerializeField] protected float _knockbackMagnitude;
@@ -40,14 +35,8 @@ namespace Entities
         /// Returns constant attack value
         /// </summary>
         public int Attack => _damageableTo == Attackable.PLAYER ?
-            Mathf.RoundToInt(_attack * (0.5f + ((float)settings.GameMode * 0.5f))) :
-            Mathf.RoundToInt((2 * _attack) / (float)(1 + (int)settings.GameMode) );
-            
-
-        /// <summary>
-        /// Returns attack percentage float from 0 to 1
-        /// </summary>
-        public float AttackPercentage => _attackPercentage;
+            Mathf.RoundToInt(_attack * (0.5f + ((float)settings.GameMode * 0.5f) * attackMultiplier)) :
+            Mathf.RoundToInt((2 * _attack) / (float)(1 + (int)settings.GameMode) * attackMultiplier );
 
         /// <summary>
         /// Returns direction that the damaged object should be launched towards

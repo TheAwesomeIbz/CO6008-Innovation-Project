@@ -1,14 +1,16 @@
+using System;
 using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Entities
 {
     public class SCR_EntityShooting : MonoBehaviour
     {
         [Header("ENTITY SHOOTING PROPERTIES")]
-        [SerializeField] SO_WeaponProperties weaponProperties;
+        [SerializeField] protected SO_WeaponProperties weaponProperties;
         [SerializeField] [Range(0.001f, 1)] protected float _cooldownPeriod = 0.125f;
         [field: SerializeField] public ShootingVariant ShootingType;
         protected float _cooldown;
@@ -27,7 +29,12 @@ namespace Entities
         [SerializeField] [Range(10, 100)] float _spiralSpeed = 20;
         float _spiralAngle = 0;
 
-        
+
+        protected virtual void Awake()
+        {
+            weaponProperties = GetComponent<SO_WeaponProperties>();
+        }
+
         /// <summary>
         /// Virtual function called in Update() to handle shooting physics and mechanics whenever the cooldown counter has disabled;
         /// </summary>

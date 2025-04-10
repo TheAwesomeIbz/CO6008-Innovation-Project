@@ -1,0 +1,114 @@
+using Dialogue;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Overworld
+{
+    /// <summary>
+    /// Overworld node that can quiz the player, and may regard them or grant access to other nodes
+    /// </summary>
+    public class SCR_NPCQuestionNode : SCR_GraphNode, IQuizInterface, iInteractable
+    {
+        [Header("CHOICE NODE PROPERTIES")]
+        [SerializeField] protected string characterName;
+        [SerializeField] protected ChoiceDialogueObject[] choiceDialogue;
+        [SerializeField] protected SavableChoice savableChoice;
+
+        [Header("ADDITIONAL DIALOGUE PROPERTIES")]
+        [Tooltip("If this is populated, after the question asked, the NPC will automatically display these dialogue instructions")]
+        [SerializeField] protected DialogueObject[] resultantDialogueObjects;
+
+        [Header("QUIZ DIALOGUE PROPERTIES")]
+        [SerializeField] RecordingFormat recordingFormat;
+        public RecordingFormat RecordingFormat => recordingFormat;
+        int correctChoice;
+
+        [Header("REWARD PROPERTIES")]
+        [Tooltip("Item rewarded to player if they got the question right")]
+        [SerializeField] SO_Item rewardItem;
+
+        public bool Interactable => true;
+
+        public SavableChoice SavableChoice => savableChoice;
+
+        public DialogueObject[] QuizDialogueObjects => choiceDialogue;
+        
+        protected void Start()
+        {
+            if (savableChoice == null || string.IsNullOrEmpty(savableChoice.ChoiceID))
+            {
+                savableChoice = new SavableChoice(name);
+            }
+
+            foreach (ChoiceDialogueObject choice in choiceDialogue)
+            {
+                if (choice.choiceOptions?.Length > 0)
+                {
+                    correctChoice = Array.FindIndex(choice.choiceOptions, choiceOption => choiceOption.CorrectAnswer);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(characterName)) { 
+                choiceDialogue.InitialiseCharacterNames(characterName);
+            }
+        }
+
+        public override void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
+        {
+            SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().DisplayUI();
+        }
+
+        
+        public override bool ConditionalNode()
+        {
+            return correctChoice == savableChoice.SelectedChoice;
+        }
+        public int CorrectChoice => correctChoice - 1;
+        
+        Action IQuizInterface.OnCorrectChoiceMade => OnCorrectChoiceMade;
+
+        Action IQuizInterface.OnIncorrectChoiceMade => OnIncorrectChoiceMade;
+
+        public void OnCorrectChoiceMade()
+        {
+            if (rewardItem){
+                SCR_GeneralManager.InventoryManager.AddItemWithDialogue(rewardItem);
+            }
+        }
+
+        public void OnIncorrectChoiceMade()
+        {
+            
+        }
+
+        public void Interact(object playerObject)
+        {
+            //Determine whether this ChoiceID already exists within the existing playerData
+            bool choiceAlreadyMade = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == savableChoice.ChoiceID) != null;
+            if (!choiceAlreadyMade)
+            {
+                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(this);
+                return;
+            }
+
+            //If resulting dialogue exists after a choice has been made, display that dialogue
+            //Otherwise, find the first occuring question, and play the resulting dialogue from the choice dialogue object
+            if (resultantDialogueObjects?.Length > 0)
+            {
+                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(resultantDialogueObjects);
+            }
+            else
+            {
+                ChoiceDialogueObject firstChoiceDialogue = Array.Find(choiceDialogue, ch => ch.choiceOptions.Length > 0);
+                DialogueObject[] dialogueObjects = firstChoiceDialogue.choiceOptions[savableChoice.SelectedChoice].ResultingDialogue;
+                SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(dialogueObjects);
+            }
+
+        }
+        
+        public void SetSavableChoice(SavableChoice choice) => savableChoice = choice;
+    }
+}

@@ -69,8 +69,8 @@ public class SCR_GeneralManager : MonoBehaviour
         playerOverworldMovement.Start();
 
         if (Choices.Count == 0) { return; }
-        Overworld.SCR_QuizDialogueNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_QuizDialogueNode>();
-        foreach (Overworld.SCR_QuizDialogueNode choiceDialogueNode in choiceDialogueNodes)
+        Overworld.SCR_NPCQuestionNode[] choiceDialogueNodes = FindObjectsOfType<Overworld.SCR_NPCQuestionNode>();
+        foreach (Overworld.SCR_NPCQuestionNode choiceDialogueNode in choiceDialogueNodes)
         {
             SavableChoice savableChoice = Choices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
             choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect, savableChoice.CorrectAnswer);

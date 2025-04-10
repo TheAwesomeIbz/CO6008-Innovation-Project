@@ -43,11 +43,14 @@ namespace UnityEngine.UI
             Transform extensionObject = GameObject.FindGameObjectWithTag("UI Extension")?.transform ?? null;
 
             //Initialised the camera of the extension object and normal UI manager
-            SCR_GeneralManager.UIManager.GetComponent<Canvas>().worldCamera = Camera.main;
+            Canvas uiManagerCanvas = SCR_GeneralManager.UIManager.GetComponent<Canvas>();
+            uiManagerCanvas.worldCamera = Camera.main;
+            uiManagerCanvas.sortingLayerID = SortingLayer.NameToID("UI");
             
 
             if (extensionObject == null ) { return; }
             extensionObject.GetComponent<Canvas>().worldCamera = Camera.main;
+            
 
             //If any extension objects already exist, then delete them all
             if (_extensionObjects.Count > 0)
@@ -67,6 +70,16 @@ namespace UnityEngine.UI
             //Format each child extension object
             foreach (Transform child in _extensionObjects) { FormatExtensionRectTransform(child); }
             Destroy(extensionObject.gameObject);
+            
+            string lowercasedSceneName = arg0.name.ToLower();
+            if (lowercasedSceneName.Contains("boss"))
+            {
+                Camera.main.VirtualCamera().m_Lens.OrthographicSize = 8;
+            }
+            else
+            {
+                Camera.main.VirtualCamera().m_Lens.OrthographicSize = 7;
+            }
         }
 
         /// <summary>

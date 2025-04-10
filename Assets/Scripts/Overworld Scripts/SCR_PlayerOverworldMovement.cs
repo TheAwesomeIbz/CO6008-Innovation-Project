@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Dialogue;
 using UnityEngine;
 
 namespace Overworld
@@ -13,12 +15,19 @@ namespace Overworld
         [Header("ARROW PROPERTIES")]
         [SerializeField] Transform parentArrowObject;
 
+        [Header("SPRITE PROPERTIES")] 
+        [SerializeField] private Sprite pixelatedSprite;
+        [SerializeField] Sprite renderedSprite;
+        SpriteRenderer spriteRenderer;
+        
         SCR_GraphNode _graphNode;
         SCR_PlayerInputManager _playerInputManager;
         public SCR_GraphNode GraphNode => _graphNode;
         public void SetGraphNode(SCR_GraphNode graphNode) => _graphNode = graphNode;
         public void Start()
         {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            SCR_DialogueManager.OnDialogueEndEvent += OnDialogueEnd;
             _playerInputManager = SCR_GeneralManager.PlayerInputManager;
             Collider2D[] allColliders = Physics2D.OverlapPointAll(transform.position);
             foreach (var collider in allColliders)
@@ -36,6 +45,10 @@ namespace Overworld
 
         }
 
+        private void OnDialogueEnd()
+        {
+            InitialiseCurrentNode(_graphNode);
+        }
         private void InitialiseDirectionalArrows(SCR_GraphNode graphNode)
         {
             foreach (Transform child in parentArrowObject){
@@ -43,14 +56,24 @@ namespace Overworld
             }
             foreach (SCR_GraphNode.GraphNode gn in graphNode.GetGraphNodes)
             {
-                parentArrowObject.GetChild((int)gn.ValidDirection).gameObject.SetActive(true);
+                bool conditionalNode = gn.ConditionalNode && graphNode.ConditionalNode();
+                bool travellableNode = !gn.ConditionalNode;
+                parentArrowObject.GetChild((int)gn.ValidDirection).gameObject.SetActive(conditionalNode || travellableNode);
             }
         }
         public void InitialiseCurrentNode(SCR_GraphNode graphNode) => this._graphNode = graphNode;
         // Update is called once per frame
         void Update()
         {
+            
             if (_currentlyMoving) { return; }
+
+            if (spriteRenderer)
+            {
+                bool isRendered = transform.position.x > -3;
+                Application.targetFrameRate = isRendered ? -1 : 30;
+                spriteRenderer.sprite = isRendered ? renderedSprite : pixelatedSprite;
+            }
             iInteractable interactable = _graphNode?.GetComponent<iInteractable>() ?? null;
             if (_playerInputManager.Submit.PressedThisFrame() && (interactable?.Interactable ?? false) && SCR_PlayerInputManager.PlayerControlsEnabled)
             {
@@ -116,6 +139,11 @@ namespace Overworld
             _currentlyMoving = false;
             _graphNode.OnPlayerLanded(this);
             yield break;
+        }
+
+        private void OnDisable()
+        {
+            SCR_DialogueManager.OnDialogueEndEvent -= OnDialogueEnd;
         }
     }
 

@@ -19,11 +19,14 @@ namespace Entities.Player
         [SerializeField] GameObject _mouseCursor;
         [SerializeField] GameObject _halfwayObject;
         [SerializeField] [Range(1, 4)] float _midpointThreshold = 1;
+        private SCR_PlayerMovement playerMovement;
 
         public SO_WeaponProperties WeaponProperties => _weaponProperties;
 
         [Header("COOLDOWN PROPERTIES")]
         [SerializeField] float cooldown;
+
+        [SerializeField] private float attackModifier;
         public bool CanShoot => cooldown <= 0;
 
         bool dialogueEnabled;
@@ -38,6 +41,12 @@ namespace Entities.Player
         float _lensOrthoSize;
 
 
+        public void UpdateTargetPosition(Vector2 position)
+        {
+            CinemachineTransposer cinemachineTransposer = _virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+            Vector2 cachedDamping = new Vector2(cinemachineTransposer.m_XDamping, cinemachineTransposer.m_YDamping);
+            _halfwayObject.transform.position = position;
+        }
         public void SetTargetDisplay(bool state) => _mouseCursor.gameObject.SetActive(state);
         public Attackable DamageableTo => _damageableTo;
 
@@ -47,6 +56,8 @@ namespace Entities.Player
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             _trackPlayerCursor = true;
             _lensOrthoSize = _virtualCamera.m_Lens.OrthographicSize;
+            playerMovement = GetComponent<SCR_PlayerMovement>();
+            _weaponProperties = GetComponent<SO_WeaponProperties>();
 
             _halfwayObject.transform.parent = null;
             _mouseCursor.transform.parent = null;
@@ -75,7 +86,9 @@ namespace Entities.Player
         protected void ShootingUpdate()
         {
             if (_weaponProperties == null) { return; }
-            if (dialogueEnabled) { SetTargetDisplay(false); return; }
+            if (playerMovement.IsDodging) { return; }
+            SetTargetDisplay(!dialogueEnabled); 
+            if (dialogueEnabled) { return; }
 
             cooldown -= Time.deltaTime;
             cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
@@ -87,6 +100,7 @@ namespace Entities.Player
                 {
                     ShootingObject = transform,
                     InputDirection = direction,
+                    
 
                 });
                 ResetCooldown();
@@ -135,7 +149,7 @@ namespace Entities.Player
         /// </summary>
         void ResetCooldown()
         {
-            cooldown = _weaponProperties.WeaponCooldown;
+            cooldown = _weaponProperties.WeaponCooldown / playerMovement.AgilityPowerupProperty.PowerupMultiplier;
         }
         private void OnDisable()
         {

@@ -20,6 +20,7 @@ namespace Entities.Boss
         protected SCR_PlayerMovement _playerMovementReference;
         protected SCR_EntityShooting _entityShooting;
         protected CMP_HitboxComponent _hitboxComponent;
+        
 
 
         [Header("PHASE PROPERTIES")]
@@ -49,7 +50,7 @@ namespace Entities.Boss
         [Header("THIRD PHASE PROPERTIES")]
         [SerializeField] float _alternatingPeriod = 2;
         int[] _angleArray;
-        protected const float _cooldownPeriod = 0.125f;
+        protected const float _cooldownPeriod = 0.25f;
 
         [Header("CUTSCENE PROPERTIES")]
         [SerializeField] DialogueObject[] _halfHPDialogue;
@@ -223,6 +224,8 @@ namespace Entities.Boss
 
         protected IEnumerator InfinityMovementCoroutine()
         {
+            yield return MoveToPosition(new Vector3(Mathf.Cos(_movementCounter) * _horizonatalMultipier,
+                Mathf.Sin(_movementCounter * _verticalPeriodMultipler)) * _bossSpeed + _defaultPosition);
 
             while (_inAttackPhase)
             {
@@ -347,7 +350,6 @@ namespace Entities.Boss
             yield return MoveToPosition(_defaultPosition);
            
             _movementCounter = Mathf.PI / 2;
-            transform.position = _defaultPosition;
 
             float counter = 0;
             while (counter < _alternatingPeriod)
@@ -368,13 +370,12 @@ namespace Entities.Boss
 
         protected IEnumerator MoveToPosition(Vector3 position)
         {
-            _movementCounter = MathF.PI / 2;
+            _movementCounter = 0;
             while ((transform.position - position).magnitude > 0.25f)
             {
                 transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * BossInterpolationSpeed * _bossSpeed);
                 yield return null;
             }
-            print("lerped to position");
         }
 
         #region BOSS DEFEATED

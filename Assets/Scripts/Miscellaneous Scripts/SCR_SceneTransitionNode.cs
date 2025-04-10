@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cutscenes;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,7 +20,10 @@ namespace Overworld
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = sceneName,
-                EnablePlayerControls = true,
+                OnTransitionFinished = () =>
+                {
+                    FindObjectOfType<CTS_BaseCutscene>()?.BeginCutscene();
+                }
             });
         }
     }

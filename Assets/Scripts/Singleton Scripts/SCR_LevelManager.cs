@@ -4,9 +4,11 @@ using UnityEngine;
 using Overworld;
 using Level;
 using System;
+using Dialogue;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using Entities.Player;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Manager class responsible for handling level data and information
@@ -28,6 +30,25 @@ public class SCR_LevelManager : MonoBehaviour
     public string GetPreviousSceneName => previousSceneName ?? "Overworld Scene";
     public List<LevelData> GetLevelInformation => levelInformation;
     public LevelData GetCurrentLevelData => currentLevelData;
+
+    public int GetCollectableCount
+    {
+        get
+        {
+            int collectableCount = 0;
+            foreach (LevelData levelData in levelInformation)
+            {
+                foreach (LevelCollectable levelCollectable in levelData.LevelCollectablesObtained)
+                {
+                    if (levelCollectable.CollectableObtained)
+                        collectableCount++;
+                }
+            }
+            
+            return collectableCount;
+        }
+    }
+
     private UI_LoadScene loadScenes;
 
     public bool LevelFirstCompleted { get; private set; }   
@@ -36,11 +57,19 @@ public class SCR_LevelManager : MonoBehaviour
     private void Awake()
     {
         if (playerMovement == null) { playerMovement = FindObjectOfType<SCR_PlayerMovement>(); }
+        
     }
+
+    private void SceneManagerOnactiveSceneChanged(Scene arg0, Scene arg1)
+    {
+        playerMovement = FindObjectOfType<SCR_PlayerMovement>();
+    }
+
     void Start()
     {
         loadScenes = SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>();
         SavingOperations.OnSaveDataLoaded += OnSaveDataLoaded;
+        SceneManager.activeSceneChanged += SceneManagerOnactiveSceneChanged;
     }
 
     /// <summary>
@@ -92,7 +121,6 @@ public class SCR_LevelManager : MonoBehaviour
     public void OnSceneLoaded()
     {
         SCR_LevelCollectable[] levelCollectables = FindObjectsOfType<SCR_LevelCollectable>();
-        playerMovement = FindObjectOfType<SCR_PlayerMovement>();
         foreach (SCR_LevelCollectable levelCollectable in levelCollectables)
         {
             bool collectableObtained = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCollectablesObtained.Find
@@ -123,13 +151,33 @@ public class SCR_LevelManager : MonoBehaviour
 
     public void OnTransitionFinished()
     {
-        cachedLevelNode?.OnLevelCompleted();
-        cachedLevelNode = null;
+        if (LevelFirstCompleted)
+        {
+            cachedLevelNode?.OnLevelCompleted();
+            cachedLevelNode = null;
+        }
+        else
+        {
+            SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            LevelFirstCompleted = false;
+        }
+        
     }
 
     private void LoadPlayerProperties()
     {
         SCR_PlayerOverworldMovement playerOverworldMovement = FindObjectOfType<SCR_PlayerOverworldMovement>();
+        SCR_NPCQuestionNode[] npcQuestionNodes = FindObjectsOfType<SCR_NPCQuestionNode>();
+        foreach (SCR_NPCQuestionNode npcQuestionNode in npcQuestionNodes)
+        {
+            SavableChoice choice =
+                SCR_GeneralManager.Instance.Choices.
+                    Find(ch => ch.ChoiceID == npcQuestionNode.SavableChoice.ChoiceID);
+            
+            if (choice != null)
+                npcQuestionNode.SetSavableChoice(choice);
+        }
+        
         if (playerOverworldMovement == null) { return; }
         playerOverworldMovement.transform.position = previousPlayerOverworldPosition;
         Collider2D[] colliders = Physics2D.OverlapPointAll(previousPlayerOverworldPosition);
@@ -208,5 +256,6 @@ public class SCR_LevelManager : MonoBehaviour
     private void OnDisable()
     {
         SavingOperations.OnSaveDataLoaded -= OnSaveDataLoaded;
+        SceneManager.activeSceneChanged -= SceneManagerOnactiveSceneChanged;
     }
 }

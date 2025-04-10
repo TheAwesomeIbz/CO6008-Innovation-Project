@@ -9,8 +9,10 @@ namespace Overworld
 {
     public class SCR_ItemNode : SCR_GraphNode, iInteractable
     {
+        [Header("ITEM NODE PROPERTIES")]
         [SerializeField] private SO_Item overworldItem;
         [SerializeField] Sprite normalTexture, collectedTexture;
+        [SerializeField] private bool mustCollectItem;
         SpriteRenderer spriteRenderer;
         private bool ItemAlreadyExists => SCR_GeneralManager.Instance.CollectedItems.Contains(name);
         public bool Interactable => !ItemAlreadyExists;
@@ -21,6 +23,7 @@ namespace Overworld
             spriteRenderer = GetComponent<SpriteRenderer>();
             descriptiveObject = GetComponent<SCR_DescriptiveObject>();
             spriteRenderer.sprite = Interactable ? normalTexture : collectedTexture;
+            
         }
         public void Interact(object playerObject)
         {
@@ -35,6 +38,16 @@ namespace Overworld
                 SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().DisplayUI();
             }
             
+        }
+
+        public override bool ConditionalNode()
+        {
+            if (mustCollectItem)
+            {
+                return SCR_GeneralManager.InventoryManager.Inventory.Contains(overworldItem);
+            }
+            
+            return true;
         }
 
         void Update()

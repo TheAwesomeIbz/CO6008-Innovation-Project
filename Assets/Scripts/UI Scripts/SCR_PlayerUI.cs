@@ -14,7 +14,8 @@ namespace UnityEngine.UI
         [Header("HEALTH BAR PROPERTIES")]
         [SerializeField] Transform _healthBar;
         [SerializeField] TextMeshProUGUI _healthText;
-
+        [SerializeField] TextMeshProUGUI playerLevelText;
+        
         [Header("WEAPON PROPERTIES")]
         [SerializeField] Transform _weaponUIParent;
         [SerializeField] Transform _weaponUpgradeUIParent;
@@ -70,7 +71,14 @@ namespace UnityEngine.UI
             _healthBar.localScale = new Vector3(playerHealthComponent.HP / (float)playerHealthComponent.MaxHP, _healthBar.localScale.y);
 
             if (_healthText == null) { return ; }
-            _healthText.text = $"{playerHealthComponent.HP} / {playerHealthComponent.MaxHP}";
+            _healthText.text = $"{Mathf.RoundToInt((playerHealthComponent.HP * 100 / (float)playerHealthComponent.MaxHP))}";
+            playerLevelText.text = _playerMovementReference.PlayerLevel switch
+            {
+                PlayerLevel.REAL_LEVEL => "R",
+                PlayerLevel.RATIONAL_LEVEL => "Q",
+                PlayerLevel.INTEGER_LEVEL => "Z",
+                _ => "N"
+            };
 
         }
 

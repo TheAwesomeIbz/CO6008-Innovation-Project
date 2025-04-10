@@ -9,16 +9,19 @@ EditorBuildSettings:
     path: Assets/Scenes/Title Scenes/Splash Scene.unity
     guid: 75bd3f171637277449abf83486ffab84
   - enabled: 1
-    path: Assets/Scenes/Level Scenes/[TEST] Level Scene 2.unity
+    path: Assets/Scenes/Test Scenes/[TEST] Level Scene 2.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Boss Scenes/BossFight_Linear.unity
-    guid: 1aadeb6cf05cd9a4da86d1cdf5c67288
-  - enabled: 1
-    path: Assets/Scenes/Boss Scenes/BossFight_Quadratic.unity
+    path: Assets/Scenes/Boss Scenes/Quadratic Boss (Real Roots).unity
     guid: 8f729e8226b181546abcbe4cb4ff1bcf
   - enabled: 1
-    path: Assets/Scenes/LineRenderer.unity
+    path: Assets/Scenes/Boss Scenes/Quadratic Boss (Complex Roots).unity
+    guid: 5f5475bc01c26419db3543d9b2fbbea6
+  - enabled: 1
+    path: Assets/Scenes/Boss Scenes/Feedback Scene.unity
+    guid: ef82de87976d64b6b9ef9a0d6d2c0f25
+  - enabled: 1
+    path: Assets/Scenes/Test Scenes/LineRenderer.unity
     guid: 7106c1d5803177e4b93491b852ddcd0f
   - enabled: 1
     path: Assets/Scenes/Level Scenes/Level 1.unity
@@ -27,7 +30,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Introductory Scenes/Naming Scene.unity
     guid: 2784e49849b77cd418f1846be50f00a9
   - enabled: 1
-    path: Assets/Scenes/[TEST] Overworld Scene.unity
+    path: Assets/Scenes/Test Scenes/[TEST] Overworld Scene.unity
     guid: 1e45c70ca67b23f44aca895803ffd26a
   - enabled: 1
     path: Assets/Scenes/Title Scenes/Title Scene.unity
@@ -35,4 +38,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Title Scenes/Exam Scene.unity
     guid: 5b41fec48d6058840b98f84458c1c7c7
+  - enabled: 1
+    path: Assets/Scenes/Level Scenes/Level 0.unity
+    guid: 06eaf7252fb47254c94d21696c4ddc45
+  - enabled: 1
+    path: Assets/Scenes/Level Scenes/Overworld Map.unity
+    guid: 9053561d7b544404c97e1cd6b774380d
+  - enabled: 1
+    path: Assets/Scenes/Level Scenes/Level 2.unity
+    guid: 4f125558ebea7487fba81807c9c907be
+  - enabled: 1
+    path: Assets/Scenes/Boss Scenes/Cubic Boss.unity
+    guid: c88c0a045ed0141d59f393466988958a
   m_configObjects: {}

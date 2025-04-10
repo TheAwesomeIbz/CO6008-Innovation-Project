@@ -15,6 +15,8 @@ namespace UnityEngine.UI
         [Header("SETTINGS UI PROPERTIES")]
         [SerializeField] GameObject settingsParentObject;
 
+        [SerializeField] private GameObject backgroundPanelObject;
+
         [SerializeField] TMP_Dropdown gameModeDropdown;
         [SerializeField] TMP_Dropdown textSpeedDropdown;
         [SerializeField] Slider uiScaleSlider;
@@ -29,6 +31,7 @@ namespace UnityEngine.UI
             InitialiseSettingsUI();
             SettingsMenuEnabled = false;
             settingsParentObject.gameObject.SetActive(false);
+            backgroundPanelObject.SetActive(false);
 
         }
 
@@ -47,6 +50,7 @@ namespace UnityEngine.UI
         {
             SettingsMenuEnabled = activity;
             settingsParentObject.gameObject.SetActive(SettingsMenuEnabled);
+            backgroundPanelObject.SetActive(SettingsMenuEnabled);
             if (!SettingsMenuEnabled)
             {
                 SettingsInformation.SaveSettings();

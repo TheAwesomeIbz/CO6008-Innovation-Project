@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System;
+using System.Collections.Concurrent;
 using Models;
 
 namespace Dialogue
@@ -12,6 +13,7 @@ namespace Dialogue
     /// </summary>
     public class SCR_DialogueManager : MonoBehaviour
     {
+        
         /// <summary>
         /// Event called when the dialogue manager begins an interaction
         /// </summary>
@@ -219,18 +221,23 @@ namespace Dialogue
             //predicate used to check whether input is pressed to continue
             Func<bool> inputHeldPredicate = () => { return Input.GetButton("Submit") || Input.GetMouseButton(0); };
             Func<bool> inputPressedPredicate = () => { return Input.GetButtonDown("Submit") || Input.GetMouseButtonDown(0); };
-
+            
             DialogueObject currentDialogueObject = dialogueObjects[GetCurrentIndex];
+            
+            string playerName = string.IsNullOrEmpty(SCR_GeneralManager.Instance.PlayerData.PlayerName) ?
+                "Alph" : SCR_GeneralManager.Instance.PlayerData.PlayerName;
+            string displayText = currentDialogueObject.DialogueText.Replace("<NAME>", playerName);
             string tempString = "";
+            
             float currentTime = Time.time;
-            foreach (char character in currentDialogueObject.DialogueText)
+            foreach (char character in displayText)
             {
                 tempString += character;
                 _dialogueText.text = tempString;
 
                 if (Time.time - currentTime > 0.125f && inputHeldPredicate())
                 {
-                    _dialogueText.text = currentDialogueObject.DialogueText;
+                    _dialogueText.text = displayText;
                     break;
                 }
                 yield return new WaitForSeconds(typeSpeed);
@@ -295,8 +302,9 @@ namespace Dialogue
                 choiceUIObject.SetObjectActivity(false);
             }
 
+            
             ChoiceDialogueObject currentDialogueObject = cachedDialogueObjects[GetCurrentIndex] as ChoiceDialogueObject;
-            if (!currentDialogueObject.NonImpactingChoice)
+            if (!currentDialogueObject?.NonImpactingChoice ?? false)
             {
                 bool choiceDoesntExist = SCR_GeneralManager.Instance.Choices.Find(ch => ch.ChoiceID == quizInterface.SavableChoice.ChoiceID) == null;
 
@@ -304,12 +312,18 @@ namespace Dialogue
                 selectedCorrectChoice = currentDialogueObject.CorrectChoice == index;
 
                 quizInterface.SavableChoice.SetChoice(index, (float)Math.Round(answeredTime - questionedTime, 2), selectedCorrectChoice);
-                if (quizInterface.SaveQuestionToDisk)
-                {
-                    SCR_GeneralManager.Instance.Choices.Add(quizInterface.SavableChoice);
-                }
-                
 
+                switch (quizInterface.RecordingFormat)
+                {
+                    case RecordingFormat.SaveOnAnyChoice:
+                        SCR_GeneralManager.Instance.Choices.Add(quizInterface.SavableChoice);
+                        break;
+                    case RecordingFormat.SaveOnCorrectChoice:
+                        if (selectedCorrectChoice) {
+                            SCR_GeneralManager.Instance.Choices.Add(quizInterface.SavableChoice);
+                        }
+                        break;
+                }
             }
 
 

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Entities.Player;
+using Level;
 using UnityEngine;
 
 namespace Entities
@@ -28,12 +30,18 @@ namespace Entities
         {
             DodgeableCollider = weaponProperties.DodgeableBullet;
             SetupColliderVariant(bulletProperties.ShootingObject);
+            
             Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
 
             _knockbackMagnitude = weaponProperties.KnockbackMagnitude;
+            _attack = bulletProperties.Attack;
+            attackMultiplier = bulletProperties.AttackModifier;
 
+            Vector2 directionVector = new Vector2(Mathf.Cos(bulletProperties.InputDirection),
+                Mathf.Sin(bulletProperties.InputDirection));
             transform.localScale = new Vector3(transform.localScale.x * Mathf.Sign(bulletProperties.ShootingObject.transform.localScale.x), transform.localScale.y);
-            rigidbody2D.velocity = new Vector2(Mathf.Cos(bulletProperties.InputDirection), Mathf.Sin(bulletProperties.InputDirection)) * bulletProperties.BulletMagnitude;
+            rigidbody2D.velocity = directionVector * bulletProperties.BulletMagnitude;
+            transform.rotation = Quaternion.Euler(0, 0, (bulletProperties.InputDirection - (90 * Mathf.Deg2Rad)) * Mathf.Rad2Deg);
         }
 
         /// <summary>
@@ -55,16 +63,28 @@ namespace Entities
 
         protected override void OnTriggerEnter2D(Collider2D collision)
         {
+            bool playerDodging = collision.GetType(out SCR_PlayerMovement player)?.IsDodging ?? false;
+            if (playerDodging && DodgeableCollider) { print("DODGED"); }
+            
             if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.BoundaryLayerMask) && _impenetrable)
             {
                 Destroy(gameObject);
             }
             base.OnTriggerEnter2D(collision);
-
+            
+            //if the player shoots a projectile towards a collectible, the collect it.
+            if (_damageableTo.HasFlag(Attackable.ENEMIES) && collision.GetType(out SCR_LevelCollectable levelCollectable))
+            {
+                levelCollectable.CollectItem();
+                Destroy(gameObject);
+            }
+            
             if (collision.GetType(out CMP_HitboxComponent hitboxComponent) && hitboxComponent.DamageableBy != _damageableTo)
             {
                 Destroy(gameObject);
             }
+            
+            
         }
 
     }

@@ -19,6 +19,12 @@ namespace UnityEngine.UI
         SCR_InventoryManager _inventoryManager;
         UI_InventoryUI_Slot[] _inventoryUISlots;
 
+        [Header("INVENTORY GRAPHIC IMAGE DISPLAY")] 
+        [SerializeField] private GameObject parentGraphicGameObject;
+        [SerializeField] private TextMeshProUGUI imageText;
+        [SerializeField] private RawImage image;
+        [SerializeField] private TextMeshProUGUI imageCaption;
+
         
 
         void Start()
@@ -28,6 +34,7 @@ namespace UnityEngine.UI
 
             _inventoryUISlots = new UI_InventoryUI_Slot[16];
             gameObject.SetActive(false);
+            parentGraphicGameObject.SetActive(false);
         }
 
         /// <returns>Whether the inventory button can be pressed under varying conditions</returns>
@@ -61,6 +68,20 @@ namespace UnityEngine.UI
         {
             InventoryEnabled = false;
             gameObject.SetActive(false);
+        }
+
+
+        public void OnGraphicItemPressed(SO_ImageItem item)
+        {
+            imageText.text = item.name;
+            imageCaption.text = item.ImageCaption;
+            image.texture = item.ImageGraphic;
+            parentGraphicGameObject.SetActive(true);
+        }
+
+        public void OnGraphicReturnButtonPressed()
+        {
+            parentGraphicGameObject.SetActive(false);
         }
 
         

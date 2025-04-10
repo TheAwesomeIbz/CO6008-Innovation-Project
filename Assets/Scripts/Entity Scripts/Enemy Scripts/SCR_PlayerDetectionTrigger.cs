@@ -19,7 +19,7 @@ namespace Entities.Enemies
         {
             if (collision.GetType(out Player.SCR_PlayerMovement playerMovement) == null) { return; }
 
-            GetComponent<CircleCollider2D>().radius *= 2;
+            GetComponent<CircleCollider2D>().radius *= 2f;
             OnPlayerDetected?.Invoke(playerMovement, true);
         }
 
@@ -27,7 +27,7 @@ namespace Entities.Enemies
         {
             if (collision.GetType(out Player.SCR_PlayerMovement playerMovement) == null) { return; }
 
-            GetComponent<CircleCollider2D>().radius /= 2;
+            GetComponent<CircleCollider2D>().radius /= 2f;
             OnPlayerDetected?.Invoke(playerMovement, false);
         }
     }

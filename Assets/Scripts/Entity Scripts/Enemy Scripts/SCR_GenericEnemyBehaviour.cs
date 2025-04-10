@@ -1,6 +1,7 @@
 using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
+using Dialogue;
 using UnityEngine;
 
 namespace Entities.Enemies
@@ -15,6 +16,7 @@ namespace Entities.Enemies
     {
         protected Rigidbody2D _rigidbody2D;
         protected BoxCollider2D _boxCollider2D;
+        private bool dialogueEnabled;
 
         [Header("BASE ENEMY PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
@@ -42,6 +44,8 @@ namespace Entities.Enemies
         
         private SCR_PlayerDetectionTrigger playerDetectionTrigger;
 
+        private SCR_DialogueManager _dialogueManager;
+
         protected virtual void Start()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -52,10 +56,30 @@ namespace Entities.Enemies
 
             _hitboxComponent = GetComponentInChildren<CMP_HitboxComponent>() ?? GetComponent<CMP_HitboxComponent>();
             if (_hitboxComponent) { _hitboxComponent.OnZeroHPEvent += OnZeroHP; }
-                
+            
+            SCR_DialogueManager.OnDialogueStartEvent += SCR_DialogueManagerOnOnDialogueStartEvent;
+            SCR_DialogueManager.OnDialogueEndEvent += SCR_DialogueManagerOnOnDialogueEndEvent;
+
         }
+
+        private void SCR_DialogueManagerOnOnDialogueEndEvent()
+        {
+            dialogueEnabled = false;
+        }
+
+        private void SCR_DialogueManagerOnOnDialogueStartEvent(DialogueObject[] obj)
+        {
+            dialogueEnabled = true;
+        }
+
         protected virtual void Update()
         {
+            if (dialogueEnabled)
+            {
+                _rigidbody2D.velocity = Vector2.zero;
+                return;
+            }
+            
             if (_constantlyShooting)
             {
                 PlayerSpottedUpdate();
@@ -88,7 +112,7 @@ namespace Entities.Enemies
                 }
                 else
                 {
-                    if ((transform.position - _defaultPosition).sqrMagnitude < 25)
+                    if ((transform.position - _defaultPosition).sqrMagnitude < 9)
                     {
                         _randomPosition = _defaultPosition + new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
                     }
@@ -138,7 +162,6 @@ namespace Entities.Enemies
             
             _playerMovementReference = playerDetected ? playerMovement : null;
             _rigidbody2D.velocity = Vector2.zero;
-            Debug.Log($"{playerMovement.name} WAS SPOTTED BY {name}");
         }
 
         private void OnEnable()
@@ -166,6 +189,8 @@ namespace Entities.Enemies
             }
             if (playerDetectionTrigger == null) { return; }
             playerDetectionTrigger.OnPlayerDetected -= OnPlayerDetected;
+            SCR_DialogueManager.OnDialogueStartEvent -= SCR_DialogueManagerOnOnDialogueStartEvent;
+            SCR_DialogueManager.OnDialogueEndEvent -= SCR_DialogueManagerOnOnDialogueEndEvent;
         }
     }
 }

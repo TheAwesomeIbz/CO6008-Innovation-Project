@@ -81,8 +81,8 @@ public class SCR_EquationRenderer : MonoBehaviour
                 if (_polynomialCoefficients.Count == 0 || _polynomialCoefficients[0] == 0) { return; }
 
                 _equationText.transform.position = (_polynomialCoefficients[0] < 0 ?
-                    new Vector3(_equationText.transform.position.x, 1) :
-                    new Vector3(_equationText.transform.position.x, -1));
+                    new Vector3(_equationText.transform.position.x, -2) :
+                    new Vector3(_equationText.transform.position.x, 2));
                 Quadratic();
                 Cubic();
                 Quartic();

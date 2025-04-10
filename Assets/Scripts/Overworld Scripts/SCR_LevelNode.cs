@@ -34,6 +34,7 @@ namespace Overworld
             if (string.IsNullOrEmpty(sceneName)) { return; }
 
             SCR_GeneralManager.LevelManager.OnTransitionToLevel(LevelData, playerObject as SCR_PlayerOverworldMovement);
+            SCR_GeneralManager.UIManager.FindUIObject<UI_PlayerInputDisplay>().HideUI();
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = sceneName,
@@ -51,8 +52,17 @@ namespace Overworld
 
         public void OnLevelCompleted()
         {
-            if (rewardItem == null) { return; }
-            SCR_GeneralManager.InventoryManager.AddItemWithDialogue(rewardItem);
+            if (!rewardItem)
+            {
+                SCR_PlayerInputManager.PlayerControlsEnabled = true;
+                return;
+            }
+            
+            bool itemExists =  SCR_GeneralManager.InventoryManager.AddItemWithDialogue(rewardItem);
+            if (itemExists)
+            {
+                SCR_PlayerInputManager.PlayerControlsEnabled = true;
+            }
         }
     }
 

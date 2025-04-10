@@ -19,11 +19,20 @@ namespace Entities
         [Header("DAMAGE COLLECTABLE PROPERTIES")]
         [SerializeField][Range(1, 5)] float _damageMultiplier = 2;
 
-        [Header("DAMAGE COLLECTABLE PROPERTIES")]
+        [Header("KNOCKBACK COLLECTABLE PROPERTIES")]
         [SerializeField][Range(1, 5)] float _knockbackMultiplier = 2;
 
-        [Header("DAMAGE COLLECTABLE PROPERTIES")]
+        [Header("AGILITY COLLECTABLE PROPERTIES")]
         [SerializeField][Range(1, 5)] float _agilityMultiplier = 3;
+
+        private Vector2 originalPosition;
+        float floatCounter = 0;
+        private const float floatAmplitude = 0.25f;
+
+        private void Start()
+        {
+            originalPosition = transform.position;
+        }
 
         protected override void OnPlayerCollided(SCR_PlayerMovement playerMovement)
         {
@@ -50,7 +59,6 @@ namespace Entities
             {
                 playerMovement.HitboxComponent.RecoverHealth(_fixedRecoveryAmount);
             }
-            Debug.Log("Health has been recovered");
         }
 
         private void ApplyDamagePowerup(SCR_PlayerMovement playerMovement)
@@ -65,10 +73,23 @@ namespace Entities
             playerMovement.KnockbackPowerupProperty.SetPowerupMultiplier(_knockbackMultiplier);
         }
 
+        private void FloatUpdate()
+        {
+            floatCounter += Time.deltaTime;
+            if (floatCounter > Mathf.PI * 2)
+                floatCounter = 0;
+
+            transform.position = originalPosition + new Vector2(0, Mathf.Sin(floatCounter) * floatAmplitude);
+        }
         private void ApplyAgilityPowerup(SCR_PlayerMovement playerMovement)
         {
             if (!StatusCollectables.HasFlag(StatusCollectable.AGILITY)) { return; }
             playerMovement.AgilityPowerupProperty.SetPowerupMultiplier(_agilityMultiplier);
+        }
+
+        private void Update()
+        {
+            FloatUpdate();
         }
 
         /// <summary>
@@ -97,6 +118,7 @@ namespace Entities
         {
             if (collision.GetType(out SCR_PlayerMovement playerMovement) != null) { 
                 OnPlayerCollided(playerMovement); 
+                Destroy(gameObject);
             }
         }
     }

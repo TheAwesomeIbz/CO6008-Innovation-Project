@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Dialogue;
 using Overworld;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 
@@ -68,6 +69,7 @@ namespace Entities.Player
         SpriteRenderer spriteRenderer;
         void Start()
         {
+            _playerDodgeProperties.CanDodge = true;
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             Rigidbody2D = GetComponent<Rigidbody2D>();
             BoxCollider2D = GetComponent<BoxCollider2D>();
@@ -88,13 +90,23 @@ namespace Entities.Player
 
         private void OnDialogueStarted(DialogueObject[] dialogue)
         {
-            BoxCollider2D.enabled = false; 
+            HitboxComponent.boxCollider2D.enabled = false;
             Rigidbody2D.velocity = Vector3.zero;
+        }
+
+        private void PlayerFrameRateUpdate()
+        {
+            Application.targetFrameRate = _playerLevel switch
+            {
+                PlayerLevel.WHOLE_LEVEL => 15,
+                PlayerLevel.INTEGER_LEVEL => 30,
+                _ => -1
+            };
         }
 
         private void OnDialogueEnded()
         {
-            BoxCollider2D.enabled = true; 
+            HitboxComponent.boxCollider2D.enabled = true;
         }
 
         /// <summary>
@@ -103,8 +115,7 @@ namespace Entities.Player
         /// <param name="damageCollider"></param>
         private void OnZeroHPEvent(SCR_DamageCollider damageCollider)
         {
-            //TODO : Disable player collider and display game over screen
-            BoxCollider2D.enabled = false;
+            HitboxComponent.boxCollider2D.enabled = false;
             OnPlayerDefeated?.Invoke(this);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
         }
@@ -150,6 +161,7 @@ namespace Entities.Player
             DamagePowerupProperty.PowerupUpdate();
             AgilityPowerupProperty.PowerupUpdate();
             KnockbackPowerupProperty.PowerupUpdate();
+            PlayerFrameRateUpdate();
 
             PlayerMovementUpdate();
             //PlayerInteractionUpdate();
@@ -189,8 +201,12 @@ namespace Entities.Player
         /// </remarks>
         private void PlayerMovementUpdate()
         {
-            if (_inputManager.CursorWorldPoint.x > transform.position.x) { transform.localScale = Vector3.one; }
-            else { transform.localScale = new Vector3(-1, 1); }
+            if (!IsMoving)
+            {
+                if (_inputManager.CursorWorldPoint.x > transform.position.x) { transform.localScale = Vector3.one; }
+                else { transform.localScale = new Vector3(-1, 1); }
+            }
+            
 
             Vector2 directionVector = _inputManager.Axis2D.AxisValue;
             switch (_playerLevel)
@@ -240,7 +256,8 @@ namespace Entities.Player
 
                 while (Mathf.Abs(targetPosition.x - Rigidbody2D.position.x) > 0.1f && boundaryRaycast == null)
                 {
-                    Rigidbody2D.position = Vector3.Lerp(Rigidbody2D.position, new Vector3(targetPosition.x, Rigidbody2D.position.y), _gridSpeed * Time.deltaTime);
+                    float time = _gridSpeed * Time.deltaTime * _agilityPowerupProperty.PowerupMultiplier;
+                    Rigidbody2D.position = Vector3.Lerp(Rigidbody2D.position, new Vector3(targetPosition.x, Rigidbody2D.position.y), time);
                     boundaryRaycast = Physics2D.OverlapPoint(currentPosition + new Vector2(direction, 0), GlobalMasks.BoundaryLayerMask);
                     yield return new WaitForEndOfFrame();
                 }
@@ -282,9 +299,12 @@ namespace Entities.Player
         /// </summary>
         private void DodgingPhysics()
         {
+            if (SCR_PlayerInputManager.PlayerControlsEnabled) {
+                HitboxComponent.boxCollider2D.enabled = !IsDodging;
+            }
             Vector2 directionVector = _inputManager.Axis2D.AxisValue;
             if (!_moveIn2DSpace) {  directionVector.y = 0; }
-            if (_inputManager.Dodge.PressedThisFrame() && directionVector.magnitude != 0 && !_playerDodgeProperties.IsDodging)
+            if (_inputManager.Dodge.PressedThisFrame() && directionVector.magnitude != 0 && _playerDodgeProperties.CanDodge)
             {
                 StartCoroutine(DodgeCoroutine());
             }
@@ -292,10 +312,11 @@ namespace Entities.Player
 
             IEnumerator DodgeCoroutine()
             {
+                _playerDodgeProperties.CanDodge = false;
                 _playerDodgeProperties.IsDodging = true;
 
                 float timer = 0;
-                while (timer < _playerDodgeProperties.DodgeDelay)
+                while (timer < _playerDodgeProperties.TimeDodging)
                 {
 
                     Rigidbody2D.velocity = directionVector * _playerDodgeProperties.DodgeImpulse;
@@ -304,8 +325,10 @@ namespace Entities.Player
                 }
                 Rigidbody2D.velocity = directionVector * _playerSpeedProperties.Speed;
 
-                yield return new WaitForSeconds(0.25f);
                 _playerDodgeProperties.IsDodging = false;
+                yield return new WaitForSeconds(_playerDodgeProperties.DodgingDelay);
+                _playerDodgeProperties.CanDodge = true;
+                
                 
             }
         }
@@ -326,15 +349,17 @@ namespace Entities.Player
             public float Speed = 5;
             public float SpeedMultiplier = 1;
 
-            public float Acceleration = 2;
-            [Range(0, 5)] public float Deceleration = 2f;
+            public float Acceleration = 5;
+            public float Deceleration = 5;
         }
 
         [Serializable] class PlayerDodgeProperties
         {
-            [Range(5, 20)] public int DodgeImpulse = 10;
+            public int DodgeImpulse = 25;
+            public bool CanDodge = true;
             public bool IsDodging;
-            [Range(0.25f, 2)] public float DodgeDelay = 0.5f;
+            [FormerlySerializedAs("DodgeDelay")] [Range(0, 2)] public float TimeDodging = 0.125f;
+            public float DodgingDelay = 1;
         }
 
         /// <summary>
@@ -347,7 +372,7 @@ namespace Entities.Player
             [Range(1,2)] private float _powerupMultiplier = 1;
             [SerializeField] private float _powerupDuration;
             public float PowerupDuration => _powerupDuration;
-            public float PowerupMultiplier => _powerupMultiplier;
+            public float PowerupMultiplier => PowerupActive ? _powerupMultiplier : 1;
             public bool PowerupActive => _powerupDuration > 0;
 
             /// <summary>

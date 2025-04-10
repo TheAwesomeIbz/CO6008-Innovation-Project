@@ -28,6 +28,7 @@ namespace Entities
         [Header("KNOCKBACKABLE PROPERTIES")]
         [SerializeField] Rigidbody2D _rigidbody2D;
         [SerializeField] bool _knockbackable;
+        public BoxCollider2D boxCollider2D { get; private set; }
 
         /// <summary>
         /// Returns the attackable enum that the hitbox componenet is damageable by
@@ -42,6 +43,7 @@ namespace Entities
             _healthComponent = GetComponentInParent<CMP_HealthComponent>() ?? GetComponent<CMP_HealthComponent>();
             _rigidbody2D = GetComponentInParent<Rigidbody2D>() ?? GetComponent<Rigidbody2D>();
             _dodgeableInterface = GetComponentInParent<iDodgeable>();
+            boxCollider2D = GetComponent<BoxCollider2D>();
             GetComponent<BoxCollider2D>().isTrigger = true;
         }
 
@@ -105,10 +107,7 @@ namespace Entities
             }
 
             if (_healthComponent.HP <= 0) { return; }
-
-            int damage = damageCollider.AttackCalculatedByPercentage ? Mathf.RoundToInt(damageCollider.AttackPercentage * _healthComponent.MaxHP) 
-                : damageCollider.Attack;
-            _healthComponent.LoseHP(damage);
+            _healthComponent.LoseHP(damageCollider.Attack);
 
             if (_healthComponent.HP == 0) {
                 OnZeroHPEvent?.Invoke(damageCollider);

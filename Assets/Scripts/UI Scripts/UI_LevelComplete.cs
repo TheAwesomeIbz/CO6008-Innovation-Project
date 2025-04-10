@@ -53,13 +53,12 @@ namespace UnityEngine.UI
             _levelCompleteContentObject.SetActive(false);
             descriptionText.gameObject.SetActive(false);
             continueButton.gameObject.SetActive(false);
-
+            
             SCR_GeneralManager.UIManager.FindUIObject<UI.UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
             {
                 SceneName = SCR_GeneralManager.LevelManager.GetPreviousSceneName,
                 OnSceneLoaded = SCR_GeneralManager.LevelManager.OnOverworldSceneLoaded,
-                OnTransitionFinished = SCR_GeneralManager.LevelManager.OnTransitionFinished,
-                EnablePlayerControls = !SCR_GeneralManager.LevelManager.LevelFirstCompleted,
+                OnTransitionFinished = SCR_GeneralManager.LevelManager.OnTransitionFinished
             });
         }
 

@@ -23,6 +23,13 @@ public class LevelData
 
     public void UpdateLevelTime() {  LevelCompletedTime += Time.deltaTime; }
 
+    public LevelData(string levelID, float levelCompletedTime)
+    {
+        LevelID = levelID;
+        LevelCompletedTime = levelCompletedTime;
+        LevelCollectablesObtained = new List<LevelCollectable>();
+    }
+
 }
 
 [System.Serializable]

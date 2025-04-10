@@ -17,9 +17,10 @@ public class SaveData
     public List<Dialogue.SavableChoice> Choices;
     public List<string> CollectedItems;
 
-    public SaveData(SCR_GeneralManager generalManager)
+    public SaveData(SCR_GeneralManager generalManager, Action onPlayerDataSaved = null)
     {
         generalManager.PlayerData.UpdatePlayerData();
+        onPlayerDataSaved?.Invoke();
         PlayerData = generalManager.PlayerData;
         LevelInformation = SCR_GeneralManager.LevelManager.GetLevelInformation;
         InventoryInformation = SCR_GeneralManager.InventoryManager.Inventory;
@@ -95,6 +96,19 @@ public class PlayerData
         if (overworldMovement == null) { return; }
         RecentPlayerPosition = new float[2] { overworldMovement.transform.position.x, overworldMovement.transform.position.y };
     }
+
+    public void GameCompletionPlayerData()
+    {
+        PlayTime = SCR_GeneralManager.Instance.PlayerData.PlayTime + SCR_GeneralManager.Instance.CurrentSessionTime;
+        SCR_GeneralManager.Instance.ResetCurrentSessionTime();
+
+        DateLastSaved = DateTime.Now.ToString();
+        if (DateStarted.Length == 0) { DateStarted = DateLastSaved; }
+        RecentSceneName = "Overworld Map";
+        AmountOfDeaths = SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths;
+        RecentPlayerPosition = new float[] { -10, -3 };
+    }
+    
 }
 
 /// <summary>
@@ -110,12 +124,10 @@ public static class SavingOperations
     /// <summary>
     /// Save information to the directory in a JSON format.
     /// </summary>
-    public static void SaveInformation()
+    public static void SaveInformation(Action onPlayerDataSaved = null)
     {
-
-        SaveData saveData = new SaveData(SCR_GeneralManager.Instance);
+        SaveData saveData = new SaveData(SCR_GeneralManager.Instance, onPlayerDataSaved);
         File.WriteAllText(SaveDataPath, JsonUtility.ToJson(saveData));
-
     }
 
     public static event Action<SaveData> OnSaveDataLoaded;

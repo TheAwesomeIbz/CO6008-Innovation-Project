@@ -33,6 +33,18 @@ namespace Entities.Player
             }
         }
 
+        public void UpdateCollider()
+        {
+            Collider2D[] allColliders = new Collider2D[0];
+            _circleCollider.OverlapCollider(new ContactFilter2D(), allColliders);
+
+            foreach (var collision in allColliders)
+            {
+                OnTriggerEnter2D(collision);
+            }
+            
+        }
+
 
         /// <summary>
         /// Trigger Interaction used to determine whether the player has interacted with an interactable object

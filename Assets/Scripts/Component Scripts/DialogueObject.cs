@@ -10,6 +10,7 @@ namespace Dialogue
     /// </summary>
     [Serializable] public class DialogueObject
     {
+        /// <returns>Dialogue instructions instance that are created thorugh a list of text</returns>
         public static DialogueObject[] CreateDialogue(params string[] dialogueText)
         {
             List<DialogueObject> dialogueObjects = new List<DialogueObject>();
@@ -53,8 +54,28 @@ namespace Dialogue
             this._speakingSFX = _speakingSFX;
         }
 
+        /// <summary>
+        /// Set tge
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
         public DialogueObject SetOnSentenceFinishedAction(Action action) { OnSentenceFinished = action; return this; }
+        
+        /// <summary>
+        /// Set the name of the speaking character, to be displayed in the dialogue instructions
+        /// </summary>
+        /// <param name="text"></param>
         public void SetSpeakingCharacter(string text) => _speakingCharacter = text;
+        
+        /// <summary>
+        /// Set the audio effect that the character will use
+        /// </summary>
+        /// <param name="speakingSfx"></param>
+        public void SetAudioEffect(AudioClip speakingSfx) => _speakingSFX = speakingSfx;
+        
+        /// <summary>
+        /// Returns a default dialogue instruction that is used if no dialogue instructions exist
+        /// </summary>
         public static DialogueObject[] NullDialogueObject { get; } = new DialogueObject[] { new DialogueObject("NullDialogueException") };
     }
 
@@ -89,7 +110,7 @@ namespace Dialogue
 
             [field: SerializeField] public string ChoiceText { get; private set; }
             [field: SerializeField] public bool CorrectAnswer { get; private set; }
-            [field: SerializeField] public DialogueObject[] ResultingDialogue { get; private set; }
+            [field: SerializeField] public DialogueObject[] ResultingDialogue { get; set; }
             public Action OnChoiceMade { get; private set; }
 
         }
@@ -133,9 +154,8 @@ namespace Dialogue
         public DialogueObject[] QuizDialogueObjects { get; }
 
         public SavableChoice SavableChoice { get; }
-        public int CorrectChoice { get; }
 
-        public bool SaveQuestionToDisk { get; }
+        public RecordingFormat RecordingFormat { get; }
 
         /// <summary>
         /// Method called when the right choice is made
@@ -146,5 +166,14 @@ namespace Dialogue
         /// Method called when the wrong choice is made
         /// </summary>
         public Action OnIncorrectChoiceMade { get; }
+        
+        
+    }
+    
+    public enum RecordingFormat
+    {
+        None,
+        SaveOnAnyChoice,
+        SaveOnCorrectChoice,
     }
 }
