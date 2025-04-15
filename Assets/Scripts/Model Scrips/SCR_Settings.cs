@@ -17,6 +17,34 @@ public class SettingsInformation
     }
 }
 
+[System.Serializable]
+public class PersistentSettings
+{
+    public bool ExaminationCompleted = false;
+    public bool AgreedToConditions = false;
+
+    static string Path = Application.persistentDataPath + "/PersistentSettings.config";
+
+    public void SaveSettings()
+    {
+        File.WriteAllText(Path, JsonUtility.ToJson(this));
+    }
+
+    public static PersistentSettings LoadSettings()
+    {
+        try
+        {
+            return JsonUtility.FromJson<PersistentSettings>(File.ReadAllText(Path));
+        }
+        catch
+        {
+            PersistentSettings settings = new PersistentSettings();
+            settings.SaveSettings();
+            return null;
+        }
+    }
+}
+
 public class Settings
 {
     public static SettingsInformation DefaultSettings { get { return new SettingsInformation

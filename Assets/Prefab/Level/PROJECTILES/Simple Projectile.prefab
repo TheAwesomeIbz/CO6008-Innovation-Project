@@ -103,12 +103,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _damageableTo: 0
   _attack: 10
-  _attackPercentage: 0
-  _attackCalculatedByPercentage: 0
   _stunTimer: 0
   <DodgeableCollider>k__BackingField: 0
   _knockbackDirection: 0
   _knockbackMagnitude: 0
+  explosionPrefab: {fileID: 5091588767791550279, guid: aab8efa79b34f644180f428cedb96c5b, type: 3}
   _impenetrable: 0
 --- !u!50 &8201344489736269946
 Rigidbody2D:

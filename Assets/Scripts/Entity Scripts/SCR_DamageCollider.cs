@@ -14,7 +14,7 @@ namespace Entities
     public class SCR_DamageCollider : MonoBehaviour
     {
 
-        SettingsInformation settings;
+        protected SettingsInformation settings;
         [Header("ATTACKING PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
         [SerializeField] protected int _attack = 5;
@@ -32,10 +32,10 @@ namespace Entities
         [SerializeField] protected float _knockbackMagnitude;
 
         /// <summary>
-        /// Returns constant attack value
+        /// Returns constant attack value dpeending on game mode
         /// </summary>
         public int Attack => _damageableTo == Attackable.PLAYER ?
-            Mathf.RoundToInt(_attack * (0.5f + ((float)settings.GameMode * 0.5f) * attackMultiplier)) :
+            Mathf.RoundToInt(_attack * (0.5f + (Mathf.Pow((float)settings.GameMode, 2) * 0.5f) * attackMultiplier)) :
             Mathf.RoundToInt((2 * _attack) / (float)(1 + (int)settings.GameMode) * attackMultiplier );
 
         /// <summary>
@@ -60,11 +60,10 @@ namespace Entities
         }
 
 
-        protected virtual IEnumerator Start()
+        protected virtual void Start()
         {
             settings = SCR_GeneralManager.Instance.Settings;
             GetComponent<Collider2D>().isTrigger = true;
-            yield return null;
         }
     }
 

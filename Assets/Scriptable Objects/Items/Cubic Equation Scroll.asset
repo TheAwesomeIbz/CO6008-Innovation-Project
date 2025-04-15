@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2844a5d918b4f5193c8ba62a1656d9, type: 3}
   m_Name: Cubic Equation Scroll
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 1201c14bb4ee74d8e99e56dc4f3f4fd1, type: 3}
-  <SpriteDescription>k__BackingField: 
-  imageGraphic: {fileID: 2800000, guid: 66675edaf5936b0498fda8fa5d12a7c2, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 797a50c295f74cc46a965d6ac2af3000, type: 3}
+  <SpriteDescription>k__BackingField: "The general formula for a cubic equation of
+    ax\xB3 + bx\xB2 + cx + d, where a, b, c, and d are constants and a \u2260 0.
+    This formula will produce all complex solutions to any general cubic at f(x)
+    = 0."
+  imageGraphic: {fileID: 2800000, guid: ba8be05c680d9414e934659de2287f9f, type: 3}
   imageCaption: source, my house thats a cube

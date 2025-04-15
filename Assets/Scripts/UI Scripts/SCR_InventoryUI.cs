@@ -23,18 +23,16 @@ namespace UnityEngine.UI
         [SerializeField] private GameObject parentGraphicGameObject;
         [SerializeField] private TextMeshProUGUI imageText;
         [SerializeField] private RawImage image;
-        [SerializeField] private TextMeshProUGUI imageCaption;
-
-        
 
         void Start()
         {
             InventoryEnabled = false;
             _inventoryManager = SCR_GeneralManager.InventoryManager;
 
-            _inventoryUISlots = new UI_InventoryUI_Slot[16];
+            _inventoryUISlots = new UI_InventoryUI_Slot[14];
             gameObject.SetActive(false);
             parentGraphicGameObject.SetActive(false);
+            UpdateUI();
         }
 
         /// <returns>Whether the inventory button can be pressed under varying conditions</returns>
@@ -74,7 +72,6 @@ namespace UnityEngine.UI
         public void OnGraphicItemPressed(SO_ImageItem item)
         {
             imageText.text = item.name;
-            imageCaption.text = item.ImageCaption;
             image.texture = item.ImageGraphic;
             parentGraphicGameObject.SetActive(true);
         }

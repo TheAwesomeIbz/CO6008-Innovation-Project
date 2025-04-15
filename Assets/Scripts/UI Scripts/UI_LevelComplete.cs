@@ -38,7 +38,7 @@ namespace UnityEngine.UI
         {
             float levelCompletedTime = SCR_GeneralManager.LevelManager.GetCurrentLevelData.LevelCompletedTime;
             string ss = (levelCompletedTime % 60).ToString("00");
-            string mm = ((levelCompletedTime % 60) / 60).ToString("00");
+            string mm = (levelCompletedTime / 60).ToString("00");
             descriptionText.text = $"TIME:<color=green>{mm}:{ss}</color>";
             
             _levelCompleteContentObject.SetActive(true);

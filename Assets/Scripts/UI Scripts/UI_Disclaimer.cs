@@ -20,19 +20,30 @@ namespace UnityEngine.UI.Title
         
         [Header("SPLASH SCREEN PROPERTIES")]
         [SerializeField] TextMeshProUGUI _textObject;
-        [SerializeField] [TextArea(4, 4)] string[] _disclaimer;
+        [SerializeField] [TextArea(8, 8)] string[] _disclaimer;
         int _textIndex;
 
         [Header("INITIAL COMMAND PROPERTIES")]
         [SerializeField] GameObject gameModeObject;
         [SerializeField] RawImage buttonOverlay;
         [SerializeField] Button[] allButtons;
+        [SerializeField] GameObject toggleParent;
+        [SerializeField] Button agreeButton;
+        [SerializeField] Toggle[] allToggles;
+        Button provideFeedbackButton;
 
         void Start()
         {
             _textIndex = 0;
             _textObject.color = new Color(_textObject.color.r, _textObject.color.g, _textObject.color.b, 0);
             SCR_PlayerInputManager.PlayerControlsEnabled = false;
+
+            bool saveDataExists = SavingOperations.LoadInformation() != null;
+            toggleParent.gameObject.SetActive(false);
+            agreeButton.gameObject.SetActive(false);
+
+            provideFeedbackButton = allButtons[2];
+            provideFeedbackButton.gameObject.SetActive(saveDataExists);
             StartCoroutine(DisplayTextCoroutine());
         }
 
@@ -78,6 +89,66 @@ namespace UnityEngine.UI.Title
                 _textIndex++;
             }
 
+
+            PersistentSettings persistentSettings = PersistentSettings.LoadSettings();
+            if (!persistentSettings?.AgreedToConditions ?? true)
+            {
+                toggleParent.gameObject.SetActive(true);
+                agreeButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                DisplayButtons();
+            }
+            
+
+
+        }
+
+
+        public void OnSubmitButtonPressed()
+        {
+            if (!AllTogglesAccepted())
+            {
+                SetInteractableElementsActivity(false);
+                return;
+            }
+
+            PersistentSettings persistentSettings = PersistentSettings.LoadSettings();
+            persistentSettings.AgreedToConditions = true;
+            persistentSettings.SaveSettings();
+
+            toggleParent.gameObject.SetActive(false);
+            agreeButton.gameObject.SetActive(false);
+            DisplayButtons();
+        }
+
+        private bool AllTogglesAccepted()
+        {
+            foreach (Toggle toggle in allToggles)
+            {
+                if (!toggle.isOn)
+                {
+                    SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(
+                        DialogueObject.CreateDialogue("Please agree to all the terms provided above before you continue with this project."),
+                        OnDialogueEnd: () => SetInteractableElementsActivity(true));
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void SetInteractableElementsActivity(bool state)
+        {
+            foreach (var toggle in allToggles)
+            {
+                toggle.interactable = state;
+            }
+            agreeButton.interactable = state;
+        }
+
+        private void DisplayButtons()
+        {
             LeanTween.value(1, 0, 0.75f).setOnUpdate((value) =>
             {
                 buttonOverlay.color = new Color(buttonOverlay.color.r, buttonOverlay.color.g, buttonOverlay.color.b, value);
@@ -86,11 +157,7 @@ namespace UnityEngine.UI.Title
                 _textObject.gameObject.SetActive(false);
                 buttonOverlay.gameObject.SetActive(false);
             });
-
-
-
         }
-
         public void TakeStandardExam()
         {
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
@@ -105,6 +172,11 @@ namespace UnityEngine.UI.Title
             {
                 SceneName = "Title Scene"
             });
+        }
+
+        public void ProvideFeedback()
+        {
+            Application.OpenURL(URLs.FeedbackURL);
         }
 
     }

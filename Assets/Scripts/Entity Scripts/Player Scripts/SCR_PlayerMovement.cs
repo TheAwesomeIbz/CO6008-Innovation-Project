@@ -220,11 +220,11 @@ namespace Entities.Player
                     IntegerMovement((int)directionVector.x);
                     break;
 
-                case PlayerLevel.RATIONAL_LEVEL:
+                case PlayerLevel.REAL_LEVEL:
                     RationalMovement();
                     break;
 
-                case PlayerLevel.REAL_LEVEL:
+                case PlayerLevel.COMPLEX_LEVEL:
                     RationalMovement();
                     DodgingPhysics();
                     break;
@@ -398,8 +398,8 @@ namespace Entities.Player
     {
         WHOLE_LEVEL,
         INTEGER_LEVEL,
-        RATIONAL_LEVEL,
-        REAL_LEVEL
+        REAL_LEVEL,
+        COMPLEX_LEVEL
     }
 }
 

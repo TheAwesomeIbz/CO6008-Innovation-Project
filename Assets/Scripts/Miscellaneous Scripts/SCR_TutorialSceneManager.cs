@@ -59,15 +59,13 @@ namespace Level
         {
             thirdBarrier.gameObject.SetActive(false);
             practiceShootingProperties.SetTargetsActivity(true);
-            
-            if (!SCR_GeneralManager.InventoryManager.AddItemWithDialogue(weaponItem))
-            {
-                SCR_PlayerMovement playermovement = FindObjectOfType<SCR_PlayerMovement>();
-                SCR_PlayerShooting playerShooting = playermovement.GetComponent<SCR_PlayerShooting>();
-                playerShooting.enabled = true;
-                playerShooting.SetTargetDisplay(true);
-            }
-            else
+
+            SCR_PlayerMovement playermovement = FindObjectOfType<SCR_PlayerMovement>();
+            SCR_PlayerShooting playerShooting = playermovement.GetComponent<SCR_PlayerShooting>();
+            playerShooting.enabled = true;
+            playerShooting.SetTargetDisplay(true);
+
+            if (SCR_GeneralManager.InventoryManager.AddItemWithDialogue(weaponItem))
             {
                 SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(DialogueObject.CreateDialogue("It seems you already have this weapon!", "No point in me giving you another one haha!"));
             }

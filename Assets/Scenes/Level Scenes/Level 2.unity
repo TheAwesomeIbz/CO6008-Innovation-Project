@@ -821,6 +821,73 @@ Transform:
   - {fileID: 845362910}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &227239022
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2113165193}
+    m_Modifications:
+    - target: {fileID: 189323330393627736, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: textDescription
+      value: Make sure you have a pen and paper on you. Some characters can ask you
+        questions that involve paper-based calculations and evaluations.
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 94
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4869840767747580959, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+      propertyPath: m_Name
+      value: go_TextCollisionObject_001
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+--- !u!4 &227239023 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1247917222895767981, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+  m_PrefabInstance: {fileID: 227239022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &227764856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2618,7 +2685,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7525714503378424018, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: shootingBurstCooldown
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7525714503378424018, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: _angleOfShooting.Array.data[0]
@@ -5060,7 +5127,7 @@ PrefabInstance:
       objectReference: {fileID: 1696818346636504626, guid: 849d750883e7248988be347930c728db, type: 3}
     - target: {fileID: 5884700064247526002, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: _bulletMagnitude
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7525714503378424018, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: destroyable
@@ -5311,7 +5378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3121619260540113278, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3121619260540113278, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5355,7 +5422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5884700064247526002, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: _bulletMagnitude
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7525714503378424018, guid: e594cd3f55aba4784806b86668042c25, type: 3}
       propertyPath: destroyable
@@ -19759,6 +19826,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2042570711}
+  - {fileID: 227239023}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2131960573 stripped

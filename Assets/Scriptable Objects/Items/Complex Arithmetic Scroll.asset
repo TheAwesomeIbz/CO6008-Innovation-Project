@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2844a5d918b4f5193c8ba62a1656d9, type: 3}
   m_Name: Complex Arithmetic Scroll
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  <SpriteDescription>k__BackingField: 
-  imageGraphic: {fileID: 2800000, guid: 95759e366bb999a449fe5496f1f96252, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 2f3f1d00f76ff074fa6904c465772662, type: 3}
+  <SpriteDescription>k__BackingField: An arithmetic scroll that allows you to view
+    how to add, subtract, multiply and divide complex numbers.
+  imageGraphic: {fileID: 2800000, guid: 96134688b02f99e47b82560cf76e292a, type: 3}
   imageCaption: source, my house

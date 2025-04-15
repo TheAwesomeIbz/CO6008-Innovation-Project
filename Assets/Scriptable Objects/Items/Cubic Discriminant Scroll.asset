@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2844a5d918b4f5193c8ba62a1656d9, type: 3}
   m_Name: Cubic Discriminant Scroll
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  <SpriteDescription>k__BackingField: 
-  imageGraphic: {fileID: 2800000, guid: 95759e366bb999a449fe5496f1f96252, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: d5b065c44a237d64385b19570e5fa444, type: 3}
+  <SpriteDescription>k__BackingField: The formula used to calculate the cubic discriminant.
+    This formula helps to evaluate the nature of the roots of any general cubic polynomial.
+  imageGraphic: {fileID: 2800000, guid: 5c666c11b34760e4c8a05d860c4a34d5, type: 3}
   imageCaption: source, my house

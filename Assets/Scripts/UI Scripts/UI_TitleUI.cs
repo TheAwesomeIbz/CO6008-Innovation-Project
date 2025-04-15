@@ -20,9 +20,11 @@ namespace UnityEngine.UI.Title
         private Button _newGameButton;
         private Button _continueButton;
         private Button _deleteGameButton;
+        private Button _feedbackButton;
 
         [field : Header("SAVE DATA PROPERTIES")]
         [field : SerializeField] public SaveData SaveData { get; private set; }
+        [SerializeField] SO_Item examinationTrophyItem;
 
         void Awake()
         {
@@ -37,6 +39,7 @@ namespace UnityEngine.UI.Title
             _newGameButton = buttons[0];
             _continueButton = buttons[1];
             _deleteGameButton = buttons[2];
+            _feedbackButton = buttons[5];
 
             UpdateButtonState();
         }
@@ -52,6 +55,7 @@ namespace UnityEngine.UI.Title
             _newGameButton.gameObject.SetActive(!fileExists);
             _continueButton.gameObject.SetActive(fileExists);
             _deleteGameButton.gameObject.SetActive(fileExists);
+            _feedbackButton.gameObject.SetActive(fileExists);
         }
 
         private void SetButtonActivity(bool activity)
@@ -81,6 +85,12 @@ namespace UnityEngine.UI.Title
                 SceneName = SaveData.PlayerData.RecentSceneName,
                 OnSceneLoaded = () => {
                     SavingOperations.LoadInformation();
+
+                    bool examinationCompleted = PersistentSettings.LoadSettings()?.ExaminationCompleted ?? false;
+                    if (examinationCompleted && !SCR_GeneralManager.InventoryManager.Inventory.Contains(examinationTrophyItem))
+                    {
+                        SCR_GeneralManager.InventoryManager.Inventory.Add(examinationTrophyItem);
+                    }
                 },
                 OnTransitionFinished = () =>
                 {
@@ -98,7 +108,6 @@ namespace UnityEngine.UI.Title
                 File.Delete(SavingOperations.SaveDataPath);
                 UpdateButtonState();
             };
-
 
             ChoiceDialogueObject.ChoiceOption yesChoice = new ChoiceDialogueObject.ChoiceOption("YES", null, onYesChoiceSelected);
             ChoiceDialogueObject.ChoiceOption noChoice = new ChoiceDialogueObject.ChoiceOption("NO", null, null);
@@ -124,6 +133,10 @@ namespace UnityEngine.UI.Title
             SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties { SceneName = "Splash Scene", EnablePlayerControls = true });
         }
 
+        public void OnFeedbackSelected()
+        {
+            Application.OpenURL(URLs.FeedbackURL);
+        }
         public void OnQuitSelected()
         {
             Application.Quit();

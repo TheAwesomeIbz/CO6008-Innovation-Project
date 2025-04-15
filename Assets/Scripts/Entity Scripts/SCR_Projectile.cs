@@ -13,12 +13,14 @@ namespace Entities
     public class SCR_Projectile : SCR_DamageCollider
     {
         [Header("PROJECTILE PROPERTIES")]
+        [SerializeField] private GameObject explosionPrefab;
         [SerializeField] bool _impenetrable;
-        protected override IEnumerator Start()
+        float currentProjectileLife = 2;
+        Vector3 originalScale;
+        protected override void Start()
         {
-            yield return base.Start();
-            yield return new WaitForSeconds(2);
-            Destroy(gameObject);
+            base.Start();
+            originalScale = transform.localScale;
         }
 
         /// <summary>
@@ -63,12 +65,11 @@ namespace Entities
 
         protected override void OnTriggerEnter2D(Collider2D collision)
         {
-            bool playerDodging = collision.GetType(out SCR_PlayerMovement player)?.IsDodging ?? false;
-            if (playerDodging && DodgeableCollider) { print("DODGED"); }
             
             if (GetComponent<Collider2D>().IsTouchingLayers(GlobalMasks.BoundaryLayerMask) && _impenetrable)
             {
-                Destroy(gameObject);
+                DestroyObject();
+                
             }
             base.OnTriggerEnter2D(collision);
             
@@ -76,16 +77,37 @@ namespace Entities
             if (_damageableTo.HasFlag(Attackable.ENEMIES) && collision.GetType(out SCR_LevelCollectable levelCollectable))
             {
                 levelCollectable.CollectItem();
-                Destroy(gameObject);
+                DestroyObject();
             }
             
             if (collision.GetType(out CMP_HitboxComponent hitboxComponent) && hitboxComponent.DamageableBy != _damageableTo)
             {
-                Destroy(gameObject);
+                DestroyObject();
             }
             
             
         }
 
+        private void DestroyObject()
+        {
+            GameObject obj = Instantiate(explosionPrefab);
+            obj.transform.position = transform.position + (Vector3.one * Random.Range(0f,1f));
+            obj.transform.Rotate(0, 0, Random.Range(0, 360));
+            obj.transform.localScale = originalScale;
+
+            Destroy(gameObject);
+
+        }
+
+        private void Update()
+        {
+            currentProjectileLife -= Time.deltaTime;
+            transform.localScale = originalScale * Mathf.Clamp(currentProjectileLife, 0, originalScale.x);
+            if (currentProjectileLife <= 0)
+            {
+                Destroy(gameObject);
+            }
+
+        }
     }
 }

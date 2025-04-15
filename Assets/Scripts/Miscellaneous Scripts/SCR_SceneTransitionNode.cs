@@ -13,6 +13,7 @@ namespace Overworld
     {
         [Header("SCENE TRANSITION NODE PROPERTIES")]
         [SerializeField] string sceneName;
+        [SerializeField] bool enablePlayerMovement = false;
 
         public override void OnPlayerLanded(SCR_PlayerOverworldMovement playerOverworldMovement)
         {
@@ -23,7 +24,9 @@ namespace Overworld
                 OnTransitionFinished = () =>
                 {
                     FindObjectOfType<CTS_BaseCutscene>()?.BeginCutscene();
-                }
+                },
+                EnablePlayerControls = enablePlayerMovement
+                
             });
         }
     }

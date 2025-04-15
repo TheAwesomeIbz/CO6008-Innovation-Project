@@ -164,7 +164,7 @@ namespace Entities
 
         private void OnIncorrectChoiceMade()
         {
-            warpProperties.requiredNPC.ResetInteraction();
+            warpProperties.requiredNPC?.ResetInteraction();
             interactedWithOnce = false;
             warpProperties.correctAnswerSelected = false;
         }

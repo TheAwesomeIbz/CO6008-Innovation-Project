@@ -28,6 +28,8 @@ namespace UnityEngine.UI
         {
             Settings settings = new Settings();
             SettingsInformation = settings.SettingsInformation;
+            PersistentSettings persistentSettings = PersistentSettings.LoadSettings();
+
             InitialiseSettingsUI();
             SettingsMenuEnabled = false;
             settingsParentObject.gameObject.SetActive(false);

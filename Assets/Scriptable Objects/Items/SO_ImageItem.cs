@@ -10,10 +10,7 @@ namespace UnityEngine
     {
         [Header("IMAGE ITEM PROPERTIES")]
         [SerializeField] private Texture imageGraphic;
-        [SerializeField] private string imageCaption;
-        
         public Texture ImageGraphic => imageGraphic;
-        public string ImageCaption => imageCaption;
 
         public void UseItem()
         {

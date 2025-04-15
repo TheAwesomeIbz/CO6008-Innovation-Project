@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b71e9f4bd37d840aa2da5647f830f8, type: 3}
   m_Name: Functional Weapon
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 843ca331caad2dc4f966a7dc84d9c68e, type: 3}
   <SpriteDescription>k__BackingField: A weapon used to "solve" terms that do nor
     have clear solutions.

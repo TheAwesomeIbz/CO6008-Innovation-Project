@@ -11,6 +11,7 @@ namespace Level
     {
         [field: Header("LEVEL COLLECTABLE PROPERTIES")]
         [field : SerializeField] public LevelCollectable LevelCollectable { get; private set; }
+        [SerializeField] SO_Item piTrophyItem;
         
 
         public void CollectItem()
@@ -20,6 +21,13 @@ namespace Level
 
             if (!existingLevelCollectable?.CollectableObtained ?? false) {
                 existingLevelCollectable.Collect();
+
+                //add trophy to inventory if the item doesnt exist already
+                if (SCR_GeneralManager.LevelManager.GetCollectableCount == 6 && 
+                    !SCR_GeneralManager.InventoryManager.Inventory.Contains(piTrophyItem))
+                {
+                    SCR_GeneralManager.InventoryManager.AddItem(piTrophyItem);
+                }
             }
             gameObject.SetActive(false);
         }

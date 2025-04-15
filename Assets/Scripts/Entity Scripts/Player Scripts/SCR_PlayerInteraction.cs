@@ -7,6 +7,10 @@ namespace Entities.Player
 {
     public class SCR_PlayerInteraction : MonoBehaviour
     {
+        [Header("INTERACTION PROPERTIES")]
+        [SerializeField] GameObject interactObject;
+        bool dialogueManagerEnabled;
+
         SCR_PlayerInputManager _inputManager;
 
         iInteractable _interactableObject;
@@ -17,11 +21,20 @@ namespace Entities.Player
             _inputManager = SCR_GeneralManager.PlayerInputManager;
             _playerMovement = GetComponentInParent<SCR_PlayerMovement>();
             _circleCollider = GetComponent<CircleCollider2D>();
+
+            SCR_DialogueManager.OnDialogueStartEvent += SCR_DialogueManager_OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent += SCR_DialogueManager_OnDialogueEnd;
+        }
+
+        private void SCR_DialogueManager_OnDialogueStartEvent(DialogueObject[] obj)
+        {
+            dialogueManagerEnabled = true;
         }
 
         private void SCR_DialogueManager_OnDialogueEnd()
         {
+            dialogueManagerEnabled = false;
+
             StopAllCoroutines();
             StartCoroutine(DisableCollider());
 
@@ -71,6 +84,8 @@ namespace Entities.Player
 
         private void Update()
         {
+            interactObject.gameObject.SetActive(_interactableObject != null && !dialogueManagerEnabled);
+
             if (_inputManager.Submit.PressedThisFrame() && _interactableObject != null)
             {
                 _interactableObject.Interact(_playerMovement);
@@ -79,6 +94,7 @@ namespace Entities.Player
 
         private void OnDisable()
         {
+            SCR_DialogueManager.OnDialogueStartEvent -= SCR_DialogueManager_OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent -= SCR_DialogueManager_OnDialogueEnd;
         }
 

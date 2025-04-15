@@ -18,7 +18,7 @@ public class SCR_InventoryManager : MonoBehaviour
 
     private void OnSaveDataLoaded(SaveData obj)
     {
-        Inventory = obj.InventoryInformation;
+        Inventory = obj.InventoryInformation.FindAll(item => item);
     }
 
     /// <summary>
@@ -58,11 +58,6 @@ public class SCR_InventoryManager : MonoBehaviour
         bool itemExist = Inventory.Contains(item);
         if (itemExist) { Inventory.Remove(item); }
         return itemExist;
-    }
-    
-    void Update()
-    {
-        
     }
 
     private void OnDisable()

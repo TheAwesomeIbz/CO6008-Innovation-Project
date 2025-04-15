@@ -80,6 +80,19 @@ namespace Entities.Player
             dialogueEnabled = false;
         }
 
+        private void DamagePowerupUpdate()
+        {
+            attackModifier = playerMovement.DamagePowerupProperty.PowerupMultiplier;
+            if (playerMovement.DamagePowerupProperty.PowerupActive)
+            {
+                _weaponProperties.SetBulletAmount(4, 0.25f, 2);
+            }
+            else
+            {
+                _weaponProperties.SetBulletAmount();
+            }
+        }
+
         /// <summary>
         /// Update method called to register the cooldown and shooting functionality
         /// </summary>
@@ -87,10 +100,11 @@ namespace Entities.Player
         {
             if (_weaponProperties == null) { return; }
             if (playerMovement.IsDodging) { return; }
-            SetTargetDisplay(!dialogueEnabled); 
+            SetTargetDisplay(!dialogueEnabled);
+            DamagePowerupUpdate();
             if (dialogueEnabled) { return; }
 
-            cooldown -= Time.deltaTime;
+            cooldown -= Time.deltaTime * (playerMovement.DamagePowerupProperty.PowerupActive ? 2 : 1);
             cooldown = Mathf.Clamp(cooldown, 0, _weaponProperties.WeaponCooldown);
 
             if (_inputManager.LeftClick.IsPressed() && CanShoot)

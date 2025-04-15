@@ -96,6 +96,7 @@ MonoBehaviour:
   <LevelCollectable>k__BackingField:
     <CollectableID>k__BackingField: 0
     <CollectableObtained>k__BackingField: 0
+  piTrophyItem: {fileID: 11400000, guid: b337a38e21dcdb44ea60518fa9d280fc, type: 2}
 --- !u!212 &4173075827603476646
 SpriteRenderer:
   m_ObjectHideFlags: 0

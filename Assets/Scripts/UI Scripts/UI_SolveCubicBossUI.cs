@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Dialogue;
 using TMPro;
 using UnityEngine;
+
 using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI
@@ -28,10 +29,21 @@ namespace UnityEngine.UI
 
         private const string bossID = "BOSS3";
         private float currentTime;
+
+        [Header("BOSS COMPLETION PROPERTIES")]
+        [SerializeField] SO_Item trophyItem;
         
         [Header("UPLOAD INDEX PROPERTIES")]
         [SerializeField] SCR_UploadDataModule uploadDataModule;
-        
+
+        [Header("HELP UI PROPERTIES")]
+        [SerializeField] private GameObject helpUIDisplay;
+        [SerializeField] private TextMeshProUGUI titleUI;
+        [SerializeField] private RawImage imageUI;
+        [SerializeField] private Button[] interactableButtons;
+
+
+
         void Start()
         {
             foreach (Transform child in parentAnswerObjects)
@@ -40,13 +52,18 @@ namespace UnityEngine.UI
                 child.gameObject.SetActive(false);
             }
 
+
             currentQuestionIndex = 0;
             inputAnswers = new List<string>();
             currentTime = Time.time;
             UpdateQuestion();
 
+            SCR_DialogueManager.OnDialogueStartEvent += SCR_DialogueManager_OnDialogueStartEvent;
+            SCR_DialogueManager.OnDialogueEndEvent += SCR_DialogueManager_OnDialogueEndEvent;
+
         }
-        
+
+       
         void Update()
         {
             
@@ -56,7 +73,36 @@ namespace UnityEngine.UI
             }
 
         }
-        
+
+        private void OnDestroy()
+        {
+            SCR_DialogueManager.OnDialogueStartEvent -= SCR_DialogueManager_OnDialogueStartEvent;
+            SCR_DialogueManager.OnDialogueEndEvent -= SCR_DialogueManager_OnDialogueEndEvent;
+        }
+
+        private void SCR_DialogueManager_OnDialogueEndEvent()
+        {
+            if (currentQuestionIndex < questions.Count)
+            {
+                SetButtonActivity(true);
+            }
+            
+        }
+
+        private void SCR_DialogueManager_OnDialogueStartEvent(DialogueObject[] obj)
+        {
+            SetButtonActivity(false);
+        }
+
+        private void SetButtonActivity(bool buttonActivity)
+        {
+            foreach (Button button in interactableButtons)
+            {
+                button.interactable = buttonActivity;
+            }
+            submitButton.interactable = buttonActivity;
+            inputField.interactable = buttonActivity;
+        }
         /// <returns>Whether the input is empty or not</returns>
         private bool IsEmptyInput()
         {
@@ -132,7 +178,7 @@ namespace UnityEngine.UI
         {
             if (currentQuestionIndex >= questions.Count)
             {
-                OnCubicBossCompleted();
+                StartCoroutine(OnCubicBossCompleted());
                 return;
             }
             
@@ -144,12 +190,19 @@ namespace UnityEngine.UI
             EventSystem.current.SetSelectedGameObject(inputField.gameObject);
         }
 
+
         /// <summary>
         /// Called when the boss is completed and the cubic equation is solved.
         /// Adds the boss to the current 
         /// </summary>
-        private void OnCubicBossCompleted()
+        IEnumerator OnCubicBossCompleted()
         {
+            yield return new WaitForSeconds(1);
+            foreach (Button button in interactableButtons)
+            {
+                button.interactable = false;
+            }
+
             LevelData existingLevel =
                 SCR_GeneralManager.LevelManager.GetLevelInformation.Find(lvl => lvl.LevelID == bossID);
 
@@ -176,9 +229,11 @@ namespace UnityEngine.UI
             
             IEnumerator OnCompletionDialogueFinish()
             {
-                //save the player's information with the GameCompletionPlayerData() function
+                //save the player's information with the SetDefaultPlayerData() function
                 //done to save the player's progress to the original map and starting position
-                SavingOperations.SaveInformation(SCR_GeneralManager.Instance.PlayerData.GameCompletionPlayerData);
+
+                SCR_GeneralManager.InventoryManager.AddItem(trophyItem);
+                SavingOperations.SaveInformation(SCR_GeneralManager.Instance.PlayerData.SetDefaultPlayerData);
                 string jsonData = JsonUtility.ToJson(SavingOperations.LoadInformation());
                 
                 //upload the data to an external database
@@ -186,6 +241,41 @@ namespace UnityEngine.UI
             }
             
             
+        }
+
+        public void OnComplexCalculatorButtonPressed()
+        {
+            
+            if (System.Diagnostics.Process.GetProcessesByName("Complex Root Calculator").Length > 0)
+            {
+                System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("Complex Root Calculator");
+                foreach (System.Diagnostics.Process process in processes)
+                {
+                    process.Kill();
+                }
+            }
+            else
+            {
+                string processName = Application.dataPath + "/Scripts/Python Scripts/Complex Root Calculator.exe";
+                System.Diagnostics.Process.Start(processName);
+            }
+            
+
+        }
+
+        
+
+
+        public void OnHelpUIButtonPressed(Texture texture)
+        {
+            titleUI.text = texture.name;
+            imageUI.texture = texture;
+            helpUIDisplay.gameObject.SetActive(true);
+        }
+
+        public void OnReturnButtonPressed()
+        {
+            helpUIDisplay.gameObject.SetActive(false);
         }
         
         

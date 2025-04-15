@@ -232,6 +232,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4832261842527823729, guid: b5dc96b6caa3645898a8fe78a0a529f7, type: 3}
+      propertyPath: <LevelCollectable>k__BackingField.<CollectableID>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4928373190024275278, guid: b5dc96b6caa3645898a8fe78a0a529f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 109
@@ -951,6 +955,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4832261842527823729, guid: b5dc96b6caa3645898a8fe78a0a529f7, type: 3}
+      propertyPath: <LevelCollectable>k__BackingField.<CollectableID>k__BackingField
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4928373190024275278, guid: b5dc96b6caa3645898a8fe78a0a529f7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 194
@@ -21452,6 +21460,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1003009084}
+    - target: {fileID: 8310054123537160395, guid: dc4960be1144a964b96a294a2757343a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 118.015015
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -26232,6 +26244,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5163593753805008186, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+      propertyPath: m_Size.y
+      value: 0.4608223
+      objectReference: {fileID: 0}
+    - target: {fileID: 5163593753805008186, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.01172125
+      objectReference: {fileID: 0}
     - target: {fileID: 6251824562892123475, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
       propertyPath: m_SortingOrder
       value: 0

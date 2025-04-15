@@ -29,6 +29,13 @@ namespace Entities
         [SerializeField] [Range(0, 30f)] int _recoilImpulse;
         [SerializeField] float _knockbackDirection;
         [SerializeField] int _knockbackMagnitude;
+
+        public void SetBulletAmount(int amount = 1, float spreadRange = 0, int magnitudeRange = 0)
+        {
+            _bulletAmount = amount;
+            _bulletSpreadRange = spreadRange;
+            _bulletMagnitudeRange = magnitudeRange;
+        }
        
 
         public SpriteRenderer SpriteRenderer => _bulletPrefab.GetComponent<SpriteRenderer>();

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5279062efa66e441bba7d2c933229f00, type: 3}
   m_Name: Cubic Visualiser
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 0}
-  <SpriteDescription>k__BackingField: 
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: ee5bedfde7c176f4fa2cfffae0bab099, type: 3}
+  <SpriteDescription>k__BackingField: This item allows you to visualise any cubic
+    equation. <color=yellow>This item requires a stable internet connection to use</color>.
   URLs:
-  - https://www.youtube.com
+  - https://www.desmos.com/calculator/xkiftbv9yx

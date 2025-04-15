@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Dialogue;
 using Entities;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Level
 {
@@ -37,7 +36,7 @@ namespace Level
         {
             base.Awake();
             if (randomisePeriod) {
-                randomInitialisationCooldown = Random.Range(0.5f, 1.5f);
+                randomInitialisationCooldown = UnityEngine.Random.Range(0.5f, 1.5f);
             }
             
             if (!hitboxComponent)
@@ -83,7 +82,7 @@ namespace Level
 
         IEnumerator ShootingBurstCoroutine()
         {
-            float randomTime = randomisePeriod ? Random.Range(0, shootingBurstCooldown) : shootingBurstCooldown;
+            float randomTime = randomisePeriod ? UnityEngine.Random.Range(0, shootingBurstCooldown) : shootingBurstCooldown;
             shootingState = ShootingState.SHOOTING;
             yield return new WaitForSeconds(shootingBurstCooldown + randomTime);
             shootingState = ShootingState.PAUSED;

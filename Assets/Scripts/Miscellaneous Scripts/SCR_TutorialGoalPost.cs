@@ -9,6 +9,7 @@ namespace Level.Tutorial
 {
     public class SCR_TutorialGoalPost : MonoBehaviour
     {
+        [SerializeField] SO_Item examinationTrophyItem;
         private void OnTriggerEnter2D(Collider2D collision)
         {
             if (!collision.GetType(out SCR_PlayerMovement playerMovement)) { return; }
@@ -35,7 +36,16 @@ namespace Level.Tutorial
                     
                     SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(onTransitionDialogue, () =>
                     {
+
+                        bool examinationCompleted = PersistentSettings.LoadSettings()?.ExaminationCompleted ?? false;
+
+                        if (examinationCompleted && examinationTrophyItem &&
+                        !SCR_GeneralManager.InventoryManager.Inventory.Contains(examinationTrophyItem))
+                        {
+                            SCR_GeneralManager.InventoryManager.Inventory.Add(examinationTrophyItem);
+                        }
                         SavingOperations.SaveInformation();
+
                     });
                     
                 }

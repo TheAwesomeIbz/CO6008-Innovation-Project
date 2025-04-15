@@ -22,6 +22,7 @@ namespace UnityEngine.UI
         Vector2 centerPivot = new Vector2(0.5f, 0.5f);
         const float offsetValue = 0.5625f;
         RectTransform rectTransform;
+        UI_LoadScene loadScene;
 
         void Start()
         {
@@ -30,6 +31,7 @@ namespace UnityEngine.UI
             _objectUsageText = _parentObject.GetChild(2).GetComponent<TextMeshProUGUI>();
             playerInputManager = SCR_GeneralManager.PlayerInputManager;
             rectTransform = _parentObject.GetComponent<RectTransform>();
+            loadScene = SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>();
 
             SCR_DialogueManager.OnDialogueStartEvent += OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent += OnDialogueEndEvent;
@@ -113,14 +115,15 @@ namespace UnityEngine.UI
 
         void Update()
         {
-            if (dialogueManagerEnabled) { 
+            if (loadScene.Loading || dialogueManagerEnabled) {
                 _parentObject.gameObject.SetActive(false);
+                descriptiveObject = null;
                 return; 
             }
 
             UpdateAnchorPoint();
             DetectAllSceneObjects();
-            if (descriptiveObject != null && descriptiveObject.GameObject.activeInHierarchy)
+            if (descriptiveObject != null && (descriptiveObject.GameObject?.activeInHierarchy ?? false))
             {
                 SetMousePosition();
                 SetUIInformation(descriptiveObject);

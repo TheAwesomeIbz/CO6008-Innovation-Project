@@ -5,6 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public struct URLs
+{
+    public static string FeedbackURL => "https://forms.gle/iGFUPBaKowUrU3UNA";
+}
 public static class ExtensionMethods
 {
 

@@ -29,13 +29,13 @@ namespace Entities.Player
         void Update()
         {
             if (!animator) { return; }
-            animator.runtimeAnimatorController = playerMovement.PlayerLevel < PlayerLevel.RATIONAL_LEVEL ? animator16BitController : animator32BitController;
+            animator.runtimeAnimatorController = playerMovement.PlayerLevel < PlayerLevel.REAL_LEVEL ? animator16BitController : animator32BitController;
 
             animator.SetBool(isMoving, playerMovement.IsMoving);
             animator.SetBool(isShooting, !playerShooting.CanShoot);
             animator.SetBool(isDead, playerMovement.HitboxComponent.HealthComponent.HP < 1);
 
-            if (playerMovement.PlayerLevel >= PlayerLevel.RATIONAL_LEVEL)
+            if (playerMovement.PlayerLevel >= PlayerLevel.REAL_LEVEL)
             {
                 animator.SetBool(isDodging, playerMovement.IsDodging);
             }

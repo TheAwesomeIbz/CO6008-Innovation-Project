@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5279062efa66e441bba7d2c933229f00, type: 3}
   m_Name: Quadratic Visualiser
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 0}
-  <SpriteDescription>k__BackingField: 
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: cbd9c06c97fc5584d92ffa17e45d3bc9, type: 3}
+  <SpriteDescription>k__BackingField: This item allows you to visualise any quadratic
+    equation. <color=yellow>This item requires a stable internet connection to use</color>.
   URLs:
-  - https://www.youtube.com
+  - https://www.desmos.com/calculator/zyvuopna9t

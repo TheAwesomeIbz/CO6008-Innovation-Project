@@ -40,6 +40,7 @@ namespace UnityEngine.UI
         [SerializeField] GameObject navigationDisplay;
 
         [SerializeField] SCR_UploadDataModule uploadDataModule;
+        
 
         private void Start()
         {
@@ -105,6 +106,12 @@ namespace UnityEngine.UI
 
         public void OnSubmitButtonPressed()
         {
+
+            if (GetUIInterface() == ExamUIInterface.EXAM_PANEL)
+            {
+                SetExamUIInterface(ExamUIInterface.FINAL_PANEL);
+                return;
+            }
             
             ChoiceDialogueObject.ChoiceOption yesOption = new ChoiceDialogueObject.ChoiceOption("Yes", null,
                 onChoiceMade: () =>
@@ -120,7 +127,7 @@ namespace UnityEngine.UI
                 choiceOptions: new ChoiceDialogueObject.ChoiceOption[] { yesOption, noOption },
                 nonImpactingChoice: true,
                 _speakingCharacter: "CONFIRMATION",
-                _dialogueText: "Are you sure you want to submit your final answers? You will NOT be able to attempt this exam again.");
+                _dialogueText: "Are you sure you want to submit your final answers? You will NOT be able to change your answers again.");
 
 
             backgroundPanel.SetActive(true);
@@ -158,6 +165,11 @@ namespace UnityEngine.UI
         private void SubmitResults()
         {
             string JSONString = FormatUserData(exam);
+            
+            PersistentSettings persistentSettings = PersistentSettings.LoadSettings();
+            persistentSettings.ExaminationCompleted = true;
+            persistentSettings.SaveSettings();
+
             StartCoroutine(uploadDataModule.PostData(JSONString));
             
         }

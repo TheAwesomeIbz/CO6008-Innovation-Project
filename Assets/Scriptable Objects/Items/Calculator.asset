@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb2ca0287fb80c94aabc0d6e3c5e163d, type: 3}
   m_Name: Calculator
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: b3abce7efa3854a4cb1dd6b47f553027, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: cc8a0b6258240074db365107a6a91e46, type: 3}
   <SpriteDescription>k__BackingField: A mystic relic that allows you to perform mathematical
     calculations. This item has been rumoured to exist.
   windowsApplicationPath: calc.exe

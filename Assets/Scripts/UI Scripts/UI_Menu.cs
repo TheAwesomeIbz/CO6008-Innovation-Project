@@ -1,4 +1,4 @@
-using Dialogue;
+﻿using Dialogue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,7 +39,10 @@ namespace UnityEngine.UI
             foreach (Transform child in parentButtonObject){
                 buttons.Add(child.GetComponent<Button>());
             }
-            collectableText.text = $"COLLECTABLES OBTAINED: <color=yellow>{SCR_GeneralManager.LevelManager.GetCollectableCount}</color>";
+
+            int collectableCount = SCR_GeneralManager.LevelManager.GetCollectableCount;
+            string collectableString = (collectableCount * 2) % 3 == 0 ? $"{collectableCount / 3}π" : $"{2* collectableCount}";
+            collectableText.text = $"COLLECTABLES OBTAINED: <color=yellow>{collectableCount}</color>\nTOTAL π: <color=yellow>{collectableString}</color>";
         }
         
         /// <summary>

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2844a5d918b4f5193c8ba62a1656d9, type: 3}
   m_Name: Quadratic Discriminant Scroll
   m_EditorClassIdentifier: 
-  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
-  <SpriteDescription>k__BackingField: 
-  imageGraphic: {fileID: 2800000, guid: 95759e366bb999a449fe5496f1f96252, type: 3}
+  <SpriteIcon>k__BackingField: {fileID: 2800000, guid: 2fbdb627238821842908fedfcb7172a0, type: 3}
+  <SpriteDescription>k__BackingField: The formula used to calculate the quadratic
+    discriminant. This formula helps to evaluate the nature of the roots of any general
+    quadratic polynomial.
+  imageGraphic: {fileID: 2800000, guid: ae3744d334b3cfb4f9b5e840465eedd6, type: 3}
   imageCaption: source, my house

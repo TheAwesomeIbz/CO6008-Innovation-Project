@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 3556697309954608021}
   - component: {fileID: 200885858838605265}
   - component: {fileID: 4478394080284734914}
-  - component: {fileID: 8077056294677879761}
   - component: {fileID: 7362768504371715219}
   m_Layer: 7
   m_Name: pf_bossNode_000
@@ -122,24 +121,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &8077056294677879761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2664553534780600120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521e42a5db1f1b04c98998fb14319da0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentCollider: {fileID: 0}
-  header: Linear Equation Boss
-  description: First boss battle, make sure you're prepared and have fast reflexes!
-    This boss will have reduced health, such that you can easily beat them without
-    difficulty,
-  usageDescription: 
 --- !u!114 &7362768504371715219
 MonoBehaviour:
   m_ObjectHideFlags: 0

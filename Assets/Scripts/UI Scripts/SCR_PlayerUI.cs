@@ -1,4 +1,4 @@
-using Entities;
+﻿using Entities;
 using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,13 +32,24 @@ namespace UnityEngine.UI
         UIObject _knockbackUI;
         UIObject _agilityUI;
 
+        [Header("PI PROPERTIES")]
+        [SerializeField] private TextMeshProUGUI piText;
+        [SerializeField] private Transform pi_parent;
+        private int piInLevel;
+        SCR_LevelManager levelManagerReference;
 
+        public int outliune;
 
         SCR_PlayerMovement _playerMovementReference;
+        
 
         void Start()
         {
             _playerMovementReference = FindObjectOfType<SCR_PlayerMovement>();
+            levelManagerReference = SCR_GeneralManager.LevelManager;
+
+            piInLevel = 0;
+            levelManagerReference.GetCurrentLevelData.LevelCollectablesObtained.ForEach(x => piInLevel++);
 
             _weaponUI = new UIObject(_weaponUIParent);
             _weaponUpgradeUI = new UIObject(_weaponUpgradeUIParent);
@@ -74,8 +85,8 @@ namespace UnityEngine.UI
             _healthText.text = $"{Mathf.RoundToInt((playerHealthComponent.HP * 100 / (float)playerHealthComponent.MaxHP))}";
             playerLevelText.text = _playerMovementReference.PlayerLevel switch
             {
+                PlayerLevel.COMPLEX_LEVEL => "C",
                 PlayerLevel.REAL_LEVEL => "R",
-                PlayerLevel.RATIONAL_LEVEL => "Q",
                 PlayerLevel.INTEGER_LEVEL => "Z",
                 _ => "N"
             };
@@ -114,13 +125,48 @@ namespace UnityEngine.UI
             _weaponUI.SetElementText(_playerMovementReference.WeaponProperties?.name ?? "");
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// Called in Update() to display the current amount of PI collected
+        /// </summary>
+        private void UpdatePIUI()
+        {
+            bool piExistInLevel = piInLevel > 0;
+
+            pi_parent.gameObject.SetActive(piExistInLevel);
+            piText.gameObject.SetActive(piExistInLevel);
+            if (!piExistInLevel) { return; }
+
+            int amountOfPiCollected = 0;
+            for (int i = 0; i < piInLevel; i++)
+            {
+                pi_parent.GetChild(i).gameObject.SetActive(
+                    levelManagerReference.GetCurrentLevelData.LevelCollectablesObtained[i].CollectableObtained);
+
+                if (levelManagerReference.GetCurrentLevelData.LevelCollectablesObtained[i].CollectableObtained)
+                {
+                    amountOfPiCollected++;
+                }
+            }
+
+            piText.text = amountOfPiCollected switch
+            {
+                0 => "0π",
+                1 => "2π/3",
+                2 => "4π/3",
+                3 => "2π",
+                _ => "π"
+            };
+
+            piText.color = amountOfPiCollected < 3 ? Color.white : Color.green;
+        }
+
         void Update()
         {
             if (_playerMovementReference == null) { return; }
             UpdateHealthBar();
             UpdatePowerups();
             UpdateWeaponUI();
+            UpdatePIUI();
         }
 
         private void OnDisable()

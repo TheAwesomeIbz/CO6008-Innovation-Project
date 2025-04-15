@@ -139,6 +139,7 @@ MonoBehaviour:
   overworldItem: {fileID: 11400000, guid: 3f68b370d9b496145b28bbfce25ffc18, type: 2}
   normalTexture: {fileID: 21300000, guid: 4e7e1f57ef6720f42b250a1d3dce8391, type: 3}
   collectedTexture: {fileID: 21300000, guid: a5c5e66859b0a9143836c6d699514cfc, type: 3}
+  mustCollectItem: 0
 --- !u!114 &6865124294776039827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 521e42a5db1f1b04c98998fb14319da0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  header: ???
-  description: It looks like there might be something hidden here!
+  header: Item
+  description: It looks like there might be something hidden here! Make sure to interact
+    with it to see what you uncover!
   usageDescription: 

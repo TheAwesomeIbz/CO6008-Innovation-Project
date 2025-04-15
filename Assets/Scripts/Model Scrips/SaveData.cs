@@ -97,7 +97,7 @@ public class PlayerData
         RecentPlayerPosition = new float[2] { overworldMovement.transform.position.x, overworldMovement.transform.position.y };
     }
 
-    public void GameCompletionPlayerData()
+    public void SetDefaultPlayerData()
     {
         PlayTime = SCR_GeneralManager.Instance.PlayerData.PlayTime + SCR_GeneralManager.Instance.CurrentSessionTime;
         SCR_GeneralManager.Instance.ResetCurrentSessionTime();
@@ -130,6 +130,7 @@ public static class SavingOperations
         File.WriteAllText(SaveDataPath, JsonUtility.ToJson(saveData));
     }
 
+
     public static event Action<SaveData> OnSaveDataLoaded;
 
     /// <summary>
@@ -144,9 +145,8 @@ public static class SavingOperations
             OnSaveDataLoaded?.Invoke(saveData);
             return saveData;
         }
-        catch (Exception e)
+        catch
         {
-            Debug.LogWarning(e.Message);
             return null;
         }
     }
