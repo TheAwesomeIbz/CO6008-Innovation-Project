@@ -820,6 +820,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   amplitude: 0.5
   frequency: 1
+  useCurrentPosition: 0
+  parentTransform: {fileID: 0}
+  offsetPosition: {x: 0, y: 0, z: 0}
 --- !u!1001 &280940784
 PrefabInstance:
   m_ObjectHideFlags: 0

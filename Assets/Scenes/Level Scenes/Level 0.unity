@@ -7340,6 +7340,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1c54bcb52786714191c28a54d8cdb4b, type: 3}
+--- !u!212 &2019494392 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8105529375623226831, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+  m_PrefabInstance: {fileID: 3403391947971248525}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2026506816
 GameObject:
   m_ObjectHideFlags: 0
@@ -7692,6 +7697,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[PLAYER]'
       objectReference: {fileID: 0}
+    - target: {fileID: 8688177635201407301, guid: 0747e70440dd3a14ab11de2df90749b1, type: 3}
+      propertyPath: interactObject
+      value: 
+      objectReference: {fileID: 2019494392}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

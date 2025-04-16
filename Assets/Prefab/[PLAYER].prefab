@@ -194,6 +194,8 @@ MonoBehaviour:
   amplitude: 0.5
   frequency: 1
   useCurrentPosition: 1
+  parentTransform: {fileID: 6695057993890652671}
+  offsetPosition: {x: 0, y: 1.25, z: 0}
 --- !u!1 &6403445897993878346
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d03512f3a0c3e47b15a4d3bdfde33b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactObject: {fileID: 5539461676745485672}
+  interactObject: {fileID: 8105529375623226831}
 --- !u!58 &3125194511972378866
 CircleCollider2D:
   m_ObjectHideFlags: 0

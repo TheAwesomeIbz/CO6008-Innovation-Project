@@ -10,8 +10,11 @@ public class SCR_FloatEntity : MonoBehaviour
     private float counter = 0;
     private Vector3 originalPosition;
 
+
     [Header("ADDITIONAL PROPERTIES")]
     [SerializeField] bool useCurrentPosition;
+    [SerializeField] Transform parentTransform;
+    [SerializeField] Vector3 offsetPosition;
     void Start()
     {
         originalPosition = transform.position;
@@ -24,7 +27,7 @@ public class SCR_FloatEntity : MonoBehaviour
         
         if (useCurrentPosition)
         {
-            transform.localPosition = originalPosition + new Vector3(0, Mathf.Sin(counter * frequency), 0) * amplitude;
+            transform.position = parentTransform.position + offsetPosition + new Vector3(0, Mathf.Sin(counter * frequency), 0) * amplitude;
             return;
         }
         transform.position = originalPosition + new Vector3(0, Mathf.Sin(counter * frequency), 0) * amplitude;

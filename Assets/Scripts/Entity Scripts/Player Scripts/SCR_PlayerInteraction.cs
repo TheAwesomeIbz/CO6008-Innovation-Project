@@ -2,16 +2,18 @@ using Dialogue;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Entities.Player
 {
     public class SCR_PlayerInteraction : MonoBehaviour
     {
         [Header("INTERACTION PROPERTIES")]
-        [SerializeField] GameObject interactObject;
+        [SerializeField] SpriteRenderer interactObject;
         bool dialogueManagerEnabled;
 
         SCR_PlayerInputManager _inputManager;
+        UI_LoadScene _loadScene;
 
         iInteractable _interactableObject;
         SCR_PlayerMovement _playerMovement;
@@ -24,6 +26,11 @@ namespace Entities.Player
 
             SCR_DialogueManager.OnDialogueStartEvent += SCR_DialogueManager_OnDialogueStartEvent;
             SCR_DialogueManager.OnDialogueEndEvent += SCR_DialogueManager_OnDialogueEnd;
+
+            interactObject.transform.parent = null;
+            interactObject.transform.localScale = Vector3.one;
+            interactObject.enabled = false;
+            _loadScene = SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>();
         }
 
         private void SCR_DialogueManager_OnDialogueStartEvent(DialogueObject[] obj)
@@ -84,7 +91,9 @@ namespace Entities.Player
 
         private void Update()
         {
-            interactObject.gameObject.SetActive(_interactableObject != null && !dialogueManagerEnabled);
+            if (_loadScene.Loading) { return; }
+
+            interactObject.enabled = _interactableObject != null && !dialogueManagerEnabled;
 
             if (_inputManager.Submit.PressedThisFrame() && _interactableObject != null)
             {

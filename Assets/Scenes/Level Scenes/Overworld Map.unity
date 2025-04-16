@@ -2622,14 +2622,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -32.519012
       objectReference: {fileID: 0}
-    - target: {fileID: 2932203238362454994, guid: b39aaa04ef8d4b4479c5a909372fb3c4, type: 3}
-      propertyPath: <Inventory>k__BackingField.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2932203238362454994, guid: b39aaa04ef8d4b4479c5a909372fb3c4, type: 3}
-      propertyPath: <Inventory>k__BackingField.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: 2ef748b32cdcc2a47b0c341fe1ba5359, type: 2}
     - target: {fileID: 3707212489218663324, guid: b39aaa04ef8d4b4479c5a909372fb3c4, type: 3}
       propertyPath: m_Camera
       value: 

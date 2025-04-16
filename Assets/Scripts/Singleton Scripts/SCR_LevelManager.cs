@@ -78,7 +78,8 @@ public class SCR_LevelManager : MonoBehaviour
     private void OnSaveDataLoaded(SaveData saveData)
     {
         levelInformation = saveData.LevelInformation;
-        OnOverworldSceneLoaded();
+        LoadPlayerProperties();
+        LoadLevelProperties();
     }
 
     /// <summary>
@@ -135,7 +136,7 @@ public class SCR_LevelManager : MonoBehaviour
     
     public void CachePlayerProperties(SCR_PlayerOverworldMovement playerOverworldMovement)
     {
-        previousSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        previousSceneName = SceneManager.GetActiveScene().name;
         previousPlayerOverworldPosition = playerOverworldMovement.transform.position;
     }
 
@@ -177,9 +178,15 @@ public class SCR_LevelManager : MonoBehaviour
             if (choice != null)
                 npcQuestionNode.SetSavableChoice(choice);
         }
-        
+
         if (playerOverworldMovement == null) { return; }
-        playerOverworldMovement.transform.position = previousPlayerOverworldPosition;
+
+        if (previousPlayerOverworldPosition != Vector3.zero)
+        {
+            playerOverworldMovement.transform.position = previousPlayerOverworldPosition;
+        }
+        
+        
         Collider2D[] colliders = Physics2D.OverlapPointAll(previousPlayerOverworldPosition);
         foreach (Collider2D collider in colliders)
         {
