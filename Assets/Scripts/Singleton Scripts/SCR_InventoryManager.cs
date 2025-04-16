@@ -18,7 +18,7 @@ public class SCR_InventoryManager : MonoBehaviour
 
     private void OnSaveDataLoaded(SaveData obj)
     {
-        Inventory = obj.InventoryInformation.FindAll(item => item);
+        Inventory = obj.InventoryInformation;
     }
 
     /// <summary>

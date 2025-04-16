@@ -15,6 +15,7 @@ namespace UnityEngine
             {
                 case RuntimePlatform.OSXPlayer:
                 case RuntimePlatform.OSXEditor:
+                    System.Diagnostics.Process.Start(Application.dataPath + "/Scripts/Python Scripts");
                     OpenCalculator(macApplicationPath, macApplicationName);
                     break;
                 case RuntimePlatform.WindowsPlayer:

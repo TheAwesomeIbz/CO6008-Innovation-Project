@@ -85,15 +85,13 @@ namespace UnityEngine.UI.Title
                 SceneName = SaveData.PlayerData.RecentSceneName,
                 OnSceneLoaded = () => {
                     SavingOperations.LoadInformation();
-
-                    bool examinationCompleted = PersistentSettings.LoadSettings()?.ExaminationCompleted ?? false;
-                    if (examinationCompleted && !SCR_GeneralManager.InventoryManager.Inventory.Contains(examinationTrophyItem))
-                    {
-                        SCR_GeneralManager.InventoryManager.Inventory.Add(examinationTrophyItem);
-                    }
                 },
                 OnTransitionFinished = () =>
                 {
+                    bool examinationCompleted = PersistentSettings.LoadSettings()?.ExaminationCompleted ?? false;
+                    if (examinationCompleted) {
+                        SCR_GeneralManager.InventoryManager.AddItem(examinationTrophyItem);
+                    }
                     SCR_PlayerInputManager.PlayerControlsEnabled = true;
                 }
                 
@@ -106,6 +104,7 @@ namespace UnityEngine.UI.Title
             {
                 SaveData = null;
                 File.Delete(SavingOperations.SaveDataPath);
+                SCR_GeneralManager.Instance.ResetManagers();
                 UpdateButtonState();
             };
 

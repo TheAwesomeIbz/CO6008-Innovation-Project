@@ -185,13 +185,11 @@ namespace Entities.Boss
             
             IEnumerator HalfHPCoroutine(Action action)
             {
-                _playerMovementReference.BoxCollider2D.enabled = false;
                 while ((transform.position - _defaultPosition).magnitude > 0.25f)
                 {
                     transform.position = Vector3.Lerp(transform.position, _defaultPosition, Time.deltaTime * 5);
                     yield return null;
                 }
-
                 SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(_halfHPDialogue, action);
             }
         }

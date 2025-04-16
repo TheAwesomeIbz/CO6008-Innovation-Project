@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class SCR_GeneralManager : MonoBehaviour
 {
+    [SerializeField] private bool openSaveLocation;
     public static SCR_GeneralManager Instance;
 
     public static SCR_PlayerInputManager PlayerInputManager => Instance.GetComponent<SCR_PlayerInputManager>();
@@ -50,6 +51,16 @@ public class SCR_GeneralManager : MonoBehaviour
         SavingOperations.OnSaveDataLoaded += OnSaveDataLoaded;
     }
 
+    public void ResetManagers()
+    {
+        PlayerData = null;
+        Choices = new List<SavableChoice>();
+        CollectedItems = new List<string>();
+        _currentSessionTime = 0;
+        InventoryManager.Inventory.Clear();
+        LevelManager.GetLevelInformation.Clear();
+    }
+
     /// <summary>
     /// Loads the current player data to the Game Manager
     /// </summary>
@@ -73,7 +84,17 @@ public class SCR_GeneralManager : MonoBehaviour
         foreach (Overworld.SCR_NPCQuestionNode choiceDialogueNode in choiceDialogueNodes)
         {
             SavableChoice savableChoice = Choices.Find(ch => ch.ChoiceID == choiceDialogueNode.SavableChoice.ChoiceID);
-            choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect, savableChoice.CorrectAnswer);
+            if (savableChoice != null)
+            {
+                choiceDialogueNode.SavableChoice.SetChoice(savableChoice.SelectedChoice, savableChoice.TimeTakenToSelect, savableChoice.CorrectAnswer);
+            }
+            
+        }
+        
+        Overworld.SCR_ItemNode[] itemNodes = FindObjectsOfType<Overworld.SCR_ItemNode>();
+        foreach (Overworld.SCR_ItemNode item in itemNodes)
+        {
+            item.Start();
         }
 
     }
@@ -83,11 +104,11 @@ public class SCR_GeneralManager : MonoBehaviour
     private void Update()
     {
         UpdateCurrentSessionTime();
-        //
-        // if (Input.GetKey(KeyCode.LeftShift))
-        // {
-        //     System.Diagnostics.Process.Start(Application.persistentDataPath);
-        // }
+        
+        if (Input.GetKey(KeyCode.LeftShift) && openSaveLocation)
+        {
+            System.Diagnostics.Process.Start(Application.persistentDataPath);
+        }
     }
 
     /// <summary>

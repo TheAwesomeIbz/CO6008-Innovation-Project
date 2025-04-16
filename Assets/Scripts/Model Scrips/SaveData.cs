@@ -141,7 +141,8 @@ public static class SavingOperations
     {
         try
         {
-            SaveData saveData = JsonUtility.FromJson<SaveData>(File.ReadAllText(SaveDataPath));
+            string saveDataText = File.ReadAllText(SaveDataPath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(saveDataText);
             OnSaveDataLoaded?.Invoke(saveData);
             return saveData;
         }

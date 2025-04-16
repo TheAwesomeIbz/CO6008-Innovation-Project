@@ -326,6 +326,7 @@ namespace Entities.Boss
                     transform.position = Vector3.Lerp(transform.position, _defaultPosition, Time.deltaTime * 5);
                     yield return null;
                 }
+                _playerMovementReference.BoxCollider2D.enabled = true;
 
                 SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(_halfHPDialogue, action);
             }

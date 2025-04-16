@@ -38,11 +38,8 @@ namespace Level.Tutorial
                     {
 
                         bool examinationCompleted = PersistentSettings.LoadSettings()?.ExaminationCompleted ?? false;
-
-                        if (examinationCompleted && examinationTrophyItem &&
-                        !SCR_GeneralManager.InventoryManager.Inventory.Contains(examinationTrophyItem))
-                        {
-                            SCR_GeneralManager.InventoryManager.Inventory.Add(examinationTrophyItem);
+                        if (examinationCompleted) {
+                            SCR_GeneralManager.InventoryManager.AddItem(examinationTrophyItem);
                         }
                         SavingOperations.SaveInformation();
 

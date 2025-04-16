@@ -18,13 +18,14 @@ namespace Overworld
         public bool Interactable => !ItemAlreadyExists;
         SCR_DescriptiveObject descriptiveObject;
 
-        private void Start()
+        public void Start()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             descriptiveObject = GetComponent<SCR_DescriptiveObject>();
             spriteRenderer.sprite = Interactable ? normalTexture : collectedTexture;
             
         }
+        
         public void Interact(object playerObject)
         {
             SCR_GeneralManager.Instance.CollectedItems.Add(name);
