@@ -83,11 +83,11 @@ public class SCR_GeneralManager : MonoBehaviour
     private void Update()
     {
         UpdateCurrentSessionTime();
-
-        //if (Input.GetKeyDown(KeyCode.F1) && Input.GetKey(KeyCode.LeftShift))
-        //{
-        //    System.Diagnostics.Process.Start(Application.persistentDataPath);
-        //}
+        //
+        // if (Input.GetKey(KeyCode.LeftShift))
+        // {
+        //     System.Diagnostics.Process.Start(Application.persistentDataPath);
+        // }
     }
 
     /// <summary>

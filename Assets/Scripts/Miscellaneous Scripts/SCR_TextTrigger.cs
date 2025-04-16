@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -54,9 +55,16 @@ namespace Level
             LeanTween.cancel(gameObject);
             LeanTween.value(1, 0, 0.5f).setOnUpdate((float value) =>
             {
+                if (!displayTextObject || !canvasImage) { return; }
+                
                 displayTextObject.color = SetColorFunction(displayTextObject.color, value);
                 canvasImage.color =  SetColorFunction(canvasImage.color, value);
             });
+        }
+
+        private void OnDestroy()
+        {
+            LeanTween.cancel(gameObject);
         }
     }
 
