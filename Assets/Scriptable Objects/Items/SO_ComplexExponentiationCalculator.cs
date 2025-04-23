@@ -1,3 +1,5 @@
+using Dialogue;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,41 +10,46 @@ namespace UnityEngine
     public class SO_ComplexExponentiationCalculator : SO_Item, iUsableItem
     {
         [SerializeField]
-        private string macApplicationPath, macApplicationName, windowsApplicationPath, windowsApplicationName; 
+        private string macApplicationName, windowsApplicationName; 
         public void UseItem()
         {
             switch (Application.platform)
             {
                 case RuntimePlatform.OSXPlayer:
                 case RuntimePlatform.OSXEditor:
-                    System.Diagnostics.Process.Start(Application.dataPath + "/Scripts/Python Scripts");
-                    OpenCalculator(macApplicationPath, macApplicationName);
+                    OpenCalculator(macApplicationName);
                     break;
                 case RuntimePlatform.WindowsPlayer:
                 case RuntimePlatform.WindowsEditor:
-                    OpenCalculator(windowsApplicationPath, windowsApplicationName);
+                    OpenCalculator(windowsApplicationName);
                     break;
             }
-            
-            
-
         }
 
-        private void OpenCalculator(string applicationPath, string applicationName)
+        private void OpenCalculator(string applicationName)
         {
-            if (System.Diagnostics.Process.GetProcessesByName(applicationName).Length > 0)
+            try
             {
-                System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(applicationName);
-                foreach (System.Diagnostics.Process process in processes)
+                if (System.Diagnostics.Process.GetProcessesByName(applicationName).Length > 0)
                 {
-                    process.Kill();
+                    System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName(applicationName);
+                    foreach (System.Diagnostics.Process process in processes)
+                    {
+                        process.Kill();
+                    }
+                }
+                else
+                {
+                    string processName = Application.dataPath + $"/External Material/{applicationName}";
+                    System.Diagnostics.Process.Start(processName);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                string processName = Application.dataPath + applicationPath;
-                System.Diagnostics.Process.Start(processName);
+                Debug.LogWarning($"An unexpected error occured. {ex.Message}");
+                System.Diagnostics.Process.Start(Application.dataPath + "/External Material");
             }
+            
         }
     }
 }

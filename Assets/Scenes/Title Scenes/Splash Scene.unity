@@ -478,6 +478,7 @@ GameObject:
   - component: {fileID: 349271554}
   - component: {fileID: 349271553}
   - component: {fileID: 349271552}
+  - component: {fileID: 349271555}
   m_Layer: 0
   m_Name: b_takeExam
   m_TagString: Untagged
@@ -599,6 +600,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 349271550}
   m_CullTransparentMesh: 1
+--- !u!114 &349271555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349271550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad0c4f0c6e9c374aad1e13057d42d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Take Exam
+  description: This option will allow you to select and take part within the exam
+    required for this project. There will be learning material attached you would
+    need before you do the exam.
+  useDefaultUsageDescription: 1
+  usageDescription: 
 --- !u!1 &406997763
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,6 +837,7 @@ GameObject:
   - component: {fileID: 423703452}
   - component: {fileID: 423703451}
   - component: {fileID: 423703450}
+  - component: {fileID: 423703453}
   m_Layer: 0
   m_Name: b_provideFeedback
   m_TagString: Untagged
@@ -939,6 +959,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423703448}
   m_CullTransparentMesh: 1
+--- !u!114 &423703453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423703448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad0c4f0c6e9c374aad1e13057d42d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Provide Feedback
+  description: This will allow you to submit personal feedback on your interpretation
+    of the overall experience. You must have a working internet connection.
+  useDefaultUsageDescription: 1
+  usageDescription: 
 --- !u!1 &434107217
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,6 +988,7 @@ GameObject:
   - component: {fileID: 434107221}
   - component: {fileID: 434107220}
   - component: {fileID: 434107219}
+  - component: {fileID: 434107222}
   m_Layer: 0
   m_Name: b_playProjectPolynomial
   m_TagString: Untagged
@@ -1072,6 +1110,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 434107217}
   m_CullTransparentMesh: 1
+--- !u!114 &434107222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434107217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad0c4f0c6e9c374aad1e13057d42d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: Play PROJECT POLYNOMIAL
+  description: This will allow you to play the main project demonstration.
+  useDefaultUsageDescription: 1
+  usageDescription: 
 --- !u!1 &538799432
 GameObject:
   m_ObjectHideFlags: 0

@@ -284,11 +284,17 @@ namespace Entities.Player
             {
                 Vector2 MaxSpeed = directionVector * _playerSpeedProperties.Speed * _agilityPowerupProperty.PowerupMultiplier;
                
-                Rigidbody2D.velocity = Vector2.Lerp(Rigidbody2D.velocity, MaxSpeed, Time.deltaTime * _playerSpeedProperties.Acceleration);   
+                Rigidbody2D.velocity = Vector2.Lerp(
+                    Rigidbody2D.velocity, 
+                    MaxSpeed, 
+                    Time.deltaTime * _playerSpeedProperties.Acceleration);   
             }
             else
             {
-                Rigidbody2D.velocity = Vector2.Lerp(Rigidbody2D.velocity, Vector2.zero, Time.deltaTime * _playerSpeedProperties.Deceleration * _agilityPowerupProperty.PowerupMultiplier);
+                Rigidbody2D.velocity = Vector2.Lerp(
+                    Rigidbody2D.velocity, 
+                    Vector2.zero,
+                    Time.deltaTime * _playerSpeedProperties.Deceleration * _agilityPowerupProperty.PowerupMultiplier);
             }
 
             

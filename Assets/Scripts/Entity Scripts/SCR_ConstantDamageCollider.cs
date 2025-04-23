@@ -8,7 +8,7 @@ namespace Entities
     {
         [Header("ATTACKING PROPERTIES")]
         [SerializeField] protected Attackable _damageableTo;
-        [SerializeField] List<CMP_HitboxComponent> _hitboxComponents;
+        [SerializeField] CMP_HitboxComponent _hitboxComponent;
         
         
         [field : Header("DAMAGE COLLIDER FIELDS")]
@@ -24,21 +24,19 @@ namespace Entities
 
             //Ensure that the damageable object cannot be damaged by its own collider
             if (_damageableTo == hitbox.DamageableBy) { return; }
-            _hitboxComponents.Add(hitbox);
+            _hitboxComponent = hitbox;
         }
 
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.GetType(out CMP_HitboxComponent hitbox) == null) { return; }
-            _hitboxComponents.Remove(hitbox);
+            _hitboxComponent = null;
         }
         void Update()
         {
             _damageCounter -= Time.deltaTime * _damageRate;
-            if (_damageCounter < 0 && _hitboxComponents.Count > 0) {
-                foreach (CMP_HitboxComponent hitboxComponent in _hitboxComponents){
-                    hitboxComponent?.DealDamage(this);
-                }
+            if (_damageCounter < 0) {
+                _hitboxComponent?.DealDamage(this);
                 _damageCounter = 0.25f;
             }
             

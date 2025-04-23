@@ -38,6 +38,15 @@ public static class ExtensionMethods
             }
         }
     }
+
+
+    /// <summary>
+    /// Returns the type of a component attached to a game object.
+    /// </summary>
+    /// <typeparam name="T">Generic Type</typeparam>
+    /// <param name="behaviour"></param>
+    /// <param name="type"></param>
+    /// <returns>The type attached to the component if it exists.</returns>
     public static T GetType<T>(this Component behaviour, out T type)
     {
         type = behaviour.GetComponent<T>();

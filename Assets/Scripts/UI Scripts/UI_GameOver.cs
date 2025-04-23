@@ -13,9 +13,11 @@ namespace UnityEngine.UI
         [SerializeField] GameObject parentContentObject;
         [SerializeField] TextMeshProUGUI descriptionText;
         [SerializeField] List<GameObject> buttonObject;
+        AudioSource audioSource;
         void Start()
         {
             InitialiseScreen();
+            audioSource = GetComponent<AudioSource>();
             SCR_PlayerMovement.OnPlayerDefeated += OnPlayerDefeated;
         }
 
@@ -47,6 +49,7 @@ namespace UnityEngine.UI
         /// <returns></returns>
         IEnumerator OnGameOverCoroutine()
         {
+            audioSource.Play();
             descriptionText.text = $"TIMES FAILED : {SCR_GeneralManager.Instance.PlayerData.AmountOfDeaths}";
 
             parentContentObject.SetActive(true);

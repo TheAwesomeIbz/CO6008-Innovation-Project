@@ -13,7 +13,7 @@ namespace Dialogue
     /// </summary>
     public class SCR_DialogueManager : MonoBehaviour
     {
-        
+        const float defaultTypeSpeed = 0.03125f;
         /// <summary>
         /// Event called when the dialogue manager begins an interaction
         /// </summary>
@@ -29,6 +29,8 @@ namespace Dialogue
         [SerializeField] GameObject _dialogueBox;
         [SerializeField] GameObject _nameBox, _continueIcon;
         [SerializeField] TextMeshProUGUI _dialogueText, _nameText;
+        [SerializeField] AudioClip defaultAudioClip;
+        AudioSource audioSource;
 
         [Header("DIALOGUE OBJECTS PROPERTIES")]
         [SerializeField] int dialogueObjectIndex;
@@ -56,6 +58,7 @@ namespace Dialogue
             _dialogueBox.SetActive(false);
             _nameBox.SetActive(false);
             _continueIcon.SetActive(false);
+            audioSource = GetComponent<AudioSource>();
 
             choiceUIObjects = new ChoiceUIObject[]
             {
@@ -216,13 +219,15 @@ namespace Dialogue
         /// <returns></returns>
         private IEnumerator TypeSentence(DialogueObject[] dialogueObjects)
         {
-            float typeSpeed = 0.03125f - (0.015625f * (float)SCR_GeneralManager.Instance.Settings.TextSpeed);
+            float typeSpeed = defaultTypeSpeed + (defaultTypeSpeed * (float)SCR_GeneralManager.Instance.Settings.TextSpeed / 2);
 
             //predicate used to check whether input is pressed to continue
             Func<bool> inputHeldPredicate = () => { return Input.GetButton("Submit") || Input.GetMouseButton(0); };
-            Func<bool> inputPressedPredicate = () => { return Input.GetButtonDown("Submit") || Input.GetMouseButtonDown(0); };
+            
             
             DialogueObject currentDialogueObject = dialogueObjects[GetCurrentIndex];
+            audioSource.pitch = 1;
+            audioSource.clip = defaultAudioClip;
             
             string playerName = string.IsNullOrEmpty(SCR_GeneralManager.Instance.PlayerData.PlayerName) ?
                 "Alph" : SCR_GeneralManager.Instance.PlayerData.PlayerName;
@@ -232,6 +237,7 @@ namespace Dialogue
             float currentTime = Time.time;
             foreach (char character in displayText)
             {
+                audioSource.Play();
                 tempString += character;
                 _dialogueText.text = tempString;
 
@@ -241,12 +247,14 @@ namespace Dialogue
                     break;
                 }
                 yield return new WaitForSeconds(typeSpeed);
+                
+                audioSource.pitch = 1 + UnityEngine.Random.Range(-0.25f, 0.25f);
             }
             
 
             //If any choices exist, then display choices and relevant UI, else default to normal text settings.
             ChoiceDialogueObject choiceDialogueObject = currentDialogueObject as ChoiceDialogueObject;
-            
+            Func<bool> inputPressedPredicate = () => { return Input.GetButtonDown("Submit") || Input.GetMouseButtonDown(0); };
             if (choiceDialogueObject?.choiceOptions.Length > 0)
             {
                 DisplayChoices(choiceDialogueObject);

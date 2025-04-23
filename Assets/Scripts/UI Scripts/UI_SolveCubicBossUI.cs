@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Dialogue;
@@ -32,6 +32,8 @@ namespace UnityEngine.UI
 
         [Header("BOSS COMPLETION PROPERTIES")]
         [SerializeField] SO_Item trophyItem;
+        [SerializeField] SO_Calculator calculator;
+        [SerializeField] SO_ComplexExponentiationCalculator complexExponentiationCalculator;
         
         [Header("UPLOAD INDEX PROPERTIES")]
         [SerializeField] SCR_UploadDataModule uploadDataModule;
@@ -243,27 +245,127 @@ namespace UnityEngine.UI
             
         }
 
+        public void OnNormalCalculatorPressed()
+        {
+            calculator?.UseItem();
+            EventSystem.current.SetSelectedGameObject(null);
+        }
         public void OnComplexCalculatorButtonPressed()
         {
-            
-            if (System.Diagnostics.Process.GetProcessesByName("Complex Root Calculator").Length > 0)
-            {
-                System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("Complex Root Calculator");
-                foreach (System.Diagnostics.Process process in processes)
-                {
-                    process.Kill();
-                }
-            }
-            else
-            {
-                string processName = Application.dataPath + "/Scripts/Python Scripts/Complex Root Calculator.exe";
-                System.Diagnostics.Process.Start(processName);
-            }
-            
-
+            complexExponentiationCalculator?.UseItem();
+            EventSystem.current.SetSelectedGameObject(null);
         }
 
-        
+
+        private string[] GetHint()
+        {
+            return currentQuestionIndex switch
+            {
+                0 => new string[]
+                {
+                    "Press the calculator button and input the cube root of 1 (i.e. ³√1).",
+                    "You will need to go into the scientific calculator mode to do this.",
+                },
+                1 => new string[]
+                {
+                    "You are given the equation for z² + z + 1. Use the quadratic formula to find the roots of this equation.",
+                    "The quadratic formula is given by z = (-b ± √(b² - 4ac)) / 2a, where a, b and c = 1."
+                },
+                2 => new string[]
+                {
+                    "You are given the equation for z² + z + 1. Use the quadratic formula to find the roots of this equation.",
+                    "The quadratic formula is given by z = (-b ± √(b² - 4ac)) / 2a, where a, b and c = 1.",
+                    "Use the other root provided by the quadratic formula different to the one you previously entered."
+                },
+                3 => new string[] 
+                {
+                    "Do each part of the expression separately.",
+                    "Firstly, calculate -(b³ / 27a³) => replace a with 1 and b with -6. Do not forget the negative sign at the start of the sum.",
+                    "Secondly, calculate (bc / 6a²) => replace a with 1, b with -6 and c with -151",
+                    "Thirdly, calculate -(d - 2a) => replace a with 1 and d with 780. Do not forget the negative sign at the start of the sum.",
+                    "Lastly, add all of these values together to get the final sum.",
+                },
+                4 => new string[]
+                {
+                    "Do each part of the expression separately.",
+                    "Firstly, calculate (c / 3a) => replace a with 1 and c with -151.",
+                    "Secondly, calculate -(b² / 9a²) => replace a with 1 and b with -6. Do not forget the negative sign at the start of the sum.",
+                    "Lastly, add all of these values together to get the final sum."
+                },
+                5 => new string[]
+                {
+                    "Do each part of the expression separately.",
+                    "Square the results of part1 => (-231)².",
+                    "Cube the results of part2 => (-54.333)³.",
+                    "Add these two sums together and find the cube root of the calculated result. i.e ³√(-231)² + (-54.333)³.",
+                    "Alternatively, you can put the sum within the complex exponentiation calculator and use the principal root."
+                },
+                6 => new string[]
+                {
+                    "Calculate -b / 3a. Replace a with 1 and b with -6."
+                },
+                7 => new string[]
+                {
+                    "Add the results of these two parts together. This equates to -231 + 327.161i.",
+                    "Input this value into the complex exponentiation calculator and use the principal root.",
+                     "This answer will exist in the form of a + bi, where a and b are real numbers.",
+                },
+                8 => new string[]
+                {
+                    "Add the results of these two parts together. This equates to -231 + 327.161i.",
+                    "Input this value into the complex exponentiation calculator and use the principal root.",
+                    "This answer will exist in the form of a + bi, where a and b are real numbers.",
+                    "Use the complex conjugate value of the previous value to find the correct answer.",
+                    "It is possible to receive the correct answer if you input  -231 - 327.161i, however the principal root will be different."
+
+                },
+                9 => new string[]
+                {
+                    "Because ω¹ is equal to 1, you can add all segments together to get your first root.",
+                    "Adding all the segments results in 2 + (5.5+4.907i) + (5.5-4.907i).",
+                    "Remember to refer to the complex addition and subtraction rules by pressing the associated button if you are stuck.",
+                },
+                10 => new string[]
+                {
+                    "Because ω² is the second root of unity, this number must be multiplied by the results of the second segment.",
+                    "Additionally, ω³ must be multiplied by the third segment.",
+                    "Remember to refer to the complex multiplication and division rules by pressing the associated button if you are stuck.",
+                    "Also, remember to refer to the complex addition and subtraction rules by pressing the associated button if you are stuck.",
+                },
+                11 => new string[]
+                {
+                    "Because ω³ is the third root of unity, this number must be multiplied by the results of the second segment.",
+                    "Additionally, ω² must be multiplied by the third segment.",
+                    "Remember to refer to the complex multiplication and division rules by pressing the associated button if you are stuck.",
+                    "Also, remember to refer to the complex addition and subtraction rules by pressing the associated button if you are stuck.",
+                },
+                _ => new string[] { }
+            };
+        }
+        public void OnHintButtonPressed()
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+
+            submitButton.interactable = false;
+            inputField.interactable = false;
+            foreach (Button button in interactableButtons)
+            {
+                button.interactable = false;
+            }
+
+            SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(DialogueObject.CreateDialogue(
+                GetHint()), OnDialogueEnd: () =>
+            {
+                foreach (Button button in interactableButtons)
+                {
+                    button.interactable = true;
+                }
+                submitButton.interactable = true;
+                inputField.interactable = true;
+            });
+        }
+
+
 
 
         public void OnHelpUIButtonPressed(Texture texture)

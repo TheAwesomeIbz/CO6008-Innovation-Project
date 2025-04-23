@@ -1,4 +1,5 @@
 using Dialogue;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -24,7 +25,19 @@ namespace UnityEngine.UI
             examUI.StartExam();
         }
 
-
+        public void OpenLearningMaterial()
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(Application.dataPath + "/External Material/Learning Material.pdf");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"An unexpected error occured. {ex.Message}");
+                System.Diagnostics.Process.Start(Application.dataPath + "/External Material");
+            }
+            
+        }
         /// <summary>
         /// Method called on Return button press
         /// </summary>

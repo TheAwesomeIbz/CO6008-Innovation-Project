@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements.Experimental;
+using static UnityEngine.UI.UI_LoadScene;
 
 namespace UnityEngine.UI.Title
 {
@@ -70,17 +72,16 @@ namespace UnityEngine.UI.Title
         #region BUTTON METHONDS
         public void OnNewGameSelected()
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new TransitionProperties
             {
                 SceneName = "Naming Scene",
                 OnTransitionFinished = () => { SCR_PlayerInputManager.PlayerControlsEnabled = true; }
             });
-            
         }
 
         public void OnContinueSelected()
         {
-            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new UI_LoadScene.TransitionProperties
+            SCR_GeneralManager.UIManager.FindUIObject<UI_LoadScene>().LoadScene(new TransitionProperties
             {
                 SceneName = SaveData.PlayerData.RecentSceneName,
                 OnSceneLoaded = () => {

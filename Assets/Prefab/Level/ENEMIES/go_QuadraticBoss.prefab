@@ -334,7 +334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _attack: 5
+  _attack: 30
   _stunTimer: 0
   <DodgeableCollider>k__BackingField: 0
   _knockbackDirection: 0
@@ -925,7 +925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _hitboxComponents: []
+  _hitboxComponent: {fileID: 0}
   <KnockbackDirection>k__BackingField: 0
   <KnockbackMagnitude>k__BackingField: 0
   _damageRate: 25
@@ -1106,7 +1106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _attack: 5
+  _attack: 30
   _stunTimer: 0
   <DodgeableCollider>k__BackingField: 0
   _knockbackDirection: 0
@@ -1787,7 +1787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _attack: 5
+  _attack: 30
   _stunTimer: 0
   <DodgeableCollider>k__BackingField: 0
   _knockbackDirection: 0
@@ -2346,7 +2346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _hitboxComponents: []
+  _hitboxComponent: {fileID: 0}
   <KnockbackDirection>k__BackingField: 0
   <KnockbackMagnitude>k__BackingField: 0
   _damageRate: 25
@@ -2494,7 +2494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _hitboxComponents: []
+  _hitboxComponent: {fileID: 0}
   <KnockbackDirection>k__BackingField: 0
   <KnockbackMagnitude>k__BackingField: 0
   _damageRate: 25
@@ -3023,7 +3023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _damageableTo: 1
-  _hitboxComponents: []
+  _hitboxComponent: {fileID: 0}
   <KnockbackDirection>k__BackingField: 0
   <KnockbackMagnitude>k__BackingField: 0
   _damageRate: 25

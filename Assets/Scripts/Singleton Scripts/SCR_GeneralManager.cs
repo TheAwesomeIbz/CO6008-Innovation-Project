@@ -5,10 +5,11 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+
 public class SCR_GeneralManager : MonoBehaviour
 {
-    [SerializeField] private bool openSaveLocation;
-    public static SCR_GeneralManager Instance;
+    
 
     public static SCR_PlayerInputManager PlayerInputManager => Instance.GetComponent<SCR_PlayerInputManager>();
     
@@ -17,6 +18,7 @@ public class SCR_GeneralManager : MonoBehaviour
     public static SCR_UIManager UIManager => Instance.GetComponentInChildren<SCR_UIManager>();
 
     public static SCR_LevelManager LevelManager => Instance.GetComponent<SCR_LevelManager>();
+
     public SettingsInformation Settings => UIManager.FindUIObject<UI_SettingsUI>().SettingsInformation;
 
     
@@ -32,7 +34,8 @@ public class SCR_GeneralManager : MonoBehaviour
     public float CurrentSessionTime => _currentSessionTime;
     UI_LoadScene _loadScenes;
 
-
+    
+    public static SCR_GeneralManager Instance;
     private void Awake()
     {
         if (Instance == null)
@@ -53,7 +56,7 @@ public class SCR_GeneralManager : MonoBehaviour
 
     public void ResetManagers()
     {
-        PlayerData = null;
+        PlayerData = new PlayerData(string.Empty);
         Choices = new List<SavableChoice>();
         CollectedItems = new List<string>();
         _currentSessionTime = 0;
@@ -67,6 +70,7 @@ public class SCR_GeneralManager : MonoBehaviour
     /// <param name="playerData"></param>
     private void OnSaveDataLoaded(SaveData saveData)
     {
+
         PlayerData = saveData.PlayerData;
         Choices = saveData.Choices;
         CollectedItems = saveData.CollectedItems;
@@ -99,16 +103,15 @@ public class SCR_GeneralManager : MonoBehaviour
 
     }
 
-    public void SetPlayerName(string playerName) => PlayerData.PlayerName = playerName;
+    public void SetPlayerName(string playerName)
+    {
+        if (PlayerData == null) { PlayerData = new PlayerData(playerName); }
+        else { PlayerData.PlayerName = playerName; }
+    }
 
     private void Update()
     {
         UpdateCurrentSessionTime();
-        
-        if (Input.GetKey(KeyCode.LeftShift) && openSaveLocation)
-        {
-            System.Diagnostics.Process.Start(Application.persistentDataPath);
-        }
     }
 
     /// <summary>

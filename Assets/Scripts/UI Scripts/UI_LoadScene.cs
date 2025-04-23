@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Dialogue;
 using Entities.Player;
 using Overworld;
 using TMPro;
@@ -68,6 +70,26 @@ namespace UnityEngine.UI
         IEnumerator TransitionCoroutine(TransitionProperties transitionProperties)
         {
             
+            //if (!SceneManager.GetSceneByName(transitionProperties.SceneName).IsValid())
+            //{
+            //    Selectable[] allSelectables = FindObjectsOfType<Selectable>();
+            //    foreach (Selectable selectable in allSelectables)
+            //    {
+            //        selectable.interactable = false;
+            //    }
+
+            //    SCR_GeneralManager.UIManager.FindUIObject<SCR_DialogueManager>().DisplayDialogue(
+            //        DialogueObject.CreateDialogue($"The scene ({transitionProperties.SceneName}) is not a valid scene within the game.",
+            //        "This scene will not be loaded."), OnDialogueEnd: () =>
+            //        {
+            //            foreach (Selectable selectable in allSelectables){
+            //                selectable.interactable = true;
+            //            }
+            //        });
+
+            //    yield break;
+            //}
+
             Loading = true;
             yield return FadeCoroutine(0, 1);
 
