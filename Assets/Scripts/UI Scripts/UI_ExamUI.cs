@@ -170,7 +170,7 @@ namespace UnityEngine.UI
             persistentSettings.ExaminationCompleted = true;
             persistentSettings.SaveSettings();
 
-            StartCoroutine(uploadDataModule.PostData(JSONString));
+            StartCoroutine(uploadDataModule.PostData(JSONString, exam));
             
         }
 

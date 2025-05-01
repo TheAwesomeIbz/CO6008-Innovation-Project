@@ -345,7 +345,7 @@ namespace Dialogue
             {
                 quizInterface?.OnIncorrectChoiceMade?.Invoke();
             }
-            DisplayNextDialogue(cachedChoiceObjects[index].ResultingDialogue);
+            DisplayNextDialogue(cachedChoiceObjects[index]?.ResultingDialogue);
         }
 
         

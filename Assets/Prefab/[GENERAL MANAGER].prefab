@@ -190,7 +190,7 @@ MonoBehaviour:
   _continueIcon: {fileID: 874308148041982708}
   _dialogueText: {fileID: 9092967800571349392}
   _nameText: {fileID: 4019261069473619472}
-  defaultAudioClip: {fileID: 8300000, guid: ddde3aebeb62437409e27337881cef50, type: 3}
+  defaultAudioClip: {fileID: 8300000, guid: 9e77dfad455374748b08f2d70f66c5a1, type: 3}
   dialogueObjectIndex: 0
   choiceDialogueObjectIndex: 0
   parentChoiceObject: {fileID: 4526468225059142034}
